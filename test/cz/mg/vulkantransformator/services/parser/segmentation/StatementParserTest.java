@@ -7,6 +7,7 @@ import cz.mg.test.Assert;
 import cz.mg.vulkantransformator.utilities.code.Line;
 import cz.mg.vulkantransformator.utilities.code.Statement;
 import cz.mg.vulkantransformator.utilities.code.Token;
+import cz.mg.vulkantransformator.utilities.code.TokenType;
 
 import java.util.Iterator;
 
@@ -79,7 +80,7 @@ public @Test class StatementParserTest {
     private void testParse(@Mandatory List<List<String>> expectedStringStatements, String... stringTokens) {
         List<Token> tokens = new List<>();
         for (String stringToken : stringTokens) {
-            tokens.addLast(new Token(new Line(-1, stringToken), 0, stringToken.length()));
+            tokens.addLast(new Token(new Line(-1, stringToken), 0, stringToken.length(), TokenType.SPECIAL));
         }
 
         StatementParser parser = StatementParser.getInstance();

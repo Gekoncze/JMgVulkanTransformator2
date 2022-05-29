@@ -6,6 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.utilities.code.Token;
 import cz.mg.vulkantransformator.utilities.code.Line;
+import cz.mg.vulkantransformator.utilities.code.TokenType;
 
 public @Service class TokenParser {
     private static @Optional TokenParser instance;
@@ -56,24 +57,24 @@ public @Service class TokenParser {
             } else if (singleQuotes) {
                 if (!isBackslash(lch) && isSingleQuote(ch)) {
                     singleQuotes = false;
-                    tokens.addLast(new Token(line, start, i + 1));
+                    tokens.addLast(new Token(line, start, i + 1, TokenType.CHARACTER));
                 }
             } else if (doubleQuotes) {
                 if (!isBackslash(lch) && isDoubleQuote(ch)) {
                     doubleQuotes = false;
-                    tokens.addLast(new Token(line, start, i + 1));
+                    tokens.addLast(new Token(line, start, i + 1, TokenType.STRING));
                 }
             } else if (name) {
                 if (!(isUppercase(ch) || isLowercase(ch) || isNumber(ch) || isUnderscore(ch))) {
                     name = false;
-                    tokens.addLast(new Token(line, start, i));
+                    tokens.addLast(new Token(line, start, i, TokenType.NAME));
                     i--;
                     ch = '\0';
                 }
             } else if (number) {
                 if (!(isNumber(ch) || isDot(ch) || isUppercase(ch) || isLowercase(ch))) {
                     number = false;
-                    tokens.addLast(new Token(line, start, i));
+                    tokens.addLast(new Token(line, start, i, TokenType.NUMBER));
                     i--;
                     ch = '\0';
                 }
@@ -99,7 +100,7 @@ public @Service class TokenParser {
                     number = true;
                     start = i;
                 } else {
-                    tokens.addLast(new Token(line, i, i+1));
+                    tokens.addLast(new Token(line, i, i+1, TokenType.SPECIAL));
                 }
             }
 
@@ -107,7 +108,7 @@ public @Service class TokenParser {
         }
 
         if (name || number) {
-            tokens.addLast(new Token(line, start, line.getText().length()));
+            tokens.addLast(new Token(line, start, line.getText().length(), name ? TokenType.NAME : TokenType.NUMBER));
         }
 
         if (singleQuotes || doubleQuotes) {

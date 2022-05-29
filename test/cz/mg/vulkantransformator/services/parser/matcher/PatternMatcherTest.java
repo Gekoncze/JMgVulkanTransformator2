@@ -6,6 +6,7 @@ import cz.mg.test.Assert;
 import cz.mg.vulkantransformator.utilities.code.Line;
 import cz.mg.vulkantransformator.utilities.code.Statement;
 import cz.mg.vulkantransformator.utilities.code.Token;
+import cz.mg.vulkantransformator.utilities.code.TokenType;
 
 public @Test class PatternMatcherTest {
     public static void main(String[] args) {
@@ -98,6 +99,6 @@ public @Test class PatternMatcherTest {
     }
 
     private @Mandatory Token createToken(@Mandatory String text) {
-        return new Token(new Line(-1, text), 0, text.length());
+        return new Token(new Line(-1, text), 0, text.length(), TokenType.SPECIAL);
     }
 }
