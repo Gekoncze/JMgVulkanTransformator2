@@ -4,6 +4,7 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
+import cz.mg.vulkantransformator.services.parser.other.ParseException;
 import cz.mg.vulkantransformator.utilities.code.Token;
 import cz.mg.vulkantransformator.utilities.code.Line;
 import cz.mg.vulkantransformator.utilities.code.TokenType;
@@ -112,7 +113,7 @@ public @Service class TokenParser {
         }
 
         if (singleQuotes || doubleQuotes) {
-            throw new RuntimeException("Missing right quote.");
+            throw new ParseException(line, "Missing right quote.");
         }
 
         return tokens;

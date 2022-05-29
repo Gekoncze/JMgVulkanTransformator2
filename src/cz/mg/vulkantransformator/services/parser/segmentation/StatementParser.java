@@ -4,6 +4,7 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
+import cz.mg.vulkantransformator.services.parser.other.ParseException;
 import cz.mg.vulkantransformator.utilities.code.Statement;
 import cz.mg.vulkantransformator.utilities.code.Token;
 
@@ -50,11 +51,11 @@ public @Service class StatementParser {
         }
 
         if (nestingCount > 0) {
-            throw new RuntimeException("Missing right curly bracket at line " + tokens.getLast().getLine().getId() + ".");
+            throw new ParseException(statements.getLast().getTokens().getLast(), "Missing right curly bracket.");
         }
 
         if (nestingCount < 0) {
-            throw new RuntimeException("Missing left curly bracket at line " + tokens.getLast().getLine().getId() + ".");
+            throw new ParseException(statements.getLast().getTokens().getLast(), "Missing left curly bracket.");
         }
 
         return statements;

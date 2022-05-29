@@ -5,6 +5,7 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.collections.list.List;
 import cz.mg.test.Assert;
 import cz.mg.vulkantransformator.entities.preprocessor.Definition;
+import cz.mg.vulkantransformator.services.parser.other.ParseException;
 import cz.mg.vulkantransformator.services.parser.segmentation.TokenParser;
 import cz.mg.vulkantransformator.utilities.code.Line;
 import cz.mg.vulkantransformator.utilities.code.Token;
@@ -90,7 +91,7 @@ public @Test class PreprocessorTest {
         TokenParser tokenParser = TokenParser.getInstance();
         Preprocessor preprocessor = Preprocessor.getInstance();
 
-        Assert.assertExceptionThrown(RuntimeException.class, () -> {
+        Assert.assertExceptionThrown(ParseException.class, () -> {
             preprocessor.preprocess(
                 tokenParser.parse(new List<>(
                     new Line(0, "#ifndef X"),

@@ -8,7 +8,9 @@ import cz.mg.vulkantransformator.services.parser.other.ParseException;
 import cz.mg.vulkantransformator.services.parser.other.TokenRemover;
 import cz.mg.vulkantransformator.utilities.code.Token;
 
-public @Service class ErrorParser {
+import static cz.mg.vulkantransformator.services.parser.preprocessor.Directives.ERROR;
+
+public @Service class ErrorParser { // TODO - add test
     private static @Optional ErrorParser instance;
 
     public static @Mandatory ErrorParser getInstance() {
@@ -30,10 +32,11 @@ public @Service class ErrorParser {
 
     private void parseError(@Mandatory List<Token> tokens) {
         tokenRemover.removeFirst(tokens, "#");
-        Token token = tokenRemover.removeFirst(tokens, "error");
+        Token token = tokenRemover.removeFirst(tokens, ERROR);
 
         if (!tokens.isEmpty()) {
-            throw new ParseException(token, "Error directive reached: \"" + tokens.get(2).getText() + "\".");
+            // TODO - check if error message in token already contains quotes
+            throw new ParseException(token, "Error directive reached: '" + tokens.getFirst().getText() + "'.");
         } else {
             throw new ParseException(token, "Error directive reached.");
         }

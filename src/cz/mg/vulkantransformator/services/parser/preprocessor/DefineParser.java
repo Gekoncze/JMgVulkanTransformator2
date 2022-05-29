@@ -8,6 +8,9 @@ import cz.mg.vulkantransformator.entities.preprocessor.Definition;
 import cz.mg.vulkantransformator.services.parser.other.ParseException;
 import cz.mg.vulkantransformator.services.parser.other.TokenRemover;
 import cz.mg.vulkantransformator.utilities.code.Token;
+import cz.mg.vulkantransformator.utilities.code.TokenType;
+
+import static cz.mg.vulkantransformator.services.parser.preprocessor.Directives.DEFINE;
 
 public @Service class DefineParser { // TODO - add test
     private static @Optional DefineParser instance;
@@ -31,10 +34,10 @@ public @Service class DefineParser { // TODO - add test
 
     private @Mandatory Definition parseDefinition(@Mandatory List<Token> tokens) {
         tokenRemover.removeFirst(tokens, "#");
-        tokenRemover.removeFirst(tokens, "define");
+        tokenRemover.removeFirst(tokens, DEFINE);
 
         Definition definition = new Definition();
-        definition.setName(tokens.removeFirst());
+        definition.setName(tokenRemover.removeFirst(tokens, TokenType.NAME));
 
         if (!tokens.isEmpty()) {
             if (tokens.getFirst().getText().equals("(")) {
@@ -52,15 +55,18 @@ public @Service class DefineParser { // TODO - add test
         tokenRemover.removeFirst(tokens, "(");
         List<Token> parameters = new List<>();
         while (true) {
-            parameters.addLast(tokens.removeFirst());
+            parameters.addLast(tokenRemover.removeFirst(tokens, TokenType.NAME));
 
-            Token token = tokens.removeFirst();
+            Token token = tokenRemover.removeFirst(tokens, TokenType.SPECIAL);
             if (token.getText().equals(",")) {
                 continue;
             } else if (token.getText().equals(")")) {
                 break;
             } else {
-                throw new ParseException(token, "Invalid define directive. Expected ',' or ')', but got '" + token.getText() + "'.");
+                throw new ParseException(
+                    token,
+                    "Invalid define directive. Expected ',' or ')', but got '" + token.getText() + "'."
+                );
             }
         }
         return parameters;

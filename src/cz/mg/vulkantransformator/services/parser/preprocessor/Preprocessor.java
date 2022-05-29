@@ -7,7 +7,10 @@ import cz.mg.collections.list.List;
 import cz.mg.collections.list.ListItem;
 import cz.mg.collections.map.Map;
 import cz.mg.vulkantransformator.entities.preprocessor.Definition;
+import cz.mg.vulkantransformator.services.parser.other.ParseException;
+import cz.mg.vulkantransformator.services.parser.other.TokenValidator;
 import cz.mg.vulkantransformator.utilities.code.Token;
+import cz.mg.vulkantransformator.utilities.code.TokenType;
 
 import static cz.mg.vulkantransformator.services.parser.preprocessor.Directives.*;
 
@@ -19,12 +22,14 @@ public @Service class Preprocessor {
     public static Preprocessor getInstance() {
         if (instance == null) {
             instance = new Preprocessor();
+            instance.validator = TokenValidator.getInstance();
             instance.defineParser = DefineParser.getInstance();
             instance.errorParser = ErrorParser.getInstance();
         }
         return instance;
     }
 
+    private TokenValidator validator;
     private DefineParser defineParser;
     private ErrorParser errorParser;
 
@@ -71,9 +76,9 @@ public @Service class Preprocessor {
                     } else if (directive.equals(ERROR)) {
                         errorParser.parse(tokens);
                     } else {
-                        throw new UnsupportedOperationException(
-                            "Unsupported preprocessor directive '" + tokens.get(1).getText() +"'" +
-                                " at line " + tokens.getFirst().getLine().getId() + "."
+                        throw new ParseException(
+                            tokens.get(1),
+                            "Unsupported preprocessor directive '" + tokens.get(1).getText() +"'."
                         );
                     }
                 }
@@ -120,7 +125,9 @@ public @Service class Preprocessor {
     private @Optional String getDirective(@Mandatory List<Token> tokens) {
         if (tokens.count() >= 2) {
             if (tokens.getFirst().getText().equals(DIRECTIVE)) {
-                return tokens.getFirstItem().getNextItem().get().getText();
+                Token token = tokens.getFirstItem().getNextItem().get();
+                validator.validate(token, TokenType.NAME);
+                return token.getText();
             }
         }
 

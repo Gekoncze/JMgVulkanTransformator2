@@ -13,8 +13,9 @@ import cz.mg.vulkantransformator.services.parser.other.TokenRemover;
 import cz.mg.vulkantransformator.services.parser.segmentation.StatementParser;
 import cz.mg.vulkantransformator.utilities.code.Statement;
 import cz.mg.vulkantransformator.utilities.code.Token;
+import cz.mg.vulkantransformator.utilities.code.TokenType;
 
-public @Service class VkStructureParser {
+public @Service class VkStructureParser { // TODO - add test
     private static VkStructureParser instance;
 
     public static @Mandatory VkStructureParser getInstance() {
@@ -72,7 +73,7 @@ public @Service class VkStructureParser {
         tokenRemover.removeFirst(tokens, "typedef");
         tokenRemover.removeFirst(tokens, "struct");
 
-        VkStructure structure = new VkStructure(tokens.removeFirst().getText());
+        VkStructure structure = new VkStructure(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
 
         tokenRemover.removeFirst(tokens, "{");
 
@@ -97,8 +98,8 @@ public @Service class VkStructureParser {
         removeConstTokens(tokens);
         int pointers = removePointerTokens(tokens);
         int array = removeArrayTokens(tokens);
-        String typename = tokens.removeFirst().getText();
-        String name = tokens.removeFirst().getText();
+        String typename = tokenRemover.removeFirst(tokens, TokenType.NAME).getText();
+        String name = tokenRemover.removeFirst(tokens, TokenType.NAME).getText();
 
         if (!tokens.isEmpty()) {
             throw new ParseException(
@@ -144,7 +145,7 @@ public @Service class VkStructureParser {
                 if (openingItem == null) {
                     openingItem = item;
                 } else {
-                    throw new IllegalArgumentException("Too many opening array brackets.");
+                    throw new ParseException(item.get(), "Too many opening array brackets.");
                 }
             }
 
@@ -152,24 +153,27 @@ public @Service class VkStructureParser {
                 if (closingItem == null) {
                     closingItem = item;
                 } else {
-                    throw new IllegalArgumentException("Too many closing array brackets.");
+                    throw new ParseException(item.get(), "Too many closing array brackets.");
                 }
             }
         }
 
-        if (openingItem == null && closingItem == null) {
-            return 0;
-        } else if (openingItem != null && closingItem != null) {
+        if (openingItem != null && closingItem != null) {
+            // TODO - this condition might be illegal
             if (openingItem.getNextItem() != closingItem.getPreviousItem()) {
-                throw new IllegalArgumentException("Illegal array declaration.");
+                throw new IllegalArgumentException("Illegal array declaration."); // TODO - use parse exception
             }
             ListItem<Token> numberItem = openingItem.getNextItem();
             tokens.remove(openingItem);
             tokens.remove(numberItem);
             tokens.remove(closingItem);
             return Integer.parseInt(numberItem.get().getText());
+        } else if (openingItem != null) {
+            throw new ParseException(openingItem.get(), "Missing right array bracket.");
+        } else if (closingItem != null) {
+            throw new ParseException(closingItem.get(), "Missing left array bracket.");
         } else {
-            throw new IllegalArgumentException("Missing left or right bracket.");
+            return 0;
         }
     }
 }
