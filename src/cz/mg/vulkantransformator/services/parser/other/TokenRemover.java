@@ -6,6 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.utilities.code.Token;
 
+@SuppressWarnings("UnusedReturnValue")
 public @Service class TokenRemover {
     private static @Optional TokenRemover instance;
 
@@ -19,12 +20,16 @@ public @Service class TokenRemover {
     private TokenRemover() {
     }
 
-    public void removeFirst(@Mandatory List<Token> tokens, @Mandatory String expectation) {
-        validate(tokens.removeFirst(), expectation);
+    public @Mandatory Token removeFirst(@Mandatory List<Token> tokens, @Mandatory String expectation) {
+        Token token = tokens.removeFirst();
+        validate(token, expectation);
+        return token;
     }
 
-    public void removeLast(@Mandatory List<Token> tokens, @Mandatory String expectation) {
-        validate(tokens.removeLast(), expectation);
+    public @Mandatory Token removeLast(@Mandatory List<Token> tokens, @Mandatory String expectation) {
+        Token token = tokens.removeLast();
+        validate(token, expectation);
+        return token;
     }
 
     private void validate(@Mandatory Token token, @Mandatory String expectation) {

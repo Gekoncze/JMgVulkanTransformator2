@@ -20,11 +20,13 @@ public @Service class Preprocessor {
         if (instance == null) {
             instance = new Preprocessor();
             instance.defineParser = DefineParser.getInstance();
+            instance.errorParser = ErrorParser.getInstance();
         }
         return instance;
     }
 
     private DefineParser defineParser;
+    private ErrorParser errorParser;
 
     private Preprocessor() {
     }
@@ -67,11 +69,7 @@ public @Service class Preprocessor {
                         removeDefinition(definitions, tokens.get(2).getText());
                         map = createMap(definitions);
                     } else if (directive.equals(ERROR)) {
-                        if (tokens.count() == 3) {
-                            throw new RuntimeException("Error directive reached: \"" + tokens.get(2).getText() + "\".");
-                        } else {
-                            throw new RuntimeException("Error directive reached.");
-                        }
+                        errorParser.parse(tokens);
                     } else {
                         throw new UnsupportedOperationException(
                             "Unsupported preprocessor directive '" + tokens.get(1).getText() +"'" +
@@ -86,7 +84,7 @@ public @Service class Preprocessor {
                         if (definition == null) {
                             remainingTokens.addLast(token);
                         } else {
-                            // only replacing simple definitions for now
+                            // TODO - only replacing simple definitions for now
                             remainingTokens.addLast(definition.getExpression().getFirst());
                         }
                     }
