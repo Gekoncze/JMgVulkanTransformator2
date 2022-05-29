@@ -6,6 +6,7 @@ import cz.mg.vulkantransformator.services.parser.PatternMatcherTest;
 import cz.mg.vulkantransformator.services.parser.StatementParserTest;
 import cz.mg.vulkantransformator.services.parser.TokenParserTest;
 import cz.mg.vulkantransformator.services.preprocessor.PreprocessorTest;
+import cz.mg.vulkantransformator.services.splicer.SplicerTest;
 
 public @Test class AllTests {
     public static void main(String[] args) {
@@ -14,5 +15,6 @@ public @Test class AllTests {
         StatementParserTest.main(args);
         PatternMatcherTest.main(args);
         PreprocessorTest.main(args);
+        SplicerTest.main(args);
     }
 }

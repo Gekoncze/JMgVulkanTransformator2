@@ -7,21 +7,21 @@ import cz.mg.collections.list.List;
 import cz.mg.collections.list.ListItem;
 import cz.mg.collections.map.Map;
 import cz.mg.vulkantransformator.entities.preprocessor.Definition;
-import cz.mg.vulkantransformator.services.parser.TokenParser;
 import cz.mg.vulkantransformator.utilities.code.Token;
 
+import static cz.mg.vulkantransformator.services.preprocessor.Directives.*;
+
 public @Service class Preprocessor {
+    private static final String DIRECTIVE = "#";
+
     private static Preprocessor instance;
 
     public static Preprocessor getInstance() {
         if (instance == null) {
             instance = new Preprocessor();
-            instance.parser = TokenParser.getInstance();
         }
         return instance;
     }
-
-    private TokenParser parser;
 
     private Preprocessor() {
     }
@@ -39,32 +39,32 @@ public @Service class Preprocessor {
         for (List<Token> tokens : linesTokens) {
             if (isDirective(tokens)) {
                 if (exclude) {
-                    if (isEndif(tokens)) {
+                    if (is(tokens, ENDIF)) {
                         exclude = false;
                     }
                 } else {
-                    if (isInclude(tokens)) {
+                    if (is(tokens, INCLUDE)) {
                         // skip includes
-                    } else if (isIfdef(tokens)) {
+                    } else if (is(tokens, IFDEF)) {
                         if (!defined(map, tokens.get(2).getText())) {
                             exclude = true;
                         }
-                    } else if (isIfndef(tokens)) {
+                    } else if (is(tokens, IFNDEF)) {
                         if (defined(map, tokens.get(2).getText())) {
                             exclude = true;
                         }
-                    } else if (isEndif(tokens)) {
+                    } else if (is(tokens, ENDIF)) {
                         // skip
-                    } else if (isDefine(tokens)) {
+                    } else if (is(tokens, DEFINE)) {
                         Definition definition = parseDefinition(tokens);
                         if (definition != null) {
                             definitions.addLast(definition);
                             map.set(definition.getName().getText(), definition);
                         }
-                    } else if (isUndef(tokens)) {
+                    } else if (is(tokens, UNDEF)) {
                         removeDefinition(definitions, tokens.get(2).getText());
                         map = createMap(definitions);
-                    } else if (isError(tokens)) {
+                    } else if (is(tokens, ERROR)) {
                         if (tokens.count() == 3) {
                             throw new RuntimeException("Error directive reached: \"" + tokens.get(2).getText() + "\".");
                         } else {
@@ -119,38 +119,14 @@ public @Service class Preprocessor {
 
     private boolean isDirective(@Mandatory List<Token> tokens) {
         if (tokens.count() >= 2) {
-            return tokens.getFirst().getText().equals("#");
+            return tokens.getFirst().getText().equals(DIRECTIVE);
         } else {
             return false;
         }
     }
 
-    private boolean isInclude(@Mandatory List<Token> tokens) {
-        return tokens.get(1).getText().equals("include");
-    }
-
-    private boolean isIfdef(@Mandatory List<Token> tokens) {
-        return tokens.get(1).getText().equals("ifdef");
-    }
-
-    private boolean isIfndef(@Mandatory List<Token> tokens) {
-        return tokens.get(1).getText().equals("ifndef");
-    }
-
-    private boolean isDefine(@Mandatory List<Token> tokens) {
-        return tokens.get(1).getText().equals("define");
-    }
-
-    private boolean isUndef(@Mandatory List<Token> tokens) {
-        return tokens.get(1).getText().equals("undef");
-    }
-
-    private boolean isEndif(@Mandatory List<Token> tokens) {
-        return tokens.get(1).getText().equals("endif");
-    }
-
-    private boolean isError(@Mandatory List<Token> tokens) {
-        return tokens.get(1).getText().equals("error");
+    private boolean is(@Mandatory List<Token> tokens, @Mandatory String directive) {
+        return tokens.get(1).getText().equals(directive);
     }
 
     private boolean defined(@Mandatory Map<String, Definition> map, @Mandatory String name) {

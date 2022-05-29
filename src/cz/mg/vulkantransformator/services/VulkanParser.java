@@ -10,6 +10,7 @@ import cz.mg.vulkantransformator.services.parser.LineParser;
 import cz.mg.vulkantransformator.services.parser.StatementParser;
 import cz.mg.vulkantransformator.services.parser.TokenParser;
 import cz.mg.vulkantransformator.services.preprocessor.Preprocessor;
+import cz.mg.vulkantransformator.services.splicer.Splicer;
 import cz.mg.vulkantransformator.utilities.code.Line;
 import cz.mg.vulkantransformator.utilities.code.Statement;
 import cz.mg.vulkantransformator.utilities.code.Token;
@@ -22,6 +23,7 @@ public @Service class VulkanParser {
             instance = new VulkanParser();
             instance.lineParser = LineParser.getInstance();
             instance.tokenParser = TokenParser.getInstance();
+            instance.splicer = Splicer.getInstance();
             instance.preprocessor = Preprocessor.getInstance();
             instance.statementParser = StatementParser.getInstance();
             instance.structureParser = VkStructureParser.getInstance();
@@ -31,6 +33,7 @@ public @Service class VulkanParser {
 
     private LineParser lineParser;
     private TokenParser tokenParser;
+    private Splicer splicer;
     private Preprocessor preprocessor;
     private StatementParser statementParser;
     private VkStructureParser structureParser;
@@ -45,7 +48,8 @@ public @Service class VulkanParser {
         List<Definition> definitions = new List<>();
         List<Line> lines = lineParser.parse(stringLines);
         List<List<Token>> linesTokens = tokenParser.parse(lines);
-        List<Token> tokens = preprocessor.preprocess(linesTokens, definitions);
+        List<List<Token>> joinedLinesTokens = splicer.splice(linesTokens);
+        List<Token> tokens = preprocessor.preprocess(joinedLinesTokens, definitions);
         List<Statement> statements = statementParser.parse(tokens);
 
         root.getComponents().addCollectionLast(structureParser.parse(statements));

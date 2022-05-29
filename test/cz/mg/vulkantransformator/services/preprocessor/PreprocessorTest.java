@@ -18,7 +18,7 @@ public @Test class PreprocessorTest {
         // might want to add more tests
         PreprocessorTest test = new PreprocessorTest();
         test.testDefine();
-        test.testIf();
+        test.testIfdef();
         test.testError();
 
         System.out.println("OK");
@@ -56,7 +56,7 @@ public @Test class PreprocessorTest {
         testRemainingTokens(new List<>("int", "foo", "=", "5", ";", "int", "TEST", "=", "5", ";"), actualTokens);
     }
 
-    private void testIf() {
+    private void testIfdef() {
         TokenParser tokenParser = TokenParser.getInstance();
         Preprocessor preprocessor = Preprocessor.getInstance();
 
