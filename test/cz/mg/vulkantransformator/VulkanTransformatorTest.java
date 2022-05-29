@@ -6,7 +6,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.entities.vulkan.VkStructure;
 import cz.mg.vulkantransformator.entities.vulkan.VkVersion;
 import cz.mg.vulkantransformator.services.filesystem.FileReaderService;
-import cz.mg.vulkantransformator.services.VulkanParser;
+import cz.mg.vulkantransformator.services.parser.VulkanParser;
 
 public @Test class VulkanTransformatorTest {
     private static final String PATH = "test/cz/mg/vulkantransformator/vulkan_core.h";

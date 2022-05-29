@@ -1,11 +1,11 @@
-package cz.mg.vulkantransformator.services.preprocessor;
+package cz.mg.vulkantransformator.services.parser.preprocessor;
 
 import cz.mg.annotations.classes.Test;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.collections.list.List;
 import cz.mg.test.Assert;
 import cz.mg.vulkantransformator.entities.preprocessor.Definition;
-import cz.mg.vulkantransformator.services.parser.TokenParser;
+import cz.mg.vulkantransformator.services.parser.segmentation.TokenParser;
 import cz.mg.vulkantransformator.utilities.code.Line;
 import cz.mg.vulkantransformator.utilities.code.Token;
 
@@ -15,7 +15,7 @@ public @Test class PreprocessorTest {
     public static void main(String[] args) {
         System.out.print("Running " + PreprocessorTest.class.getSimpleName() + " ... ");
 
-        // might want to add more tests
+        // TODO - might want to add more tests
         PreprocessorTest test = new PreprocessorTest();
         test.testDefine();
         test.testIfdef();

@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.parser;
+package cz.mg.vulkantransformator.services.parser.segmentation;
 
 import cz.mg.annotations.classes.Test;
 import cz.mg.annotations.requirement.Mandatory;

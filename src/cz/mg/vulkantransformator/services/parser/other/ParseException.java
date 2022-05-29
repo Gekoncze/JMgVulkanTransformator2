@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.parser;
+package cz.mg.vulkantransformator.services.parser.other;
 
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.vulkantransformator.utilities.code.Token;

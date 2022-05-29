@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.parser;
+package cz.mg.vulkantransformator.services.parser.matcher;
 
 import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;

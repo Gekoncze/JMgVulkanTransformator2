@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services;
+package cz.mg.vulkantransformator.services.parser;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
@@ -6,7 +6,11 @@ import cz.mg.collections.list.List;
 import cz.mg.collections.list.ListItem;
 import cz.mg.vulkantransformator.entities.vulkan.VkField;
 import cz.mg.vulkantransformator.entities.vulkan.VkStructure;
-import cz.mg.vulkantransformator.services.parser.*;
+import cz.mg.vulkantransformator.services.parser.matcher.Matchers;
+import cz.mg.vulkantransformator.services.parser.matcher.PatternMatcher;
+import cz.mg.vulkantransformator.services.parser.other.ParseException;
+import cz.mg.vulkantransformator.services.parser.other.TokenRemover;
+import cz.mg.vulkantransformator.services.parser.segmentation.StatementParser;
 import cz.mg.vulkantransformator.utilities.code.Statement;
 import cz.mg.vulkantransformator.utilities.code.Token;
 

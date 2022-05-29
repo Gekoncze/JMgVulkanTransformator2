@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.splicer;
+package cz.mg.vulkantransformator.services.parser.splicer;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
