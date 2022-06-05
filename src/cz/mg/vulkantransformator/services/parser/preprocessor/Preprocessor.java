@@ -4,8 +4,6 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.collections.list.ListItem;
-import cz.mg.collections.map.Map;
 import cz.mg.vulkantransformator.entities.preprocessor.Definition;
 import cz.mg.vulkantransformator.services.parser.other.ParseException;
 import cz.mg.vulkantransformator.services.parser.other.TokenValidator;
@@ -38,10 +36,16 @@ public @Service class Preprocessor {
 
     public @Mandatory List<Token> preprocess(
         @Mandatory List<List<Token>> linesTokens,
-        @Mandatory List<Definition> definitions
+        @Mandatory List<Definition> definitionList
+    ) {
+        return preprocess(linesTokens, new DefinitionManager(definitionList));
+    }
+
+    private @Mandatory List<Token> preprocess(
+        @Mandatory List<List<Token>> linesTokens,
+        @Mandatory DefinitionManager definitions
     ) {
         List<Token> remainingTokens = new List<>();
-        Map<String, Definition> map = createMap(definitions);
 
         boolean exclude = false;
 
@@ -57,22 +61,19 @@ public @Service class Preprocessor {
                     if (directive.equals(INCLUDE)) {
                         // skip includes
                     } else if (directive.equals(IFDEF)) {
-                        if (!defined(map, tokens.get(2).getText())) {
+                        if (!definitions.defined(tokens.get(2).getText())) {
                             exclude = true;
                         }
                     } else if (directive.equals(IFNDEF)) {
-                        if (defined(map, tokens.get(2).getText())) {
+                        if (definitions.defined(tokens.get(2).getText())) {
                             exclude = true;
                         }
                     } else if (directive.equals(ENDIF)) {
                         // skip
                     } else if (directive.equals(DEFINE)) {
-                        Definition definition = defineParser.parse(tokens);
-                        definitions.addLast(definition);
-                        map.set(definition.getName().getText(), definition);
+                        definitions.define(defineParser.parse(tokens));
                     } else if (directive.equals(UNDEF)) {
-                        removeDefinition(definitions, tokens.get(2).getText());
-                        map = createMap(definitions);
+                        definitions.undefine(tokens.get(2).getText());
                     } else if (directive.equals(ERROR)) {
                         errorParser.parse(tokens);
                     } else {
@@ -85,7 +86,7 @@ public @Service class Preprocessor {
             } else {
                 if (!exclude) {
                     for (Token token : tokens) {
-                        Definition definition = map.getOptional(token.getText());
+                        Definition definition = definitions.get(token.getText());
                         if (definition == null) {
                             remainingTokens.addLast(token);
                         } else {
@@ -100,28 +101,6 @@ public @Service class Preprocessor {
         return remainingTokens;
     }
 
-    private @Mandatory Map<String, Definition> createMap(@Mandatory List<Definition> definitions) {
-        Map<String, Definition> map = new Map<>(100);
-
-        for (Definition definition : definitions) {
-            map.set(definition.getName().getText(), definition);
-        }
-
-        return map;
-    }
-
-    private void removeDefinition(@Mandatory List<Definition> definitions, @Mandatory String name) {
-        for (
-            ListItem<Definition> definitionItem = definitions.getFirstItem();
-            definitionItem != null;
-            definitionItem = definitionItem.getNextItem()
-        ) {
-            if (definitionItem.get().getName().getText().equals(name)) {
-                definitions.remove(definitionItem);
-            }
-        }
-    }
-
     private @Optional String getDirective(@Mandatory List<Token> tokens) {
         if (tokens.count() >= 2) {
             if (tokens.getFirst().getText().equals(DIRECTIVE)) {
@@ -132,9 +111,5 @@ public @Service class Preprocessor {
         }
 
         return null;
-    }
-
-    private boolean defined(@Mandatory Map<String, Definition> map, @Mandatory String name) {
-        return map.getOptional(name) != null;
     }
 }
