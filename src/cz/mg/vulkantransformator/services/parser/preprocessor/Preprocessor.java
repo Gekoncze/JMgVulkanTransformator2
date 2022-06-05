@@ -49,25 +49,26 @@ public @Service class Preprocessor {
 
         boolean exclude = false;
 
-        // might want to add support for more directives
+        // TODO - might want to add support for more directives
         for (List<Token> tokens : linesTokens) {
             String directive = getDirective(tokens);
             if (directive != null) {
                 if (exclude) {
+                    // TODO - handle elif directive
+                    // TODO - handle else directive
+
                     if (directive.equals(ENDIF)) {
                         exclude = false;
                     }
                 } else {
+                    // TODO - handle if directive
+
                     if (directive.equals(INCLUDE)) {
                         // skip includes
                     } else if (directive.equals(IFDEF)) {
-                        if (!definitions.defined(tokens.get(2).getText())) {
-                            exclude = true;
-                        }
+                        exclude = !definitions.defined(tokens.get(2).getText());
                     } else if (directive.equals(IFNDEF)) {
-                        if (definitions.defined(tokens.get(2).getText())) {
-                            exclude = true;
-                        }
+                        exclude = definitions.defined(tokens.get(2).getText());
                     } else if (directive.equals(ENDIF)) {
                         // skip
                     } else if (directive.equals(DEFINE)) {
@@ -79,7 +80,7 @@ public @Service class Preprocessor {
                     } else {
                         throw new ParseException(
                             tokens.get(1),
-                            "Unsupported preprocessor directive '" + tokens.get(1).getText() +"'."
+                            "Unexpected preprocessor directive '" + tokens.get(1).getText() +"'."
                         );
                     }
                 }
