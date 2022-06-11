@@ -49,22 +49,26 @@ public @Service class Preprocessor {
 
         boolean exclude = false;
 
-        // TODO - might want to add support for more directives
         for (List<Token> tokens : linesTokens) {
             String directive = getDirective(tokens);
             if (directive != null) {
                 if (exclude) {
-                    // TODO - handle elif directive
-                    // TODO - handle else directive
-
-                    if (directive.equals(ENDIF)) {
+                    if (directive.equals(ELIF)) {
+                        // skip for now
+                    } else if (directive.equals(ELSE)) {
+                        // skip for now
+                    } else if (directive.equals(ENDIF)) {
                         exclude = false;
                     }
                 } else {
-                    // TODO - handle if directive
-
                     if (directive.equals(INCLUDE)) {
                         // skip includes
+                    } else if (directive.equals(IF)) {
+                        // skip for now
+                    } else if (directive.equals(ELIF)) {
+                        // skip for now
+                    } else if (directive.equals(ELSE)) {
+                        // skip for now
                     } else if (directive.equals(IFDEF)) {
                         exclude = !definitions.defined(tokens.get(2).getText());
                     } else if (directive.equals(IFNDEF)) {

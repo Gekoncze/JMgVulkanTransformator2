@@ -22,9 +22,10 @@ public @Utility class DefinitionManager {
     }
 
     public void define(@Mandatory Definition definition) {
-        if (get(definition.getName().getText()) != null) {
-            throw new ParseException(definition.getName(), "Redefinition of '" + definition.getName() + "'.");
-        }
+        // TODO - might want to revisit this later
+//        if (get(definition.getName().getText()) != null) {
+//            throw new ParseException(definition.getName(), "Redefinition of '" + definition.getName().getText() + "'.");
+//        }
 
         list.addLast(definition);
         map.set(definition.getName().getText(), definition);

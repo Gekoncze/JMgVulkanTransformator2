@@ -77,11 +77,10 @@ public @Service class VkStructureParser { // TODO - add test
 
         tokenRemover.removeFirst(tokens, "{");
 
-        tokenRemover.removeLast(tokens, ";");
         tokenRemover.removeLast(tokens, structure.getName());
         tokenRemover.removeLast(tokens, "}");
 
-        List<Statement> fieldStatements = statementParser.parse(statement.getTokens());
+        List<Statement> fieldStatements = statementParser.parse(tokens);
 
         for (Statement fieldStatement : fieldStatements) {
             structure.getFields().addLast(parseField(fieldStatement));
@@ -93,9 +92,9 @@ public @Service class VkStructureParser { // TODO - add test
     private @Mandatory VkField parseField(@Mandatory Statement statement) {
         List<Token> tokens = new List<>(statement.getTokens());
 
-        tokenRemover.removeLast(tokens, ";");
-
         removeConstTokens(tokens);
+        removeStructTokens(tokens);
+
         int pointers = removePointerTokens(tokens);
         int array = removeArrayTokens(tokens);
         String typename = tokenRemover.removeFirst(tokens, TokenType.NAME).getText();
@@ -104,7 +103,7 @@ public @Service class VkStructureParser { // TODO - add test
         if (!tokens.isEmpty()) {
             throw new ParseException(
                 tokens.getFirst(),
-                "Unprocessed structure field token '" + tokens.getFirst() + "'."
+                "Unprocessed structure field token '" + tokens.getFirst().getText() + "'."
             );
         }
 
@@ -116,6 +115,17 @@ public @Service class VkStructureParser { // TODO - add test
         while (item != null) {
             ListItem<Token> nextItem = item.getNextItem();
             if (item.get().getText().equals("const")) {
+                tokens.remove(item);
+            }
+            item = nextItem;
+        }
+    }
+
+    private void removeStructTokens(@Mandatory List<Token> tokens) {
+        ListItem<Token> item = tokens.getFirstItem();
+        while (item != null) {
+            ListItem<Token> nextItem = item.getNextItem();
+            if (item.get().getText().equals("struct")) {
                 tokens.remove(item);
             }
             item = nextItem;

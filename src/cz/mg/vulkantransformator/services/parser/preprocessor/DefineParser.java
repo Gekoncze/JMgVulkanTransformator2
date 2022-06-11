@@ -11,6 +11,7 @@ import cz.mg.vulkantransformator.utilities.code.Token;
 import cz.mg.vulkantransformator.utilities.code.TokenType;
 
 import static cz.mg.vulkantransformator.services.parser.preprocessor.Directives.DEFINE;
+import static java.lang.Character.isWhitespace;
 
 public @Service class DefineParser { // TODO - add test
     private static @Optional DefineParser instance;
@@ -41,7 +42,13 @@ public @Service class DefineParser { // TODO - add test
 
         if (!tokens.isEmpty()) {
             if (tokens.getFirst().getText().equals("(")) {
-                definition.setParameters(removeParameters(tokens));
+                char charBeforeBracket = tokens.getFirst().getLine().getText().charAt(
+                    tokens.getFirst().getBeginId() - 1
+                );
+
+                if (!isWhitespace(charBeforeBracket)) {
+                    definition.setParameters(removeParameters(tokens));
+                }
             }
 
             definition.setExpression(tokens);

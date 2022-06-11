@@ -9,13 +9,13 @@ public class ParseException extends RuntimeException {
     private final @Optional Token token;
     private final @Optional Line line;
 
-    public ParseException(@Optional Token token, String message) {
+    public ParseException(@Optional Token token, @Mandatory String message) {
         super(getLocation(token) + message);
         this.token = token;
         this.line = null;
     }
 
-    public ParseException(@Optional Line line, String message) {
+    public ParseException(@Optional Line line, @Mandatory String message) {
         super(getLocation(line) + message);
         this.token = null;
         this.line = line;
@@ -31,7 +31,7 @@ public class ParseException extends RuntimeException {
 
     private static @Mandatory String getLocation(@Optional Token token) {
         if (token != null) {
-            return getLocation(token.getLine());
+            return "Error at line " + token.getLine().getId() + " column " + token.getBeginId() + ": ";
         } else {
             return "";
         }
