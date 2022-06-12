@@ -13,7 +13,7 @@ import cz.mg.vulkantransformator.utilities.code.TokenType;
 import static cz.mg.vulkantransformator.services.parser.preprocessor.Directives.DEFINE;
 import static java.lang.Character.isWhitespace;
 
-public @Service class DefineParser { // TODO - add test
+public @Service class DefineParser {
     private static @Optional DefineParser instance;
 
     public static @Mandatory DefineParser getInstance() {

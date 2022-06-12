@@ -22,13 +22,17 @@ public @Service class StatementParser {
     }
 
     public @Mandatory List<Statement> parse(@Mandatory List<Token> tokens) {
+        return parse(tokens, ";");
+    }
+
+    public @Mandatory List<Statement> parse(@Mandatory List<Token> tokens, @Mandatory String delimiter) {
         List<Statement> statements = new List<>();
         Statement statement = new Statement();
 
         int nestingCount = 0;
 
         for (Token token : tokens) {
-            if (!token.getText().equals(";") || nestingCount != 0) {
+            if (!token.getText().equals(delimiter) || nestingCount != 0) {
                 statement.getTokens().addLast(token);
             }
 
@@ -36,7 +40,7 @@ public @Service class StatementParser {
                 nestingCount++;
             } else if (isClosingCurlyBracket(token)) {
                 nestingCount--;
-            } else if (isSemicolon(token)) {
+            } else if (isDelimiter(token, delimiter)) {
                 if (nestingCount == 0) {
                     if (!statement.getTokens().isEmpty()) {
                         statements.addLast(statement);
@@ -69,7 +73,7 @@ public @Service class StatementParser {
         return token.getText().equals("}");
     }
 
-    private boolean isSemicolon(@Mandatory Token token) {
-        return token.getText().equals(";");
+    private boolean isDelimiter(@Mandatory Token token, @Mandatory String delimiter) {
+        return token.getText().equals(delimiter);
     }
 }

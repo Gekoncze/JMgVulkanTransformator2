@@ -73,8 +73,7 @@ public @Service class VkEnumParser implements VkParser {
         tokenRemover.removeLast(tokens, vkenum.getName());
         tokenRemover.removeLast(tokens, "}");
 
-        // TODO - entries are separated by comma, not semicolon
-        List<Statement> entryStatements = statementParser.parse(tokens);
+        List<Statement> entryStatements = statementParser.parse(tokens, ",");
         for (Statement entryStatement : entryStatements) {
             if (entryParser.matches(entryStatement)) {
                 vkenum.getEntries().addLast(entryParser.parse(statement));
