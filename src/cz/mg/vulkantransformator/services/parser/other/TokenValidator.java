@@ -6,7 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.vulkantransformator.utilities.code.Token;
 import cz.mg.vulkantransformator.utilities.code.TokenType;
 
-public @Service class TokenValidator { // TODO - add test
+public @Service class TokenValidator {
     private static @Optional TokenValidator instance;
 
     public static @Mandatory TokenValidator getInstance() {
