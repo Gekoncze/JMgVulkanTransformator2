@@ -99,6 +99,22 @@ public @Test class TokenRemoverTest {
         Assert.assertExceptionNotThrown(() -> {
             tokenRemover.verifyNoMoreTokens(tokens);
         });
+
+        Assert.assertExceptionThrown(ParseException.class, () -> {
+            tokenRemover.removeFirst(tokens, "x");
+        });
+
+        Assert.assertExceptionThrown(ParseException.class, () -> {
+            tokenRemover.removeFirst(tokens, TokenType.NAME);
+        });
+
+        Assert.assertExceptionThrown(ParseException.class, () -> {
+            tokenRemover.removeLast(tokens, "x");
+        });
+
+        Assert.assertExceptionThrown(ParseException.class, () -> {
+            tokenRemover.removeLast(tokens, TokenType.NAME);
+        });
     }
 
     private @Mandatory Token createNameToken(@Mandatory String text) {

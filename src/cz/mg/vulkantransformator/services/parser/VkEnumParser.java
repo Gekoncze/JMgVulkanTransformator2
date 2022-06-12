@@ -76,7 +76,7 @@ public @Service class VkEnumParser implements VkParser {
         List<Statement> entryStatements = statementParser.parse(tokens, ",");
         for (Statement entryStatement : entryStatements) {
             if (entryParser.matches(entryStatement)) {
-                vkenum.getEntries().addLast(entryParser.parse(statement));
+                vkenum.getEntries().addLast(entryParser.parse(entryStatement));
             } else {
                 throw new ParseException(entryStatement.getTokens().getFirst(), "Illegal enum entry declaration.");
             }

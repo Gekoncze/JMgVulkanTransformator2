@@ -24,26 +24,42 @@ public @Service class TokenRemover {
     private TokenRemover() {
     }
 
+    public @Mandatory Token removeFirst(@Mandatory List<Token> tokens) {
+        if (!tokens.isEmpty()) {
+            return tokens.removeFirst();
+        } else {
+            throw new ParseException((Token) null, "Missing token.");
+        }
+    }
+
+    public @Mandatory Token removeLast(@Mandatory List<Token> tokens) {
+        if (!tokens.isEmpty()) {
+            return tokens.removeLast();
+        } else {
+            throw new ParseException((Token) null, "Missing token.");
+        }
+    }
+
     public @Mandatory Token removeFirst(@Mandatory List<Token> tokens, @Mandatory String expectation) {
-        Token token = tokens.removeFirst();
+        Token token = removeFirst(tokens);
         validator.validate(token, expectation);
         return token;
     }
 
     public @Mandatory Token removeFirst(@Mandatory List<Token> tokens, @Mandatory TokenType expectation) {
-        Token token = tokens.removeFirst();
+        Token token = removeFirst(tokens);
         validator.validate(token, expectation);
         return token;
     }
 
     public @Mandatory Token removeLast(@Mandatory List<Token> tokens, @Mandatory String expectation) {
-        Token token = tokens.removeLast();
+        Token token = removeLast(tokens);
         validator.validate(token, expectation);
         return token;
     }
 
     public @Mandatory Token removeLast(@Mandatory List<Token> tokens, @Mandatory TokenType expectation) {
-        Token token = tokens.removeLast();
+        Token token = removeLast(tokens);
         validator.validate(token, expectation);
         return token;
     }

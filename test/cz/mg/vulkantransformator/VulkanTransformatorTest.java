@@ -1,10 +1,7 @@
 package cz.mg.vulkantransformator;
 
 import cz.mg.annotations.classes.Test;
-import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
-import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
-import cz.mg.vulkantransformator.entities.vulkan.VkStructure;
-import cz.mg.vulkantransformator.entities.vulkan.VkVersion;
+import cz.mg.vulkantransformator.entities.vulkan.*;
 import cz.mg.vulkantransformator.services.filesystem.FileReaderService;
 import cz.mg.vulkantransformator.services.parser.VulkanParser;
 
@@ -31,6 +28,15 @@ public @Test class VulkanTransformatorTest {
                 System.out.println("Found structure " + structure.getName() + ".");
             }
 
+            if (component instanceof VkUnion) {
+                VkUnion union = (VkUnion) component;
+                System.out.println("Found union " + union.getName() + ".");
+            }
+
+            if (component instanceof VkEnum) {
+                VkEnum vkEnum = (VkEnum) component;
+                System.out.println("Found enum " + vkEnum.getName() + ".");
+            }
         }
     }
 }

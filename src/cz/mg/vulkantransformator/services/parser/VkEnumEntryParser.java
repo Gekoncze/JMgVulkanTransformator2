@@ -3,11 +3,13 @@ package cz.mg.vulkantransformator.services.parser;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkEnumEntry;
 import cz.mg.vulkantransformator.services.parser.matcher.Matchers;
 import cz.mg.vulkantransformator.services.parser.matcher.PatternMatcher;
 import cz.mg.vulkantransformator.services.parser.other.TokenRemover;
 import cz.mg.vulkantransformator.utilities.code.Statement;
+import cz.mg.vulkantransformator.utilities.code.Token;
 import cz.mg.vulkantransformator.utilities.code.TokenType;
 
 /**
@@ -47,6 +49,19 @@ public @Service class VkEnumEntryParser implements VkParser {
 
     @Override
     public @Mandatory VkEnumEntry parse(@Mandatory Statement statement) {
-        throw new UnsupportedOperationException("TODO"); // TODO
+        List<Token> tokens = new List<>(statement.getTokens());
+
+        VkEnumEntry entry = new VkEnumEntry();
+        entry.setName(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
+
+        tokenRemover.removeFirst(tokens, "=");
+
+        while (!tokens.isEmpty()) {
+            entry.getExpression().addLast(
+                tokenRemover.removeFirst(tokens).getText()
+            );
+        }
+
+        return entry;
     }
 }
