@@ -2,11 +2,11 @@ package cz.mg.vulkantransformator.services.parser;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
+import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.entities.vulkan.VkStructure;
+import cz.mg.vulkantransformator.entities.vulkan.VkUnion;
 import cz.mg.vulkantransformator.services.parser.matcher.Matchers;
 import cz.mg.vulkantransformator.services.parser.matcher.PatternMatcher;
-import cz.mg.vulkantransformator.services.parser.other.ParseException;
 import cz.mg.vulkantransformator.services.parser.other.TokenRemover;
 import cz.mg.vulkantransformator.services.parser.segmentation.StatementParser;
 import cz.mg.vulkantransformator.utilities.code.Statement;
@@ -16,23 +16,18 @@ import cz.mg.vulkantransformator.utilities.code.TokenType;
 /**
  * Example:
  *
- * typedef struct VkPipelineColorBlendStateCreateInfo {
- *     VkStructureType                               sType;
- *     const void*                                   pNext;
- *     VkPipelineColorBlendStateCreateFlags          flags;
- *     VkBool32                                      logicOpEnable;
- *     VkLogicOp                                     logicOp;
- *     uint32_t                                      attachmentCount;
- *     const VkPipelineColorBlendAttachmentState*    pAttachments;
- *     float                                         blendConstants[4];
- * } VkPipelineColorBlendStateCreateInfo;
+ * typedef union VkClearColorValue {
+ *     float       float32[4];
+ *     int32_t     int32[4];
+ *     uint32_t    uint32[4];
+ * } VkClearColorValue;
  */
-public @Service class VkStructureParser implements VkParser {
-    private static VkStructureParser instance;
+public @Service class VkUnionParser implements VkParser {
+    private static @Optional VkUnionParser instance;
 
-    public static @Mandatory VkStructureParser getInstance() {
+    public static @Mandatory VkUnionParser getInstance() {
         if (instance == null) {
-            instance = new VkStructureParser();
+            instance = new VkUnionParser();
             instance.patternMatcher = PatternMatcher.getInstance();
             instance.statementParser = StatementParser.getInstance();
             instance.tokenRemover = TokenRemover.getInstance();
@@ -46,7 +41,7 @@ public @Service class VkStructureParser implements VkParser {
     private TokenRemover tokenRemover;
     private VkFieldParser fieldParser;
 
-    private VkStructureParser() {
+    private VkUnionParser() {
     }
 
     @Override
@@ -54,36 +49,32 @@ public @Service class VkStructureParser implements VkParser {
         return patternMatcher.matches(
             statement,
             Matchers.text("typedef"),
-            Matchers.text("struct"),
+            Matchers.text("union"),
             Matchers.any(),
             Matchers.text("{")
         );
     }
 
     @Override
-    public @Mandatory VkStructure parse(@Mandatory Statement statement) {
+    public @Mandatory VkUnion parse(@Mandatory Statement statement) {
         List<Token> tokens = new List<>(statement.getTokens());
 
         tokenRemover.removeFirst(tokens, "typedef");
-        tokenRemover.removeFirst(tokens, "struct");
+        tokenRemover.removeFirst(tokens, "union");
 
-        VkStructure structure = new VkStructure(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
+        VkUnion union = new VkUnion(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
 
         tokenRemover.removeFirst(tokens, "{");
 
-        tokenRemover.removeLast(tokens, structure.getName());
+        tokenRemover.removeLast(tokens, union.getName());
         tokenRemover.removeLast(tokens, "}");
 
         List<Statement> fieldStatements = statementParser.parse(tokens);
 
         for (Statement fieldStatement : fieldStatements) {
-            if (fieldParser.matches(statement)) {
-                structure.getFields().addLast(fieldParser.parse(fieldStatement));
-            } else {
-                throw new ParseException(fieldStatement.getTokens().getFirst(), "Illegal field declaration.");
-            }
+            union.getFields().addLast(fieldParser.parse(fieldStatement));
         }
 
-        return structure;
+        return union;
     }
 }

@@ -27,6 +27,8 @@ public @Service class VulkanParser {
             instance.preprocessor = Preprocessor.getInstance();
             instance.statementParser = StatementParser.getInstance();
             instance.structureParser = VkStructureParser.getInstance();
+            instance.unionParser = VkUnionParser.getInstance();
+            instance.enumParser = VkEnumParser.getInstance();
         }
         return instance;
     }
@@ -36,23 +38,42 @@ public @Service class VulkanParser {
     private Splicer splicer;
     private Preprocessor preprocessor;
     private StatementParser statementParser;
+
     private VkStructureParser structureParser;
+    private VkUnionParser unionParser;
+    private VkEnumParser enumParser;
 
     private VulkanParser() {
     }
 
     public @Mandatory VkRoot parse(@Mandatory VkVersion version, @Mandatory List<String> stringLines) {
-        VkRoot root = new VkRoot(version);
-        root.setVersion(version);
-
         List<Definition> definitions = new List<>();
         List<Line> lines = lineParser.parse(stringLines);
         List<List<Token>> linesTokens = tokenParser.parse(lines);
         List<List<Token>> joinedLinesTokens = splicer.splice(linesTokens);
         List<Token> tokens = preprocessor.preprocess(joinedLinesTokens, definitions);
         List<Statement> statements = statementParser.parse(tokens);
+        return parseStatements(version, statements);
+    }
 
-        root.getComponents().addCollectionLast(structureParser.parse(statements));
+    private @Mandatory VkRoot parseStatements(@Mandatory VkVersion version, @Mandatory List<Statement> statements) {
+        VkRoot root = new VkRoot(version);
+        root.setVersion(version);
+
+        List<VkParser> parsers = new List<>(
+            structureParser,
+            unionParser,
+            enumParser
+        );
+
+        for (Statement statement : statements) {
+            for (VkParser parser : parsers) {
+                if (parser.matches(statement)) {
+                    root.getComponents().addLast(parser.parse(statement));
+                    break;
+                }
+            }
+        }
 
         return root;
     }

@@ -3,7 +3,7 @@ package cz.mg.vulkantransformator.entities.vulkan;
 import cz.mg.annotations.classes.Entity;
 import cz.mg.annotations.storage.Value;
 
-public @Entity class VkField {
+public @Entity class VkField implements VkComponent {
     private String typename;
     private Integer pointers;
     private String name;
