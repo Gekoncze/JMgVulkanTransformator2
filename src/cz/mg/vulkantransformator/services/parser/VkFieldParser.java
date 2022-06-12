@@ -64,13 +64,7 @@ public @Service class VkFieldParser implements VkParser {
         int array = removeArrayTokens(tokens);
         String typename = tokenRemover.removeFirst(tokens, TokenType.NAME).getText();
         String name = tokenRemover.removeFirst(tokens, TokenType.NAME).getText();
-
-        if (!tokens.isEmpty()) {
-            throw new ParseException(
-                tokens.getFirst(),
-                "Unprocessed structure field token '" + tokens.getFirst().getText() + "'."
-            );
-        }
+        tokenRemover.verifyNoMoreTokens(tokens);
 
         return new VkField(typename, pointers, name, array);
     }

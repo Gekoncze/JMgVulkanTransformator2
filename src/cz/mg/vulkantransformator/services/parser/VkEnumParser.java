@@ -3,12 +3,16 @@ package cz.mg.vulkantransformator.services.parser;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkEnum;
 import cz.mg.vulkantransformator.services.parser.matcher.Matchers;
 import cz.mg.vulkantransformator.services.parser.matcher.PatternMatcher;
+import cz.mg.vulkantransformator.services.parser.other.ParseException;
 import cz.mg.vulkantransformator.services.parser.other.TokenRemover;
 import cz.mg.vulkantransformator.services.parser.segmentation.StatementParser;
 import cz.mg.vulkantransformator.utilities.code.Statement;
+import cz.mg.vulkantransformator.utilities.code.Token;
+import cz.mg.vulkantransformator.utilities.code.TokenType;
 
 /**
  * Example:
@@ -30,6 +34,7 @@ public @Service class VkEnumParser implements VkParser {
             instance.patternMatcher = PatternMatcher.getInstance();
             instance.statementParser = StatementParser.getInstance();
             instance.tokenRemover = TokenRemover.getInstance();
+            instance.entryParser = VkEnumEntryParser.getInstance();
         }
         return instance;
     }
@@ -37,6 +42,7 @@ public @Service class VkEnumParser implements VkParser {
     private PatternMatcher patternMatcher;
     private StatementParser statementParser;
     private TokenRemover tokenRemover;
+    private VkEnumEntryParser entryParser;
 
     private VkEnumParser() {
     }
@@ -47,13 +53,36 @@ public @Service class VkEnumParser implements VkParser {
             statement,
             Matchers.text("typedef"),
             Matchers.text("enum"),
-            Matchers.any(),
+            Matchers.type(TokenType.NAME),
             Matchers.text("{")
         );
     }
 
     @Override
     public @Mandatory VkEnum parse(@Mandatory Statement statement) {
-        throw new UnsupportedOperationException("TODO"); // TODO
+        List<Token> tokens = new List<>(statement.getTokens());
+
+        tokenRemover.removeFirst(tokens, "typedef");
+        tokenRemover.removeFirst(tokens, "enum");
+
+        VkEnum vkenum = new VkEnum();
+        vkenum.setName(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
+
+        tokenRemover.removeFirst(tokens, "{");
+
+        tokenRemover.removeLast(tokens, vkenum.getName());
+        tokenRemover.removeLast(tokens, "}");
+
+        // TODO - entries are separated by comma, not semicolon
+        List<Statement> entryStatements = statementParser.parse(tokens);
+        for (Statement entryStatement : entryStatements) {
+            if (entryParser.matches(entryStatement)) {
+                vkenum.getEntries().addLast(entryParser.parse(statement));
+            } else {
+                throw new ParseException(entryStatement.getTokens().getFirst(), "Illegal enum entry declaration.");
+            }
+        }
+
+        return vkenum;
     }
 }

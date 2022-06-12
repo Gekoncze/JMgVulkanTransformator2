@@ -55,7 +55,7 @@ public @Service class VkStructureParser implements VkParser {
             statement,
             Matchers.text("typedef"),
             Matchers.text("struct"),
-            Matchers.any(),
+            Matchers.type(TokenType.NAME),
             Matchers.text("{")
         );
     }
@@ -67,7 +67,8 @@ public @Service class VkStructureParser implements VkParser {
         tokenRemover.removeFirst(tokens, "typedef");
         tokenRemover.removeFirst(tokens, "struct");
 
-        VkStructure structure = new VkStructure(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
+        VkStructure structure = new VkStructure();
+        structure.setName(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
 
         tokenRemover.removeFirst(tokens, "{");
 
@@ -75,9 +76,8 @@ public @Service class VkStructureParser implements VkParser {
         tokenRemover.removeLast(tokens, "}");
 
         List<Statement> fieldStatements = statementParser.parse(tokens);
-
         for (Statement fieldStatement : fieldStatements) {
-            if (fieldParser.matches(statement)) {
+            if (fieldParser.matches(fieldStatement)) {
                 structure.getFields().addLast(fieldParser.parse(fieldStatement));
             } else {
                 throw new ParseException(fieldStatement.getTokens().getFirst(), "Illegal field declaration.");

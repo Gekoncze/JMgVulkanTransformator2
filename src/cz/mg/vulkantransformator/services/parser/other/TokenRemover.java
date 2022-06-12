@@ -47,4 +47,13 @@ public @Service class TokenRemover {
         validator.validate(token, expectation);
         return token;
     }
+
+    public void verifyNoMoreTokens(@Mandatory List<Token> tokens) {
+        if (!tokens.isEmpty()) {
+            throw new ParseException(
+                tokens.getFirst(),
+                "Unprocessed token '" + tokens.getFirst().getText() + "'."
+            );
+        }
+    }
 }

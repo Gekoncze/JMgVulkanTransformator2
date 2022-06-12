@@ -7,6 +7,7 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkUnion;
 import cz.mg.vulkantransformator.services.parser.matcher.Matchers;
 import cz.mg.vulkantransformator.services.parser.matcher.PatternMatcher;
+import cz.mg.vulkantransformator.services.parser.other.ParseException;
 import cz.mg.vulkantransformator.services.parser.other.TokenRemover;
 import cz.mg.vulkantransformator.services.parser.segmentation.StatementParser;
 import cz.mg.vulkantransformator.utilities.code.Statement;
@@ -50,7 +51,7 @@ public @Service class VkUnionParser implements VkParser {
             statement,
             Matchers.text("typedef"),
             Matchers.text("union"),
-            Matchers.any(),
+            Matchers.type(TokenType.NAME),
             Matchers.text("{")
         );
     }
@@ -72,7 +73,11 @@ public @Service class VkUnionParser implements VkParser {
         List<Statement> fieldStatements = statementParser.parse(tokens);
 
         for (Statement fieldStatement : fieldStatements) {
-            union.getFields().addLast(fieldParser.parse(fieldStatement));
+            if (fieldParser.matches(fieldStatement)) {
+                union.getFields().addLast(fieldParser.parse(fieldStatement));
+            } else {
+                throw new ParseException(fieldStatement.getTokens().getFirst(), "Illegal field declaration.");
+            }
         }
 
         return union;

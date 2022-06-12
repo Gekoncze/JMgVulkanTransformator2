@@ -89,6 +89,16 @@ public @Test class TokenRemoverTest {
         Assert.assertEquals("void", tokens.get(0).getText());
         Assert.assertEquals("*", tokens.get(1).getText());
         Assert.assertEquals("next", tokens.get(2).getText());
+
+        Assert.assertExceptionThrown(ParseException.class, () -> {
+            tokenRemover.verifyNoMoreTokens(tokens);
+        });
+
+        tokens.clear();
+
+        Assert.assertExceptionNotThrown(() -> {
+            tokenRemover.verifyNoMoreTokens(tokens);
+        });
     }
 
     private @Mandatory Token createNameToken(@Mandatory String text) {

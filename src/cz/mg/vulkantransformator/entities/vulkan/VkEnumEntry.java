@@ -3,18 +3,18 @@ package cz.mg.vulkantransformator.entities.vulkan;
 import cz.mg.annotations.classes.Entity;
 
 public @Entity class VkEnumEntry implements VkComponent {
-    private String key;
+    private String name;
     private String value;
 
     public VkEnumEntry() {
     }
 
-    public String getKey() {
-        return key;
+    public String getName() {
+        return name;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getValue() {

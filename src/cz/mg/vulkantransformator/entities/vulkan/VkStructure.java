@@ -12,10 +12,6 @@ public @Entity class VkStructure implements VkComponent {
     public VkStructure() {
     }
 
-    public VkStructure(String name) {
-        this.name = name;
-    }
-
     @Value
     public String getName() {
         return name;
