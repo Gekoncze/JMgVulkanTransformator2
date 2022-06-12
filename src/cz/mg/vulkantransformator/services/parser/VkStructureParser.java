@@ -15,7 +15,7 @@ import cz.mg.vulkantransformator.utilities.code.Statement;
 import cz.mg.vulkantransformator.utilities.code.Token;
 import cz.mg.vulkantransformator.utilities.code.TokenType;
 
-public @Service class VkStructureParser { // TODO - add test
+public @Service class VkStructureParser {
     private static VkStructureParser instance;
 
     public static @Mandatory VkStructureParser getInstance() {
