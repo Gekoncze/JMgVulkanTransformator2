@@ -17,7 +17,6 @@ public @Test class PreprocessorTest {
     public static void main(String[] args) {
         System.out.print("Running " + PreprocessorTest.class.getSimpleName() + " ... ");
 
-        // TODO - might want to add more tests
         PreprocessorTest test = new PreprocessorTest();
         test.testDefine();
         test.testIfdef();
@@ -95,10 +94,21 @@ public @Test class PreprocessorTest {
             preprocessor.preprocess(
                 tokenParser.parse(new List<>(
                     new Line(0, "#ifndef X"),
-                    new Line(1, "#error \"nope\""),
+                    new Line(1, "#error nope"),
                     new Line(2, "#endif")
                 )),
-                new List<>()
+                new List<>(createDefinition("foo"))
+            );
+        });
+
+        Assert.assertExceptionNotThrown(() -> {
+            preprocessor.preprocess(
+                tokenParser.parse(new List<>(
+                    new Line(0, "#ifndef X"),
+                    new Line(1, "#error nope"),
+                    new Line(2, "#endif")
+                )),
+                new List<>(createDefinition("X"))
             );
         });
 
@@ -106,10 +116,21 @@ public @Test class PreprocessorTest {
             preprocessor.preprocess(
                 tokenParser.parse(new List<>(
                     new Line(0, "#ifdef X"),
-                    new Line(1, "#error \"nope\""),
+                    new Line(1, "#error nope"),
                     new Line(2, "#endif")
                 )),
-                new List<>()
+                new List<>(createDefinition("foo"))
+            );
+        });
+
+        Assert.assertExceptionThrown(ParseException.class, () -> {
+            preprocessor.preprocess(
+                tokenParser.parse(new List<>(
+                    new Line(0, "#ifdef X"),
+                    new Line(1, "#error nope"),
+                    new Line(2, "#endif")
+                )),
+                new List<>(createDefinition("X"))
             );
         });
     }
@@ -129,5 +150,9 @@ public @Test class PreprocessorTest {
 
     private @Mandatory Token createToken(@Mandatory String text) {
         return new Token(new Line(-1, text), 0, text.length(), TokenType.SPECIAL);
+    }
+
+    private @Mandatory Definition createDefinition(@Mandatory String name) {
+        return new Definition(createToken(name), new List<>(), new List<>());
     }
 }
