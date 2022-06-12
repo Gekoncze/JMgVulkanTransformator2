@@ -27,14 +27,16 @@ public @Test class ErrorParserTest {
     }
 
     private void testParse(@Mandatory String line, @Mandatory String errorMessage) {
-        TokenParser tokenParser = TokenParser.getInstance();
-        List<Token> tokens = tokenParser.parse(new List<>(new Line(-1, line))).getFirst();
-
         ParseException exception = Assert.assertExceptionThrown(ParseException.class, () -> {
-            ErrorParser errorParser = ErrorParser.getInstance();
-            errorParser.parse(tokens);
+            ErrorParser.getInstance().parse(parseLine(line));
         });
 
         Assert.assertEquals(true, exception.getMessage().contains(errorMessage));
+    }
+
+    private @Mandatory List<Token> parseLine(@Mandatory String line) {
+        return TokenParser.getInstance().parse(
+            new List<>(new Line(-1, line))
+        ).getFirst();
     }
 }
