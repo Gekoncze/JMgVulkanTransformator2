@@ -37,6 +37,11 @@ public @Test class VulkanTransformatorTest {
                 VkEnum vkEnum = (VkEnum) component;
                 System.out.println("Found enum " + vkEnum.getName() + ".");
             }
+
+            if (component instanceof VkFlags) {
+                VkFlags flags = (VkFlags) component;
+                System.out.println("Found flags " + flags.getName() + ".");
+            }
         }
     }
 }

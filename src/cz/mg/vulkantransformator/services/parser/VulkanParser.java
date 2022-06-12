@@ -29,6 +29,7 @@ public @Service class VulkanParser {
             instance.structureParser = VkStructureParser.getInstance();
             instance.unionParser = VkUnionParser.getInstance();
             instance.enumParser = VkEnumParser.getInstance();
+            instance.flagsParser = VkFlagsParser.getInstance();
         }
         return instance;
     }
@@ -42,6 +43,7 @@ public @Service class VulkanParser {
     private VkStructureParser structureParser;
     private VkUnionParser unionParser;
     private VkEnumParser enumParser;
+    private VkFlagsParser flagsParser;
 
     private VulkanParser() {
     }
@@ -63,7 +65,8 @@ public @Service class VulkanParser {
         List<VkParser> parsers = new List<>(
             structureParser,
             unionParser,
-            enumParser
+            enumParser,
+            flagsParser
         );
 
         for (Statement statement : statements) {
