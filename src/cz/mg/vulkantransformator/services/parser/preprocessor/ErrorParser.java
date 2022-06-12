@@ -10,7 +10,7 @@ import cz.mg.vulkantransformator.utilities.code.Token;
 
 import static cz.mg.vulkantransformator.services.parser.preprocessor.Directives.ERROR;
 
-public @Service class ErrorParser { // TODO - add test
+public @Service class ErrorParser {
     private static @Optional ErrorParser instance;
 
     public static @Mandatory ErrorParser getInstance() {
@@ -35,8 +35,11 @@ public @Service class ErrorParser { // TODO - add test
         Token token = tokenRemover.removeFirst(tokens, ERROR);
 
         if (!tokens.isEmpty()) {
-            // TODO - check if error message in token already contains quotes
-            throw new ParseException(token, "Error directive reached: '" + tokens.getFirst().getText() + "'.");
+            String message = token.getLine().getText().substring(
+                tokens.getFirst().getBeginId(),
+                tokens.getLast().getEndId()
+            );
+            throw new ParseException(token, "Error directive reached: " + message + ".");
         } else {
             throw new ParseException(token, "Error directive reached.");
         }
