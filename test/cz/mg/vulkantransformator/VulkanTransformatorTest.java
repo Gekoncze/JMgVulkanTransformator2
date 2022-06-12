@@ -28,7 +28,7 @@ public @Test class VulkanTransformatorTest {
         for (VkComponent component : root.getComponents()) {
             if (component instanceof VkStructure) {
                 VkStructure structure = (VkStructure) component;
-                System.out.println("Found structure " + structure.getName() + "!");
+                System.out.println("Found structure " + structure.getName() + ".");
             }
 
         }

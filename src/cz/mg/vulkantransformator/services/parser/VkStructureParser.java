@@ -6,6 +6,7 @@ import cz.mg.collections.list.List;
 import cz.mg.collections.list.ListItem;
 import cz.mg.vulkantransformator.entities.vulkan.VkField;
 import cz.mg.vulkantransformator.entities.vulkan.VkStructure;
+import cz.mg.vulkantransformator.services.parser.matcher.Matcher;
 import cz.mg.vulkantransformator.services.parser.matcher.Matchers;
 import cz.mg.vulkantransformator.services.parser.matcher.PatternMatcher;
 import cz.mg.vulkantransformator.services.parser.other.ParseException;
@@ -62,6 +63,16 @@ public @Service class VkStructureParser {
            )) {
                structures.addLast(parseStructure(statement));
            }
+
+           if (patternMatcher.matches(
+               statement,
+               Matchers.text("typedef"),
+               Matchers.text("union"),
+               Matchers.any(),
+               Matchers.text("{")
+           )) {
+                structures.addLast(parseStructure(statement));
+           }
         }
 
         return structures;
@@ -71,7 +82,7 @@ public @Service class VkStructureParser {
         List<Token> tokens = new List<>(statement.getTokens());
 
         tokenRemover.removeFirst(tokens, "typedef");
-        tokenRemover.removeFirst(tokens, "struct");
+        tokenRemover.removeFirst(tokens, TokenType.NAME);
 
         VkStructure structure = new VkStructure(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
 
