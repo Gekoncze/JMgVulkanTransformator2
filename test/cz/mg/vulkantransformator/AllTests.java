@@ -2,6 +2,7 @@ package cz.mg.vulkantransformator;
 
 import cz.mg.annotations.classes.Test;
 import cz.mg.vulkantransformator.services.parser.matcher.PatternMatcherTest;
+import cz.mg.vulkantransformator.services.parser.other.TokenRemoverTest;
 import cz.mg.vulkantransformator.services.parser.other.TokenValidatorTest;
 import cz.mg.vulkantransformator.services.parser.preprocessor.DefineParserTest;
 import cz.mg.vulkantransformator.services.parser.preprocessor.DefinitionManagerTest;
@@ -19,6 +20,7 @@ public @Test class AllTests {
         StatementParserTest.main(args);
         PatternMatcherTest.main(args);
         TokenValidatorTest.main(args);
+        TokenRemoverTest.main(args);
         PreprocessorTest.main(args);
         DefinitionManagerTest.main(args);
         ErrorParserTest.main(args);

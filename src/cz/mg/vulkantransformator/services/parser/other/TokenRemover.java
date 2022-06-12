@@ -8,7 +8,7 @@ import cz.mg.vulkantransformator.utilities.code.Token;
 import cz.mg.vulkantransformator.utilities.code.TokenType;
 
 @SuppressWarnings("UnusedReturnValue")
-public @Service class TokenRemover { // TODO - add test
+public @Service class TokenRemover {
     private static @Optional TokenRemover instance;
 
     public static @Mandatory TokenRemover getInstance() {
