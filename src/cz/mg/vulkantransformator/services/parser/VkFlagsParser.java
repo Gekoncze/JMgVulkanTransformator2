@@ -12,6 +12,11 @@ import cz.mg.vulkantransformator.utilities.code.Statement;
 import cz.mg.vulkantransformator.utilities.code.Token;
 import cz.mg.vulkantransformator.utilities.code.TokenType;
 
+/**
+ * Example:
+ *
+ * typedef VkFlags VkInstanceCreateFlags
+ */
 public @Service class VkFlagsParser implements VkParser {
     private static @Optional VkFlagsParser instance;
 

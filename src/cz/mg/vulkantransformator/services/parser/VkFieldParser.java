@@ -15,16 +15,16 @@ import cz.mg.vulkantransformator.utilities.code.Token;
 import cz.mg.vulkantransformator.utilities.code.TokenType;
 
 /**
- * Example:
+ * Examples:
  *
- *     VkStructureType                               sType;
- *     const void*                                   pNext;
- *     VkPipelineColorBlendStateCreateFlags          flags;
- *     VkBool32                                      logicOpEnable;
- *     VkLogicOp                                     logicOp;
- *     uint32_t                                      attachmentCount;
- *     const VkPipelineColorBlendAttachmentState*    pAttachments;
- *     float                                         blendConstants[4];
+ *     VkStructureType                               sType
+ *     const void*                                   pNext
+ *     VkPipelineColorBlendStateCreateFlags          flags
+ *     VkBool32                                      logicOpEnable
+ *     VkLogicOp                                     logicOp
+ *     uint32_t                                      attachmentCount
+ *     const VkPipelineColorBlendAttachmentState*    pAttachments
+ *     float                                         blendConstants[4]
  */
 public @Service class VkFieldParser implements VkParser {
     private static @Optional VkFieldParser instance;

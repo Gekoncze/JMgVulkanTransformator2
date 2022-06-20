@@ -11,10 +11,18 @@ import cz.mg.vulkantransformator.utilities.code.Statement;
 import cz.mg.vulkantransformator.utilities.code.Token;
 
 /**
- * Example:
+ * Defined as:
  *
  * VK_DEFINE_HANDLE(VkQueue)
  * VK_DEFINE_NON_DISPATCHABLE_HANDLE(VkSemaphore)
+ *
+ * #define VK_DEFINE_HANDLE(object) typedef struct object##_T* object;
+ * #define VK_DEFINE_NON_DISPATCHABLE_HANDLE(object) typedef uint64_t object;
+ *
+ * Examples:
+ *
+ * typedef struct VkQueue_T* VkQueue
+ * typedef uint64_t VkQueue
  */
 public @Service class VkHandleParser implements VkParser {
     private static @Optional VkHandleParser instance;

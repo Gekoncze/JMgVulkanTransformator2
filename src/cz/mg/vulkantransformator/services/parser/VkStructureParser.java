@@ -25,7 +25,7 @@ import cz.mg.vulkantransformator.utilities.code.TokenType;
  *     uint32_t                                      attachmentCount;
  *     const VkPipelineColorBlendAttachmentState*    pAttachments;
  *     float                                         blendConstants[4];
- * } VkPipelineColorBlendStateCreateInfo;
+ * } VkPipelineColorBlendStateCreateInfo
  */
 public @Service class VkStructureParser implements VkParser {
     private static VkStructureParser instance;

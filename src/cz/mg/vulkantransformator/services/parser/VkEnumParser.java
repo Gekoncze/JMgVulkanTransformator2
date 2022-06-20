@@ -23,7 +23,7 @@ import cz.mg.vulkantransformator.utilities.code.TokenType;
  *     VK_STENCIL_FACE_FRONT_AND_BACK = 0x00000003,
  *     VK_STENCIL_FRONT_AND_BACK = VK_STENCIL_FACE_FRONT_AND_BACK,
  *     VK_STENCIL_FACE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
- * } VkStencilFaceFlagBits;
+ * } VkStencilFaceFlagBits
  */
 public @Service class VkEnumParser implements VkParser {
     private static @Optional VkEnumParser instance;

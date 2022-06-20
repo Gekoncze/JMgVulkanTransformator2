@@ -21,7 +21,7 @@ import cz.mg.vulkantransformator.utilities.code.TokenType;
  *     float       float32[4];
  *     int32_t     int32[4];
  *     uint32_t    uint32[4];
- * } VkClearColorValue;
+ * } VkClearColorValue
  */
 public @Service class VkUnionParser implements VkParser {
     private static @Optional VkUnionParser instance;
