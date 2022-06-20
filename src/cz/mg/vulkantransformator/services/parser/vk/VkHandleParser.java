@@ -1,10 +1,10 @@
-package cz.mg.vulkantransformator.services.parser;
+package cz.mg.vulkantransformator.services.parser.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.entities.vulkan.VkEnumEntry;
+import cz.mg.vulkantransformator.entities.vulkan.VkType;
 import cz.mg.vulkantransformator.services.parser.matcher.Matchers;
 import cz.mg.vulkantransformator.services.parser.matcher.PatternMatcher;
 import cz.mg.vulkantransformator.services.parser.other.TokenRemover;
@@ -13,20 +13,16 @@ import cz.mg.vulkantransformator.utilities.code.Token;
 import cz.mg.vulkantransformator.utilities.code.TokenType;
 
 /**
- * Examples:
+ * Example:
  *
- *     VK_STENCIL_FACE_FRONT_BIT = 0x00000001
- *     VK_STENCIL_FACE_BACK_BIT = 0x00000002
- *     VK_STENCIL_FACE_FRONT_AND_BACK = 0x00000003
- *     VK_STENCIL_FRONT_AND_BACK = VK_STENCIL_FACE_FRONT_AND_BACK
- *     VK_STENCIL_FACE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
+ * typedef struct VkQueue_T* VkQueue
  */
-public @Service class VkEnumEntryParser implements VkParser {
-    private static @Optional VkEnumEntryParser instance;
+public @Service class VkHandleParser implements VkParser {
+    private static @Optional VkHandleParser instance;
 
-    public static @Mandatory VkEnumEntryParser getInstance() {
+    public static @Mandatory VkHandleParser getInstance() {
         if (instance == null) {
-            instance = new VkEnumEntryParser();
+            instance = new VkHandleParser();
             instance.patternMatcher = PatternMatcher.getInstance();
             instance.tokenRemover = TokenRemover.getInstance();
         }
@@ -36,33 +32,36 @@ public @Service class VkEnumEntryParser implements VkParser {
     private PatternMatcher patternMatcher;
     private TokenRemover tokenRemover;
 
-    private VkEnumEntryParser() {
+    private VkHandleParser() {
     }
 
     @Override
     public boolean matches(@Mandatory Statement statement) {
         return patternMatcher.matches(
             statement,
-            false,
+            true,
+            Matchers.text("typedef"),
+            Matchers.text("struct"),
+            Matchers.type(TokenType.NAME),
+            Matchers.text("*"),
             Matchers.type(TokenType.NAME)
         );
     }
 
     @Override
-    public @Mandatory VkEnumEntry parse(@Mandatory Statement statement) {
+    public @Mandatory VkType parse(@Mandatory Statement statement) {
         List<Token> tokens = new List<>(statement.getTokens());
 
-        VkEnumEntry entry = new VkEnumEntry();
-        entry.setName(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
+        tokenRemover.removeFirst(tokens, "typedef");
+        tokenRemover.removeFirst(tokens, "struct");
+        tokenRemover.removeFirst(tokens, TokenType.NAME);
+        tokenRemover.removeFirst(tokens, "*");
 
-        tokenRemover.removeFirst(tokens, "=");
+        VkType type = new VkType();
+        type.setName(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
 
-        while (!tokens.isEmpty()) {
-            entry.getExpression().addLast(
-                tokenRemover.removeFirst(tokens).getText()
-            );
-        }
+        tokenRemover.verifyNoMoreTokens(tokens);
 
-        return entry;
+        return type;
     }
 }

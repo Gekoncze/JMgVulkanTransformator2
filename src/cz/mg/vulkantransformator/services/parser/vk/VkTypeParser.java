@@ -1,10 +1,10 @@
-package cz.mg.vulkantransformator.services.parser;
+package cz.mg.vulkantransformator.services.parser.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.entities.vulkan.VkFlags;
+import cz.mg.vulkantransformator.entities.vulkan.VkType;
 import cz.mg.vulkantransformator.services.parser.matcher.Matchers;
 import cz.mg.vulkantransformator.services.parser.matcher.PatternMatcher;
 import cz.mg.vulkantransformator.services.parser.other.TokenRemover;
@@ -15,14 +15,14 @@ import cz.mg.vulkantransformator.utilities.code.TokenType;
 /**
  * Example:
  *
- * typedef VkFlags VkInstanceCreateFlags
+ * typedef uint64_t VkQueue
  */
-public @Service class VkFlagsParser implements VkParser {
-    private static @Optional VkFlagsParser instance;
+public @Service class VkTypeParser implements VkParser {
+    private static @Optional VkTypeParser instance;
 
-    public static @Mandatory VkFlagsParser getInstance() {
+    public static @Mandatory VkTypeParser getInstance() {
         if (instance == null) {
-            instance = new VkFlagsParser();
+            instance = new VkTypeParser();
             instance.patternMatcher = PatternMatcher.getInstance();
             instance.tokenRemover = TokenRemover.getInstance();
         }
@@ -32,9 +32,8 @@ public @Service class VkFlagsParser implements VkParser {
     private PatternMatcher patternMatcher;
     private TokenRemover tokenRemover;
 
-    private VkFlagsParser() {
+    private VkTypeParser() {
     }
-
 
     @Override
     public boolean matches(@Mandatory Statement statement) {
@@ -42,23 +41,23 @@ public @Service class VkFlagsParser implements VkParser {
             statement,
             true,
             Matchers.text("typedef"),
-            Matchers.text("VkFlags"),
+            Matchers.text("uint64_t"),
             Matchers.type(TokenType.NAME)
         );
     }
 
     @Override
-    public @Mandatory VkFlags parse(@Mandatory Statement statement) {
+    public @Mandatory VkType parse(@Mandatory Statement statement) {
         List<Token> tokens = new List<>(statement.getTokens());
 
         tokenRemover.removeFirst(tokens, "typedef");
-        tokenRemover.removeFirst(tokens, "VkFlags");
+        tokenRemover.removeFirst(tokens, "uint64_t");
 
-        VkFlags flags = new VkFlags();
-        flags.setName(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
+        VkType type = new VkType();
+        type.setName(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
 
         tokenRemover.verifyNoMoreTokens(tokens);
 
-        return flags;
+        return type;
     }
 }

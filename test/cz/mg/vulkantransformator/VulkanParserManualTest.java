@@ -5,13 +5,13 @@ import cz.mg.vulkantransformator.entities.vulkan.*;
 import cz.mg.vulkantransformator.services.filesystem.FileReaderService;
 import cz.mg.vulkantransformator.services.parser.VulkanParser;
 
-public @Test class VulkanTransformatorTest {
+public @Test class VulkanParserManualTest {
     private static final String PATH = "test/cz/mg/vulkantransformator/vulkan_core.h";
 
     public static void main(String[] args) {
-        System.out.print("Running " + VulkanTransformatorTest.class.getSimpleName() + " ... ");
+        System.out.print("Running " + VulkanParserManualTest.class.getSimpleName() + " ... ");
 
-        VulkanTransformatorTest test = new VulkanTransformatorTest();
+        VulkanParserManualTest test = new VulkanParserManualTest();
         test.testTransformation();
 
         System.out.println("OK");

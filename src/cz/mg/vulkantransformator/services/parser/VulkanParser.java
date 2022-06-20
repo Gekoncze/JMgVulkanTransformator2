@@ -3,6 +3,7 @@ package cz.mg.vulkantransformator.services.parser;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.collections.list.List;
+import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.preprocessor.Definition;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.entities.vulkan.VkVersion;
@@ -11,6 +12,7 @@ import cz.mg.vulkantransformator.services.parser.segmentation.StatementParser;
 import cz.mg.vulkantransformator.services.parser.segmentation.TokenParser;
 import cz.mg.vulkantransformator.services.parser.preprocessor.Preprocessor;
 import cz.mg.vulkantransformator.services.parser.splicer.Splicer;
+import cz.mg.vulkantransformator.services.parser.vk.*;
 import cz.mg.vulkantransformator.utilities.code.Line;
 import cz.mg.vulkantransformator.utilities.code.Statement;
 import cz.mg.vulkantransformator.utilities.code.Token;
@@ -31,7 +33,7 @@ public @Service class VulkanParser {
             instance.enumParser = VkEnumParser.getInstance();
             instance.flagsParser = VkFlagsParser.getInstance();
             instance.handleParser = VkHandleParser.getInstance();
-            instance.nondispatchableHandleParser = VkTypeParser.getInstance();
+            instance.typeParser = VkTypeParser.getInstance();
         }
         return instance;
     }
@@ -47,14 +49,14 @@ public @Service class VulkanParser {
     private VkEnumParser enumParser;
     private VkFlagsParser flagsParser;
     private VkHandleParser handleParser;
-    private VkTypeParser nondispatchableHandleParser;
+    private VkTypeParser typeParser;
 
     private VulkanParser() {
     }
 
-    public @Mandatory VkRoot parse(@Mandatory VkVersion version, @Mandatory List<String> stringLines) {
+    public @Mandatory VkRoot parse(@Mandatory VkVersion version, @Mandatory File file) {
         List<Definition> definitions = new List<>();
-        List<Line> lines = lineParser.parse(stringLines);
+        List<Line> lines = lineParser.parse(file.getLines());
         List<List<Token>> linesTokens = tokenParser.parse(lines);
         List<List<Token>> joinedLinesTokens = splicer.splice(linesTokens);
         List<Token> tokens = preprocessor.preprocess(joinedLinesTokens, definitions);
@@ -72,7 +74,7 @@ public @Service class VulkanParser {
             enumParser,
             flagsParser,
             handleParser,
-            nondispatchableHandleParser
+            typeParser
         );
 
         for (Statement statement : statements) {
