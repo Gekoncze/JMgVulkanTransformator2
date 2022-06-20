@@ -23,6 +23,7 @@ public @Service class Preprocessor {
             instance.validator = TokenValidator.getInstance();
             instance.defineParser = DefineParser.getInstance();
             instance.errorParser = ErrorParser.getInstance();
+            instance.tokenPreprocessor = TokenPreprocessor.getInstance();
         }
         return instance;
     }
@@ -30,6 +31,7 @@ public @Service class Preprocessor {
     private TokenValidator validator;
     private DefineParser defineParser;
     private ErrorParser errorParser;
+    private TokenPreprocessor tokenPreprocessor;
 
     private Preprocessor() {
     }
@@ -50,7 +52,7 @@ public @Service class Preprocessor {
         boolean exclude = false;
 
         for (List<Token> tokens : linesTokens) {
-            String directive = getDirective(tokens);
+            String directive = findDirective(tokens);
             if (directive != null) {
                 if (exclude) {
                     if (directive.equals(ELIF)) {
@@ -90,15 +92,9 @@ public @Service class Preprocessor {
                 }
             } else {
                 if (!exclude) {
-                    for (Token token : tokens) {
-                        Definition definition = definitions.get(token.getText());
-                        if (definition == null) {
-                            remainingTokens.addLast(token);
-                        } else {
-                            // TODO - only replacing simple definitions for now
-                            remainingTokens.addLast(definition.getExpression().getFirst());
-                        }
-                    }
+                    remainingTokens.addCollectionLast(
+                        tokenPreprocessor.preprocess(tokens, definitions)
+                    );
                 }
             }
         }
@@ -106,7 +102,7 @@ public @Service class Preprocessor {
         return remainingTokens;
     }
 
-    private @Optional String getDirective(@Mandatory List<Token> tokens) {
+    private @Optional String findDirective(@Mandatory List<Token> tokens) {
         if (tokens.count() >= 2) {
             if (tokens.getFirst().getText().equals(DIRECTIVE)) {
                 Token token = tokens.getFirstItem().getNextItem().get();

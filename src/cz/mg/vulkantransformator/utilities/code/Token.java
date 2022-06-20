@@ -2,20 +2,20 @@ package cz.mg.vulkantransformator.utilities.code;
 
 import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.annotations.requirement.Optional;
 
 public @Utility class Token {
     private final @Mandatory Line line;
     private final int beginId;
     private final int endId;
     private final @Mandatory TokenType type;
-    private @Optional String text;
+    private final @Mandatory String text;
 
     public Token(@Mandatory Line line, int beginId, int endId, @Mandatory TokenType type) {
         this.line = line;
         this.beginId = beginId;
         this.endId = endId;
         this.type = type;
+        this.text = line.getText().substring(beginId, endId);
     }
 
     public @Mandatory Line getLine() {
@@ -35,9 +35,6 @@ public @Utility class Token {
     }
 
     public @Mandatory String getText() {
-        if (text == null) {
-            text = line.getText().substring(beginId, endId);
-        }
         return text;
     }
 }
