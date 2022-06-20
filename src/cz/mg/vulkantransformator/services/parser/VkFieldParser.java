@@ -48,6 +48,7 @@ public @Service class VkFieldParser implements VkParser {
     public boolean matches(@Mandatory Statement statement) {
         return patternMatcher.matches(
             statement,
+            false,
             Matchers.any(),
             Matchers.any()
         );

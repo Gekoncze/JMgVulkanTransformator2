@@ -94,7 +94,7 @@ public @Service class TokenParser {
                 } else if (isDoubleQuote(ch)) {
                     doubleQuotes = true;
                     start = i;
-                } else if (isUppercase(ch) || isLowercase(ch)) {
+                } else if (isUppercase(ch) || isLowercase(ch) || isUnderscore(ch)) {
                     name = true;
                     start = i;
                 } else if (isNumber(ch)) {

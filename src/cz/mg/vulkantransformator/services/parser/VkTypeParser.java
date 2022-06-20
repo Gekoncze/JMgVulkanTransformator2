@@ -15,14 +15,14 @@ import cz.mg.vulkantransformator.utilities.code.TokenType;
 /**
  * Example:
  *
- * typedef struct VkQueue_T* VkQueue
+ * typedef uint64_t VkQueue
  */
-public @Service class VkHandleParser implements VkParser {
-    private static @Optional VkHandleParser instance;
+public @Service class VkTypeParser implements VkParser {
+    private static @Optional VkTypeParser instance;
 
-    public static @Mandatory VkHandleParser getInstance() {
+    public static @Mandatory VkTypeParser getInstance() {
         if (instance == null) {
-            instance = new VkHandleParser();
+            instance = new VkTypeParser();
             instance.patternMatcher = PatternMatcher.getInstance();
             instance.tokenRemover = TokenRemover.getInstance();
         }
@@ -32,7 +32,7 @@ public @Service class VkHandleParser implements VkParser {
     private PatternMatcher patternMatcher;
     private TokenRemover tokenRemover;
 
-    private VkHandleParser() {
+    private VkTypeParser() {
     }
 
     @Override
@@ -41,9 +41,7 @@ public @Service class VkHandleParser implements VkParser {
             statement,
             true,
             Matchers.text("typedef"),
-            Matchers.text("struct"),
-            Matchers.type(TokenType.NAME),
-            Matchers.text("*"),
+            Matchers.text("uint64_t"),
             Matchers.type(TokenType.NAME)
         );
     }
@@ -53,9 +51,7 @@ public @Service class VkHandleParser implements VkParser {
         List<Token> tokens = new List<>(statement.getTokens());
 
         tokenRemover.removeFirst(tokens, "typedef");
-        tokenRemover.removeFirst(tokens, "struct");
-        tokenRemover.removeFirst(tokens, TokenType.NAME);
-        tokenRemover.removeFirst(tokens, "*");
+        tokenRemover.removeFirst(tokens, "uint64_t");
 
         VkType type = new VkType();
         type.setName(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());

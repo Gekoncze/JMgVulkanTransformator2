@@ -49,6 +49,7 @@ public @Service class VkUnionParser implements VkParser {
     public boolean matches(@Mandatory Statement statement) {
         return patternMatcher.matches(
             statement,
+            false,
             Matchers.text("typedef"),
             Matchers.text("union"),
             Matchers.type(TokenType.NAME),

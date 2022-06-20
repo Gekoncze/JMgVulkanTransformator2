@@ -19,8 +19,10 @@ public @Service class PatternMatcher {
     private PatternMatcher() {
     }
 
-    public boolean matches(@Mandatory Statement statement, @Mandatory Matcher... matchers) {
-        if (statement.getTokens().count() >= matchers.length) {
+    public boolean matches(@Mandatory Statement statement, boolean matchCount, @Mandatory Matcher... matchers) {
+        boolean greaterOrEqual = statement.getTokens().count() >= matchers.length;
+        boolean equal = statement.getTokens().count() == matchers.length;
+        if ((matchCount && equal) || (!matchCount && greaterOrEqual)) {
             int i = 0;
             for (Token token : statement.getTokens()) {
                 if (i >= matchers.length) {

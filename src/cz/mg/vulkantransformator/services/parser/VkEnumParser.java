@@ -51,6 +51,7 @@ public @Service class VkEnumParser implements VkParser {
     public boolean matches(@Mandatory Statement statement) {
         return patternMatcher.matches(
             statement,
+            false,
             Matchers.text("typedef"),
             Matchers.text("enum"),
             Matchers.type(TokenType.NAME),

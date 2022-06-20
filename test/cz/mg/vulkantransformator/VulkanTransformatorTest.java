@@ -43,9 +43,9 @@ public @Test class VulkanTransformatorTest {
                 System.out.println("Found flags " + flags.getName() + ".");
             }
 
-            if (component instanceof VkHandle) {
-                VkHandle handle = (VkHandle) component;
-                System.out.println("Found handle " + handle.getName() + ".");
+            if (component instanceof VkType) {
+                VkType handle = (VkType) component;
+                System.out.println("Found type " + handle.getName() + ".");
             }
         }
     }

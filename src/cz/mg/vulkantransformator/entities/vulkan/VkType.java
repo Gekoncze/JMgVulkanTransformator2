@@ -2,10 +2,10 @@ package cz.mg.vulkantransformator.entities.vulkan;
 
 import cz.mg.annotations.classes.Entity;
 
-public @Entity class VkHandle implements VkComponent {
+public @Entity class VkType implements VkComponent {
     private String name;
 
-    public VkHandle() {
+    public VkType() {
     }
 
     public String getName() {

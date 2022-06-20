@@ -36,6 +36,8 @@ public @Test class TokenParserTest {
         testParseSingleLine("[]", "[", "]");
         testParseSingleLine("a/b", "a", "/", "b");
         testParseSingleLine("a//", "a");
+        testParseSingleLine("a_b", "a_b");
+        testParseSingleLine("_b", "_b");
 
         testParseSingleLine(
             "    const* float * test[5] = {-1.0f}; // yay!",

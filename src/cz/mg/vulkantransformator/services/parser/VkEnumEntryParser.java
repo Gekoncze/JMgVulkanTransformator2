@@ -43,6 +43,7 @@ public @Service class VkEnumEntryParser implements VkParser {
     public boolean matches(@Mandatory Statement statement) {
         return patternMatcher.matches(
             statement,
+            false,
             Matchers.type(TokenType.NAME)
         );
     }

@@ -24,6 +24,7 @@ public @Test class PatternMatcherTest {
         Assert.assertExceptionNotThrown(() -> {
             patternMatcher.matches(
                 createStatement("typedef", "struct", "test", "{", "}", ";"),
+                false,
                 Matchers.text("typedef"),
                 Matchers.text("struct"),
                 Matchers.any(),
@@ -33,6 +34,7 @@ public @Test class PatternMatcherTest {
 
         Assert.assertEquals(true, patternMatcher.matches(
             createStatement("typedef", "struct", "test", "{", "}", ";"),
+            false,
             Matchers.text("typedef"),
             Matchers.text("struct"),
             Matchers.any(),
@@ -41,6 +43,7 @@ public @Test class PatternMatcherTest {
 
         Assert.assertEquals(true, patternMatcher.matches(
             createStatement("typedef", "struct", "foo", "{", "}", ";"),
+            false,
             Matchers.text("typedef"),
             Matchers.text("struct"),
             Matchers.any(),
@@ -50,6 +53,7 @@ public @Test class PatternMatcherTest {
         Assert.assertExceptionNotThrown(() -> {
             patternMatcher.matches(
                 createStatement("typedef", "struct"),
+                false,
                 Matchers.text("typedef"),
                 Matchers.text("struct"),
                 Matchers.any(),
@@ -59,6 +63,7 @@ public @Test class PatternMatcherTest {
 
         Assert.assertEquals(false, patternMatcher.matches(
             createStatement("typedef", "struct"),
+            false,
             Matchers.text("typedef"),
             Matchers.text("struct"),
             Matchers.any(),
@@ -67,6 +72,7 @@ public @Test class PatternMatcherTest {
 
         Assert.assertEquals(false, patternMatcher.matches(
             createStatement("typedef", "struct"),
+            false,
             Matchers.text("typedef"),
             Matchers.text("struct"),
             Matchers.any(),
@@ -75,6 +81,7 @@ public @Test class PatternMatcherTest {
 
         Assert.assertEquals(false, patternMatcher.matches(
             createStatement("pipedef", "struct", "test", "{", "}", ";"),
+            false,
             Matchers.text("typedef"),
             Matchers.text("struct"),
             Matchers.any(),
@@ -83,10 +90,27 @@ public @Test class PatternMatcherTest {
 
         Assert.assertEquals(false, patternMatcher.matches(
             createStatement("typedef", "struct", "{", "}", ";"),
+            false,
             Matchers.text("typedef"),
             Matchers.text("struct"),
             Matchers.any(),
             Matchers.text("{")
+        ));
+
+        Assert.assertEquals(true, patternMatcher.matches(
+            createStatement("typedef", "uint32_t", "test"),
+            true,
+            Matchers.text("typedef"),
+            Matchers.text("uint32_t"),
+            Matchers.any()
+        ));
+
+        Assert.assertEquals(false, patternMatcher.matches(
+            createStatement("typedef", "uint32_t", "*", "test"),
+            true,
+            Matchers.text("typedef"),
+            Matchers.text("uint32_t"),
+            Matchers.any()
         ));
     }
 

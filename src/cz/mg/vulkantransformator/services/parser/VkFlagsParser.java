@@ -40,6 +40,7 @@ public @Service class VkFlagsParser implements VkParser {
     public boolean matches(@Mandatory Statement statement) {
         return patternMatcher.matches(
             statement,
+            true,
             Matchers.text("typedef"),
             Matchers.text("VkFlags"),
             Matchers.type(TokenType.NAME)

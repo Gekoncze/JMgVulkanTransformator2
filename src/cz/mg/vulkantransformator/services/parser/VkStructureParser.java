@@ -53,6 +53,7 @@ public @Service class VkStructureParser implements VkParser {
     public boolean matches(@Mandatory Statement statement) {
         return patternMatcher.matches(
             statement,
+            false,
             Matchers.text("typedef"),
             Matchers.text("struct"),
             Matchers.type(TokenType.NAME),
