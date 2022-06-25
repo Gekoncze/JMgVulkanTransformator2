@@ -19,7 +19,7 @@ public @Service class VkFieldTranslator {
     private VkFieldTranslator() {
     }
 
-    public @Mandatory List<String> getJavaMethods(@Mandatory VkField field) {
+    public @Mandatory List<String> translateJava(@Mandatory VkField field) {
         return new List<>(
             "    public " + field.getTypename() + " get" + capitalizeFirst(field.getName()) + "() {",
             "        throw new UnsupportedOperationException();", // TODO
@@ -28,6 +28,12 @@ public @Service class VkFieldTranslator {
             "    public void set" + capitalizeFirst(field.getName()) + "(" + field.getTypename() + " " + field.getName() + ") {",
             "        throw new UnsupportedOperationException();", // TODO
             "    }"
+        );
+    }
+
+    public @Mandatory List<String> translateNative(@Mandatory VkField field) {
+        return new List<>(
+            "" // TODO
         );
     }
 

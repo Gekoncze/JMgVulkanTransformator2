@@ -16,11 +16,13 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
     public static @Mandatory VkStructureTranslator getInstance() {
         if (instance == null) {
             instance = new VkStructureTranslator();
+            instance.common = Common.getInstance();
             instance.fieldTranslator = VkFieldTranslator.getInstance();
         }
         return instance;
     }
 
+    private Common common;
     private VkFieldTranslator fieldTranslator;
 
     private VkStructureTranslator() {
@@ -38,14 +40,23 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
         lines.addLast("package " + Configuration.PACKAGE + ";");
         lines.addLast("");
         lines.addLast("public class " + structure.getName() + " {");
-        lines.addLast("    public " + structure.getName() + "() {");
+        lines.addLast("    private final long address;");
+        lines.addLast("");
+        lines.addLast("    public " + structure.getName() + "(long address) {");
+        lines.addLast("        this.address = address;");
         lines.addLast("    }");
+        lines.addLast("");
+        lines.addLast("    private static native long sizeof();");
         lines.addLast("");
 
         for (VkField field : structure.getFields()) {
             lines.addCollectionLast(
-                fieldTranslator.getJavaMethods(field)
+                fieldTranslator.translateJava(field)
             );
+
+            if (field != structure.getFields().getLast()) {
+                lines.addLast("");
+            }
         }
 
         lines.addLast("}");
@@ -55,6 +66,12 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
 
     @Override
     public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkStructure structure) {
-        return new List<>(); // TODO
+        List<String> lines = new List<>();
+
+        lines.addCollectionLast(common.getCommonHeader(structure));
+
+//        lines.addLast(todo);
+
+        return lines;
     }
 }
