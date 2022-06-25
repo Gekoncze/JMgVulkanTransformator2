@@ -4,7 +4,7 @@ import cz.mg.annotations.classes.Entity;
 import cz.mg.annotations.storage.Part;
 import cz.mg.collections.list.List;
 
-public @Entity class VkRoot implements VkComponent {
+public @Entity class VkRoot {
     private VkVersion version;
     private List<VkComponent> components = new List<>();
 

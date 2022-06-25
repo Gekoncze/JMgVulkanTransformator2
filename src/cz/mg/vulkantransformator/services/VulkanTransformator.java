@@ -21,6 +21,10 @@ public @Service class VulkanTransformator {
     public static @Mandatory VulkanTransformator getInstance() {
         if (instance == null) {
             instance = new VulkanTransformator();
+            instance.fileReaderService = FileReaderService.getInstance();
+            instance.fileWriterService = FileWriterService.getInstance();
+            instance.vulkanParser = VulkanParser.getInstance();
+            instance.vulkanTranslator = VulkanTranslator.getInstance();
         }
         return instance;
     }

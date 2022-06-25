@@ -17,6 +17,7 @@ public @Entity class VkUnion implements VkComponent {
     }
 
     @Value
+    @Override
     public String getName() {
         return name;
     }

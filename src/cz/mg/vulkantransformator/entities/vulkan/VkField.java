@@ -38,6 +38,7 @@ public @Entity class VkField implements VkComponent {
     }
 
     @Value
+    @Override
     public String getName() {
         return name;
     }

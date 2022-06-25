@@ -1,6 +1,8 @@
 package cz.mg.vulkantransformator.entities.vulkan;
 
 import cz.mg.annotations.classes.Entity;
+import cz.mg.annotations.storage.Part;
+import cz.mg.annotations.storage.Value;
 import cz.mg.collections.list.List;
 
 public @Entity class VkEnumEntry implements VkComponent {
@@ -10,6 +12,8 @@ public @Entity class VkEnumEntry implements VkComponent {
     public VkEnumEntry() {
     }
 
+    @Value
+    @Override
     public String getName() {
         return name;
     }
@@ -18,6 +22,7 @@ public @Entity class VkEnumEntry implements VkComponent {
         this.name = name;
     }
 
+    @Part
     public List<String> getExpression() {
         return expression;
     }

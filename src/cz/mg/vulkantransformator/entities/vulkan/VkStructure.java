@@ -13,6 +13,7 @@ public @Entity class VkStructure implements VkComponent {
     }
 
     @Value
+    @Override
     public String getName() {
         return name;
     }

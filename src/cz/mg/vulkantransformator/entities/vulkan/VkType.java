@@ -1,6 +1,7 @@
 package cz.mg.vulkantransformator.entities.vulkan;
 
 import cz.mg.annotations.classes.Entity;
+import cz.mg.annotations.storage.Value;
 
 public @Entity class VkType implements VkComponent {
     private String name;
@@ -8,6 +9,8 @@ public @Entity class VkType implements VkComponent {
     public VkType() {
     }
 
+    @Value
+    @Override
     public String getName() {
         return name;
     }

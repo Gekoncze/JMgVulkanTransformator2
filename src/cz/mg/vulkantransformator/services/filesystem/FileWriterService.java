@@ -7,6 +7,8 @@ import cz.mg.vulkantransformator.entities.filesystem.File;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public @Service class FileWriterService {
     private static FileWriterService instance;
@@ -22,6 +24,14 @@ public @Service class FileWriterService {
     }
 
     public void save(@Mandatory File file) {
+        Path path = Path.of(file.getName());
+
+        try {
+            Files.createDirectories(path.getParent());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getName()))) {
             for (String line : file.getLines()) {
                 writer.write(line);
