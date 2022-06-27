@@ -7,7 +7,6 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkField;
 import cz.mg.vulkantransformator.entities.vulkan.VkStructure;
-import cz.mg.vulkantransformator.services.translator.Configuration;
 import cz.mg.vulkantransformator.services.translator.index.Index;
 
 public @Service class VkStructureTranslator implements VkTranslator<VkStructure> {
@@ -37,17 +36,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
     public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkStructure structure) {
         List<String> lines = new List<>();
 
-        lines.addLast("package " + Configuration.PACKAGE + ";");
-        lines.addLast("");
-        lines.addLast("public class " + structure.getName() + " {");
-        lines.addLast("    private final long address;");
-        lines.addLast("");
-        lines.addLast("    public " + structure.getName() + "(long address) {");
-        lines.addLast("        this.address = address;");
-        lines.addLast("    }");
-        lines.addLast("");
-        lines.addLast("    private static native long sizeof();");
-        lines.addLast("");
+        lines.addCollectionLast(common.getCommonJavaHeader(structure));
 
         for (VkField field : structure.getFields()) {
             lines.addCollectionLast(
@@ -59,7 +48,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
             }
         }
 
-        lines.addLast("}");
+        lines.addCollectionLast(common.getCommonJavaFooter(structure));
 
         return lines;
     }
@@ -68,9 +57,15 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
     public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkStructure structure) {
         List<String> lines = new List<>();
 
-        lines.addCollectionLast(common.getCommonHeader(structure));
+        lines.addCollectionLast(common.getCommonNativeHeader(structure));
 
-//        lines.addLast(todo);
+        for (VkField field : structure.getFields()) {
+            lines.addCollectionLast(
+                fieldTranslator.translateNative(field)
+            );
+        }
+
+        lines.addCollectionLast(common.getCommonNativeFooter(structure));
 
         return lines;
     }
