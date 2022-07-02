@@ -31,17 +31,79 @@ public @Service class VkFieldTranslator {
 
     public @Mandatory List<String> translateJava(@Mandatory VkComponent component, @Mandatory VkField field) {
         String name = capitalizeFirst(field.getName());
+        List<String> lines = new List<>();
+        lines.addCollectionLast(translateJavaGetter(component, field));
+        lines.addLast("");
+        lines.addLast("    private static native long _get" + name + "Address(long address);");
+        return lines;
+
+    }
+
+    private @Mandatory List<String> translateJavaGetter(@Mandatory VkComponent component, @Mandatory VkField field) {
+        String target = component.getName() + "." + field.getName();
+
+        if (field.getArray() > 0 && field.getPointers() > 0) {
+            throw new UnsupportedOperationException(
+                "Unsupported pointer and array options for '" + target + "': " + field.getPointers() + ", " + field.getArray() + "."
+            );
+        }
+
+        if (field.getTypename().equals("void") && field.getPointers() < 1) {
+            throw new IllegalArgumentException(
+                "Invalid void field for '" + target + "'."
+            );
+        }
+
+        if (field.getPointers() == 0 && field.getArray() == 0) {
+            return translateJavaGetterValue(component, field);
+        } else if (field.getPointers() > 0) {
+            return translateJavaGetterPointer(component, field);
+        } else if (field.getArray() > 0) {
+            return translateJavaGetterArray(component, field);
+        } else {
+            throw new UnsupportedOperationException(
+                "Unsupported pointer and array options for '" + target + "': " + field.getPointers() + ", " + field.getArray() + "."
+            );
+        }
+    }
+
+    private @Mandatory List<String> translateJavaGetterValue(@Mandatory VkComponent component, @Mandatory VkField field) {
+        String type = getTypename(field);
+        String getterName = "get" + capitalizeFirst(field.getName());
+        String getterAddressName = "_" + getterName + "Address";
         return new List<>(
-            "    public " + getType(component, field) + " get" + name + "() {",
-            "        throw new UnsupportedOperationException();", // TODO
-            "    }",
-            "",
-            "    public void set" + name + "(" + getType(component, field) + " " + field.getName() + ") {",
-            "        throw new UnsupportedOperationException();", // TODO
-            "    }",
-            "",
-            "    private static native long _get" + name + "Address(long address);"
+            "    public " + type + " " + getterName + "() {",
+            "        return new " + type + "(" + getterAddressName + "(address));",
+            "    }"
         );
+    }
+
+    private @Mandatory List<String> translateJavaGetterPointer(@Mandatory VkComponent component, @Mandatory VkField field) {
+        if (field.getPointers() == 1) {
+            return translateJavaGetterPointer1D(component, field);
+        } else if (field.getPointers() == 2) {
+            return translateJavaGetterPointer2D(component, field);
+        } else {
+            String target = component.getName() + "." + field.getName();
+            throw new UnsupportedOperationException(
+                "Unsupported pointer count for '" + target + "': " + field.getPointers() + "."
+            );
+        }
+    }
+
+    private @Mandatory List<String> translateJavaGetterPointer1D(@Mandatory VkComponent component, @Mandatory VkField field) {
+        String type = pointerGenerator.getName() + "<" + getTypename(field) + ">";
+        return new List<>(); // TODO
+    }
+
+    private @Mandatory List<String> translateJavaGetterPointer2D(@Mandatory VkComponent component, @Mandatory VkField field) {
+        String type = pointerGenerator.getName() + "<" + pointerGenerator.getName() + "<" + getTypename(field) + ">>";
+        return new List<>(); // TODO
+    }
+
+    private @Mandatory List<String> translateJavaGetterArray(@Mandatory VkComponent component, @Mandatory VkField field) {
+        String type = arrayGenerator.getName() + "<" + getTypename(field) + ">";
+        return new List<>(); // TODO
     }
 
     public @Mandatory List<String> translateNative(@Mandatory VkComponent component, @Mandatory VkField field) {
@@ -59,47 +121,7 @@ public @Service class VkFieldTranslator {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 
-    private @Mandatory String getType(@Mandatory VkComponent component, @Mandatory VkField field) {
-        String target = component.getName() + "." + field.getName();
-
-        if (field.getArray() > 0 && field.getPointers() > 0) {
-            throw new UnsupportedOperationException(
-                "Unsupported pointer and array count for '" + target + "': " + field.getPointers() + ", " + field.getArray() + "."
-            );
-        }
-
-        if (field.getArray() == 0) {
-            if (field.getPointers() == 0) {
-                return field.getTypename();
-            } else if (field.getPointers() == 1) {
-                if (field.getTypename().equals("void")) {
-                    return pointerGenerator.getName() + "<Object>";
-                } else {
-                    return pointerGenerator.getName() + "<" + field.getTypename() + ">";
-                }
-            } else if (field.getPointers() == 2) {
-                if (field.getTypename().equals("void")) {
-                    return pointerGenerator.getName() + "<" + pointerGenerator.getName() + "<Object>>";
-                } else {
-                    return pointerGenerator.getName() + "<" + pointerGenerator.getName() + "<" + field.getTypename() + ">>";
-                }
-            } else {
-                throw new UnsupportedOperationException(
-                    "Unsupported pointer count for '" + target + "': " + field.getPointers() + "."
-                );
-            }
-        } else if (field.getArray() > 0) {
-            if (field.getTypename().equals("void")) {
-                throw new IllegalArgumentException(
-                    "Invalid void array for '" + target + "'."
-                );
-            } else {
-                return arrayGenerator.getName() + "<" + field.getTypename() + ">";
-            }
-        } else {
-            throw new IllegalArgumentException(
-                "Illegal array size for '" + target + "': " + field.getArray() + "."
-            );
-        }
+    private @Mandatory String getTypename(@Mandatory VkField field) {
+        return field.getTypename().equals("void") ? "Object" : field.getTypename();
     }
 }
