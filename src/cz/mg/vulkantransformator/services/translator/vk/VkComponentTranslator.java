@@ -6,18 +6,22 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.services.translator.Configuration;
+import cz.mg.vulkantransformator.services.translator.generators.VkPointerGenerator;
 
-public @Service class Common {
-    private static @Optional Common instance;
+public @Service class VkComponentTranslator {
+    private static @Optional VkComponentTranslator instance;
 
-    public static @Mandatory Common getInstance() {
+    public static @Mandatory VkComponentTranslator getInstance() {
         if (instance == null) {
-            instance = new Common();
+            instance = new VkComponentTranslator();
+            instance.pointerGenerator = VkPointerGenerator.getInstance();
         }
         return instance;
     }
 
-    private Common() {
+    private VkPointerGenerator pointerGenerator;
+
+    private VkComponentTranslator() {
     }
 
     public @Mandatory List<String> getCommonJavaHeader(@Mandatory VkComponent component) {
@@ -35,7 +39,7 @@ public @Service class Common {
             "        return address;",
             "    }",
             "",
-            "    public long size() {",
+            "    public static long size() {",
             "        return _size();",
             "    }",
             "",
@@ -55,35 +59,17 @@ public @Service class Common {
     }
 
     public @Mandatory List<String> getCommonNativeHeader(@Mandatory VkComponent component) {
-        String path = Configuration.FUNCTION + "_" + component.getName();
+        String path = getNativeComponentPath(component);
         return new List<>(
             "#include <jni.h>",
             "#include <vulkan/vulkan.h>",
-            "#include <string.h>",
+            "#include \"" + pointerGenerator.getName() + ".h\"",
             "",
-            "inline void* l2a(jlong l) {",
-            "    union {",
-            "        jlong l;",
-            "        void* a;",
-            "    } c;",
-            "    c.l = l;",
-            "    return c.a;",
-            "}",
-            "",
-            "inline jlong a2l(void* a) {",
-            "    union {",
-            "        jlong l;",
-            "        void* p;",
-            "    } c;",
-            "    c.a = a;",
-            "    return c.l;",
-            "}",
-            "",
-            "JNIEXPORT jlong JNICALL Java_" + path + "__size(JNIEnv* env, jclass clazz) {",
+            "JNIEXPORT jlong JNICALL Java_" + path + "_size(JNIEnv* env, jclass clazz) {",
             "    return sizeof(" + component.getName() + ");",
             "}",
             "",
-            "JNIEXPORT void JNICALL Java_" + path + "__set(JNIEnv* env, jclass clazz, jlong source, jlong destination) {",
+            "JNIEXPORT void JNICALL Java_" + path + "_set(JNIEnv* env, jclass clazz, jlong source, jlong destination) {",
             "    memcpy(l2a(destination), l2a(source), sizeof(" + component.getName() + "));",
             "}",
             ""
@@ -92,5 +78,9 @@ public @Service class Common {
 
     public @Mandatory List<String> getCommonNativeFooter(@Mandatory VkComponent component) {
         return new List<>();
+    }
+
+    public @Mandatory String getNativeComponentPath(@Mandatory VkComponent component) {
+        return Configuration.FUNCTION + "_" + component.getName() + "_";
     }
 }
