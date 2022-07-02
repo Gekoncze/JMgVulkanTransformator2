@@ -30,27 +30,29 @@ public @Service class VkFieldTranslator {
     }
 
     public @Mandatory List<String> translateJava(@Mandatory VkComponent component, @Mandatory VkField field) {
-        String name = capitalizeFirst(field.getName());
+        String offsetFieldName = getOffsetFieldName(field);
+        String offsetMethodName = getOffsetMethodName(field);
         List<String> lines = new List<>();
+        lines.addLast("    private static final long " + offsetFieldName + " = " + offsetMethodName + "();");
+        lines.addLast("");
         lines.addCollectionLast(translateJavaGetter(component, field));
         lines.addLast("");
-        lines.addLast("    private static native long _get" + name + "Address(long address);");
+        lines.addLast("    private static native long " + offsetMethodName + "();");
         return lines;
 
     }
 
     private @Mandatory List<String> translateJavaGetter(@Mandatory VkComponent component, @Mandatory VkField field) {
-        String target = component.getName() + "." + field.getName();
-
         if (field.getArray() > 0 && field.getPointers() > 0) {
             throw new UnsupportedOperationException(
-                "Unsupported pointer and array options for '" + target + "': " + field.getPointers() + ", " + field.getArray() + "."
+                "Unsupported pointer and array options for '" + getFullName(component, field) + "': "
+                    + field.getPointers() + ", " + field.getArray() + "."
             );
         }
 
         if (field.getTypename().equals("void") && field.getPointers() < 1) {
             throw new IllegalArgumentException(
-                "Invalid void field for '" + target + "'."
+                "Invalid void field for '" + getFullName(component, field) + "'."
             );
         }
 
@@ -62,18 +64,19 @@ public @Service class VkFieldTranslator {
             return translateJavaGetterArray(component, field);
         } else {
             throw new UnsupportedOperationException(
-                "Unsupported pointer and array options for '" + target + "': " + field.getPointers() + ", " + field.getArray() + "."
+                "Unsupported pointer and array options for '" + getFullName(component, field) + "': "
+                    + field.getPointers() + ", " + field.getArray() + "."
             );
         }
     }
 
     private @Mandatory List<String> translateJavaGetterValue(@Mandatory VkComponent component, @Mandatory VkField field) {
         String type = field.getTypename();
-        String getterName = "get" + capitalizeFirst(field.getName());
-        String getterAddressName = "_" + getterName + "Address";
+        String methodName = getMethodName(field);
+        String offsetFieldName = getOffsetFieldName(field);
         return new List<>(
-            "    public " + type + " " + getterName + "() {",
-            "        return new " + type + "(" + getterAddressName + "(address));",
+            "    public " + type + " " + methodName + "() {",
+            "        return new " + type + "(address + " + offsetFieldName + ");",
             "    }"
         );
     }
@@ -92,18 +95,17 @@ public @Service class VkFieldTranslator {
     }
 
     private @Mandatory List<String> translateJavaGetterPointer1D(@Mandatory VkComponent component, @Mandatory VkField field) {
-        String target = component.getName() + "." + field.getName();
+        String fullName = getFullName(component, field);
         String type = pointerGenerator.getName() + "<" + getTypename(field) + ">";
-        String getterName = "get" + capitalizeFirst(field.getName());
-        String getterAddressName = "_" + getterName + "Address";
-        String addressArgument = getterAddressName + "(address)";
+        String methodName = getMethodName(field);
+        String addressArgument = "address + " + getOffsetFieldName(field);
         String sizeArgument = field.getTypename() + ".SIZE";
         String factoryArgument = "(a) -> new " + field.getTypename() + "(a)";
         String voidSizeArgument = "1";
-        String voidFactoryArgument = "(a) -> { throw new RuntimeException(\"Unknown type of '" + target + "'.\"); }";
+        String voidFactoryArgument = "(a) -> { throw new RuntimeException(\"Unknown type of '" + fullName + "'.\"); }";
         if (field.getTypename().equals("void")) {
             return new List<>(
-                "    public " + type + " " + getterName + "() {",
+                "    public " + type + " " + methodName + "() {",
                 "        return new " + type + "(",
                 "             " + addressArgument + ",",
                 "             " + voidSizeArgument + ",",
@@ -113,7 +115,7 @@ public @Service class VkFieldTranslator {
             );
         } else {
             return new List<>(
-                "    public " + type + " " + getterName + "() {",
+                "    public " + type + " " + methodName + "() {",
                 "        return new " + type + "(",
                 "             " + addressArgument + ",",
                 "             " + sizeArgument + ",",
@@ -139,12 +141,14 @@ public @Service class VkFieldTranslator {
     }
 
     public @Mandatory List<String> translateNative(@Mandatory VkComponent component, @Mandatory VkField field) {
-        String name = capitalizeFirst(field.getName());
         String path = vkComponentTranslator.getNativeComponentPath(component);
+        String methodName = getOffsetMethodName(field);
         return new List<>(
-            "JNIEXPORT jlong JNICALL Java_" + path + "_get" + name + "Address(JNIEnv* env, jclass clazz, jlong address) {",
-            "    " + component.getName() + "* component = (" + component.getName() + "*) l2a(address);",
-            "    return &(component->" + field.getName() + ");",
+            "JNIEXPORT jlong JNICALL Java_" + path + methodName + "(JNIEnv* env, jclass clazz) {",
+            "    " + component.getName() + " component;",
+            "    jlong address = a2l(&component);",
+            "    jlong fieldAddress = a2l(&(component." + field.getName() + "));",
+            "    return fieldAddress - address;",
             "}"
         );
     }
@@ -155,5 +159,21 @@ public @Service class VkFieldTranslator {
 
     private @Mandatory String getTypename(@Mandatory VkField field) {
         return field.getTypename().equals("void") ? "Object" : field.getTypename();
+    }
+
+    private @Mandatory String getFullName(@Mandatory VkComponent component, @Mandatory VkField field) {
+        return component.getName() + "." + field.getName();
+    }
+
+    private @Mandatory String getMethodName(@Mandatory VkField field) {
+        return "get" + capitalizeFirst(field.getName());
+    }
+
+    private @Mandatory String getOffsetFieldName(@Mandatory VkField field) {
+        return field.getName().toUpperCase() + "_OFFSET";
+    }
+
+    private @Mandatory String getOffsetMethodName(@Mandatory VkField field) {
+        return "_get" + capitalizeFirst(field.getName()) + "Offset";
     }
 }
