@@ -28,6 +28,7 @@ public @Entity class VkField implements VkComponent {
         this.typename = typename;
     }
 
+    /** number of pointer dimensions */
     @Value
     public Integer getPointers() {
         return pointers;
@@ -47,6 +48,7 @@ public @Entity class VkField implements VkComponent {
         this.name = name;
     }
 
+    /** array size */
     @Value
     public Integer getArray() {
         return array;

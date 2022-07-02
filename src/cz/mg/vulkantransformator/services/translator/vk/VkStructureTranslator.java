@@ -42,7 +42,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
 
         for (VkField field : structure.getFields()) {
             lines.addCollectionLast(
-                fieldTranslator.translateJava(field)
+                fieldTranslator.translateJava(structure, field)
             );
 
             if (field != structure.getFields().getLast()) {
