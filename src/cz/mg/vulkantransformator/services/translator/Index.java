@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.index;
+package cz.mg.vulkantransformator.services.translator;
 
 import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;

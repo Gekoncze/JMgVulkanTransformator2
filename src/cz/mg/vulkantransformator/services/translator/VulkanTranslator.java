@@ -6,9 +6,10 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
-import cz.mg.vulkantransformator.services.translator.index.Index;
-import cz.mg.vulkantransformator.services.translator.generators.VkGenerator;
-import cz.mg.vulkantransformator.services.translator.generators.VkPointerGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.VkArrayGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.VkGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.VkMemoryGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.VkPointerGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.VkStructureTranslator;
 import cz.mg.vulkantransformator.services.translator.vk.VkTranslator;
 
@@ -19,13 +20,17 @@ public @Service class VulkanTranslator {
     public static @Mandatory VulkanTranslator getInstance() {
         if (instance == null) {
             instance = new VulkanTranslator();
+            instance.memoryGenerator = VkMemoryGenerator.getInstance();
             instance.pointerGenerator = VkPointerGenerator.getInstance();
+            instance.arrayGenerator = VkArrayGenerator.getInstance();
             instance.structureTranslator = VkStructureTranslator.getInstance();
         }
         return instance;
     }
 
+    private VkMemoryGenerator memoryGenerator;
     private VkPointerGenerator pointerGenerator;
+    private VkArrayGenerator arrayGenerator;
     private VkStructureTranslator structureTranslator;
 
     private VulkanTranslator() {
@@ -33,7 +38,9 @@ public @Service class VulkanTranslator {
 
     public @Mandatory List<File> export(@Mandatory VkRoot root) {
         List<VkGenerator> generators = new List<>(
-            pointerGenerator
+            memoryGenerator,
+            pointerGenerator,
+            arrayGenerator
         );
 
         List<VkTranslator> translators = new List<>(

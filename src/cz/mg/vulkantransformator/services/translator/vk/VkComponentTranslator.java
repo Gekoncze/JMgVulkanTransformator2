@@ -6,7 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.services.translator.Configuration;
-import cz.mg.vulkantransformator.services.translator.generators.VkPointerGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.VkMemoryGenerator;
 
 public @Service class VkComponentTranslator {
     private static @Optional VkComponentTranslator instance;
@@ -14,12 +14,12 @@ public @Service class VkComponentTranslator {
     public static @Mandatory VkComponentTranslator getInstance() {
         if (instance == null) {
             instance = new VkComponentTranslator();
-            instance.pointerGenerator = VkPointerGenerator.getInstance();
+            instance.memoryGenerator = VkMemoryGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkPointerGenerator pointerGenerator;
+    private VkMemoryGenerator memoryGenerator;
 
     private VkComponentTranslator() {
     }
@@ -63,7 +63,7 @@ public @Service class VkComponentTranslator {
         return new List<>(
             "#include <jni.h>",
             "#include <vulkan/vulkan.h>",
-            "#include \"" + pointerGenerator.getName() + ".h\"",
+            "#include \"" + memoryGenerator.getName() + ".h\"",
             "",
             "JNIEXPORT jlong JNICALL Java_" + path + "_size(JNIEnv* env, jclass clazz) {",
             "    return sizeof(" + component.getName() + ");",

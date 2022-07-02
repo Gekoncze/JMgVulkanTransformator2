@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.generators;
+package cz.mg.vulkantransformator.services.translator.vk.generators;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
@@ -12,15 +12,18 @@ public @Service class VkPointerGenerator implements VkGenerator {
     public static @Mandatory VkPointerGenerator getInstance() {
         if (instance == null) {
             instance = new VkPointerGenerator();
+            instance.memoryGenerator = VkMemoryGenerator.getInstance();
         }
         return instance;
     }
+
+    private VkMemoryGenerator memoryGenerator;
 
     private VkPointerGenerator() {
     }
 
     @Override
-    public String getName() {
+    public @Mandatory String getName() {
         return "VkPointer";
     }
 
@@ -63,7 +66,8 @@ public @Service class VkPointerGenerator implements VkGenerator {
             "    public interface Factory<T> {",
             "        T create(long address);",
             "    }",
-            "}"
+            "}",
+            ""
         );
     }
 
@@ -71,25 +75,7 @@ public @Service class VkPointerGenerator implements VkGenerator {
     public @Mandatory List<String> generateNativeC() {
         String path = Configuration.FUNCTION + "_" + getName() + "_";
         return new List<>(
-            "#include \"" + getName() + ".h\"",
-            "",
-            "void* l2a(jlong l) {",
-            "    union {",
-            "        jlong l;",
-            "        void* a;",
-            "    } c;",
-            "    c.l = l;",
-            "    return c.a;",
-            "}",
-            "",
-            "jlong a2l(void* a) {",
-            "    union {",
-            "        jlong l;",
-            "        void* a;",
-            "    } c;",
-            "    c.a = a;",
-            "    return c.l;",
-            "}",
+            "#include \"" + memoryGenerator.getName() + ".h\"",
             "",
             "JNIEXPORT jlong JNICALL Java_" + path + "_getValue(JNIEnv* env, jclass clazz, long address) {",
             "    void** a = (void**) l2a(address);",
@@ -99,18 +85,13 @@ public @Service class VkPointerGenerator implements VkGenerator {
             "JNIEXPORT void JNICALL Java_" + path + "_setValue(JNIEnv* env, jclass clazz, long address, long value) {",
             "    void** a = (void**) l2a(address);",
             "    *a = l2a(value);",
-            "}"
+            "}",
+            ""
         );
     }
 
     @Override
     public @Mandatory List<String> generateNativeH() {
-        return new List<>(
-            "#include <string.h>",
-            "",
-            "void* l2a(jlong l);",
-            "jlong a2l(void* a);",
-            ""
-        );
+        return new List<>();
     }
 }

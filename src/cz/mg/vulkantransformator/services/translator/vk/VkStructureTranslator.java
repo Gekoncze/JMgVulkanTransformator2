@@ -7,7 +7,7 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkField;
 import cz.mg.vulkantransformator.entities.vulkan.VkStructure;
-import cz.mg.vulkantransformator.services.translator.index.Index;
+import cz.mg.vulkantransformator.services.translator.Index;
 
 public @Service class VkStructureTranslator implements VkTranslator<VkStructure> {
     private static @Optional VkStructureTranslator instance;
