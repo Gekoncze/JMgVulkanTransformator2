@@ -6,6 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkField;
+import cz.mg.vulkantransformator.services.translator.vk.generators.CPointerGenerator;
 
 public @Service class VkFieldTranslator {
     private static @Optional VkFieldTranslator instance;
@@ -14,11 +15,13 @@ public @Service class VkFieldTranslator {
         if (instance == null) {
             instance = new VkFieldTranslator();
             instance.vkComponentTranslator = VkComponentTranslator.getInstance();
+            instance.pointerGenerator = CPointerGenerator.getInstance();
         }
         return instance;
     }
 
     private VkComponentTranslator vkComponentTranslator;
+    private CPointerGenerator pointerGenerator;
 
     private VkFieldTranslator() {
     }
@@ -64,15 +67,15 @@ public @Service class VkFieldTranslator {
             return field.getTypename();
         } else if (field.getPointers() == 1) {
             if (field.getTypename().equals("void")) {
-                return "VkPointer<Object>";
+                return pointerGenerator.getName() + "<Object>";
             } else {
-                return "VkPointer<" + field.getTypename() + ">";
+                return pointerGenerator.getName() + "<" + field.getTypename() + ">";
             }
         } else if (field.getPointers() == 2) {
             if (field.getTypename().equals("void")) {
-                return "VkPointer<VkPointer<Object>>";
+                return pointerGenerator.getName() + "<" + pointerGenerator.getName() + "<Object>>";
             } else {
-                return "VkPointer<VkPointer<" + field.getTypename() + ">>";
+                return pointerGenerator.getName() + "<" + pointerGenerator.getName() + "<" + field.getTypename() + ">>";
             }
         } else {
             throw new UnsupportedOperationException(

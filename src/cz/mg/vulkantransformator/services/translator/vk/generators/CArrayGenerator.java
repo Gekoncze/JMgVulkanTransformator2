@@ -5,22 +5,22 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 
-public @Service class VkArrayGenerator implements VkGenerator {
-    private static @Optional VkArrayGenerator instance;
+public @Service class CArrayGenerator implements VkGenerator {
+    private static @Optional CArrayGenerator instance;
 
-    public static @Mandatory VkArrayGenerator getInstance() {
+    public static @Mandatory CArrayGenerator getInstance() {
         if (instance == null) {
-            instance = new VkArrayGenerator();
+            instance = new CArrayGenerator();
         }
         return instance;
     }
 
-    private VkArrayGenerator() {
+    private CArrayGenerator() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "VkArray";
+        return "CArray";
     }
 
     @Override

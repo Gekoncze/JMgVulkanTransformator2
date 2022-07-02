@@ -6,7 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.services.translator.Configuration;
-import cz.mg.vulkantransformator.services.translator.vk.generators.VkMemoryGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.CMemoryGenerator;
 
 public @Service class VkComponentTranslator {
     private static @Optional VkComponentTranslator instance;
@@ -14,12 +14,12 @@ public @Service class VkComponentTranslator {
     public static @Mandatory VkComponentTranslator getInstance() {
         if (instance == null) {
             instance = new VkComponentTranslator();
-            instance.memoryGenerator = VkMemoryGenerator.getInstance();
+            instance.memoryGenerator = CMemoryGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkMemoryGenerator memoryGenerator;
+    private CMemoryGenerator memoryGenerator;
 
     private VkComponentTranslator() {
     }

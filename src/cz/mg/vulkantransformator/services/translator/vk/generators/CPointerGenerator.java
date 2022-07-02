@@ -6,25 +6,25 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.Configuration;
 
-public @Service class VkPointerGenerator implements VkGenerator {
-    private static @Optional VkPointerGenerator instance;
+public @Service class CPointerGenerator implements VkGenerator {
+    private static @Optional CPointerGenerator instance;
 
-    public static @Mandatory VkPointerGenerator getInstance() {
+    public static @Mandatory CPointerGenerator getInstance() {
         if (instance == null) {
-            instance = new VkPointerGenerator();
-            instance.memoryGenerator = VkMemoryGenerator.getInstance();
+            instance = new CPointerGenerator();
+            instance.memoryGenerator = CMemoryGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkMemoryGenerator memoryGenerator;
+    private CMemoryGenerator memoryGenerator;
 
-    private VkPointerGenerator() {
+    private CPointerGenerator() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "VkPointer";
+        return "CPointer";
     }
 
     @Override
@@ -32,12 +32,12 @@ public @Service class VkPointerGenerator implements VkGenerator {
         return new List<>(
             "package " + Configuration.PACKAGE + ";",
             "",
-            "public class VkPointer<T> {",
+            "public class " + getName() + "<T> {",
             "    private final long address;",
             "    private final long size;",
             "    private final Factory<T> factory;",
             "",
-            "    public VkPointer(long address, long size, Factory<T> factory) {",
+            "    public " + getName() + "(long address, long size, Factory<T> factory) {",
             "        this.address = address;",
             "        this.size = size;",
             "        this.factory = factory;",
@@ -66,8 +66,7 @@ public @Service class VkPointerGenerator implements VkGenerator {
             "    public interface Factory<T> {",
             "        T create(long address);",
             "    }",
-            "}",
-            ""
+            "}"
         );
     }
 
@@ -85,8 +84,7 @@ public @Service class VkPointerGenerator implements VkGenerator {
             "JNIEXPORT void JNICALL Java_" + path + "_setValue(JNIEnv* env, jclass clazz, long address, long value) {",
             "    void** a = (void**) l2a(address);",
             "    *a = l2a(value);",
-            "}",
-            ""
+            "}"
         );
     }
 
