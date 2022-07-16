@@ -87,7 +87,7 @@ public @Service class VkFieldTranslator {
         if (field.getPointers() == 1) {
             return translateJavaGetterPointer1D(component, field);
         } else if (field.getPointers() == 2) {
-            return new List<>();
+            return translateJavaGetterPointer2D(component, field);
         } else {
             String target = component.getName() + "." + field.getName();
             throw new UnsupportedOperationException(
@@ -107,6 +107,12 @@ public @Service class VkFieldTranslator {
             "             " + field.getTypename() + ".TYPE",
             "        );",
             "    }"
+        );
+    }
+
+    private @Mandatory List<String> translateJavaGetterPointer2D(@Mandatory VkComponent component, @Mandatory VkField field) {
+        return new List<>(
+            // TODO
         );
     }
 
