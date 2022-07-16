@@ -99,7 +99,6 @@ public @Service class VkFieldTranslator {
     private @Mandatory List<String> translateJavaGetterPointer1D(@Mandatory VkComponent component, @Mandatory VkField field) {
         String pointerName = pointerGenerator.getName();
         String type = pointerName + "<" + field.getTypename() + ">";
-
         return new List<>(
             "    public " + type + " " + getMethodName(field) + "() {",
             "        return new " + pointerName + "<>(",
@@ -112,15 +111,26 @@ public @Service class VkFieldTranslator {
     }
 
     private @Mandatory List<String> translateJavaGetterPointer2D(@Mandatory VkComponent component, @Mandatory VkField field) {
+        String pointerName = pointerGenerator.getName();
+        String type = pointerName + "<" + pointerName + "<" + field.getTypename() + ">>";
         return new List<>(
-            // TODO
+            "    public " + type + " " + getMethodName(field) + "() {",
+            "        return new " + pointerName + "<>(",
+            "             " + getAddressArgument(field) + ",",
+            "             " + pointerName + ".SIZE,",
+            "             (a) -> new " + pointerName + "<>(",
+            "                 a,",
+            "                 " + field.getTypename() + ".SIZE,",
+            "                 " + field.getTypename() + "::new",
+            "             )",
+            "        );",
+            "    }"
         );
     }
 
     private @Mandatory List<String> translateJavaGetterArray(@Mandatory VkComponent component, @Mandatory VkField field) {
         String arrayName = arrayGenerator.getName();
         String type = arrayName + "<" + field.getTypename() + ">";
-
         return new List<>(
             "    public " + type + " " + getMethodName(field) + "() {",
             "        return new " + arrayName + "<>(",
