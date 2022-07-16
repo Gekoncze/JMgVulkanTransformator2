@@ -45,6 +45,7 @@ public @Service class VulkanTranslator {
 
         List<VkTranslator> translators = new List<>(
             structureTranslator
+            // TODO - add more translators
         );
 
         Index index = new Index(root);

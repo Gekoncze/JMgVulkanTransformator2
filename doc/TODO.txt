@@ -1,0 +1,3 @@
+investigate
+    is long arithmetic the same as pointer arithmetic?
+        add a runtime check for various cases like overflow etc
