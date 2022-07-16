@@ -95,50 +95,53 @@ public @Service class VkFieldTranslator {
     }
 
     private @Mandatory List<String> translateJavaGetterPointer1D(@Mandatory VkComponent component, @Mandatory VkField field) {
-        String fullName = getFullName(component, field);
         String pointerTypeName = pointerGenerator.getName();
         String type = pointerTypeName + "<" + getTypename(field) + ">";
-        String methodName = getMethodName(field);
-        String addressArgument = "address + " + getOffsetFieldName(field);
-        String sizeArgument = field.getTypename() + ".SIZE";
-        String factoryArgument = "(a) -> new " + field.getTypename() + "(a)";
-        String voidSizeArgument = "1";
-        String voidFactoryArgument = "(a) -> { throw new RuntimeException(\"Unknown type of '" + fullName + "'.\"); }";
-        if (field.getTypename().equals("void")) {
-            return new List<>(
-                "    public " + type + " " + methodName + "() {",
-                "        return new " + pointerTypeName + "<>(",
-                "             " + addressArgument + ",",
-                "             " + voidSizeArgument + ",",
-                "             " + voidFactoryArgument,
-                "        );",
-                "    }"
-            );
-        } else {
-            return new List<>(
-                "    public " + type + " " + methodName + "() {",
-                "        return new " + type + "(",
-                "             " + addressArgument + ",",
-                "             " + sizeArgument + ",",
-                "             " + factoryArgument,
-                "        );",
-                "    }"
-            );
-        }
+
+        String sizeArgument = isVoid(field)
+            ? "1"
+            : field.getTypename() + ".SIZE";
+
+        String factoryArgument = isVoid(field)
+            ? "(a) -> { throw new RuntimeException(\"Unknown type of '" + getFullName(component, field) + "'.\"); }"
+            : "(a) -> new " + field.getTypename() + "(a)";
+
+        return new List<>(
+            "    public " + type + " " + getMethodName(field) + "() {",
+            "        return new " + pointerTypeName + "<>(",
+            "             " + getAddressArgument(field) + ",",
+            "             " + sizeArgument + ",",
+            "             " + factoryArgument,
+            "        );",
+            "    }"
+        );
     }
 
     private @Mandatory List<String> translateJavaGetterPointer2D(@Mandatory VkComponent component, @Mandatory VkField field) {
-        String type = pointerGenerator.getName() + "<" + pointerGenerator.getName() + "<" + getTypename(field) + ">>";
-        String getterName = "get" + capitalizeFirst(field.getName());
-        String getterAddressName = "_" + getterName + "Address";
+        String pointerTypeName = pointerGenerator.getName();
+        String type = pointerTypeName + "<" + pointerTypeName + "<" + getTypename(field) + ">>";
+
+        boolean isVoid = isVoid(field);
+
         return new List<>(); // TODO
     }
 
     private @Mandatory List<String> translateJavaGetterArray(@Mandatory VkComponent component, @Mandatory VkField field) {
-        String type = arrayGenerator.getName() + "<" + getTypename(field) + ">";
-        String getterName = "get" + capitalizeFirst(field.getName());
-        String getterAddressName = "_" + getterName + "Address";
-        return new List<>(); // TODO
+        String arrayTypeName = arrayGenerator.getName();
+        String type = arrayTypeName + "<" + getTypename(field) + ">";
+
+        boolean isVoid = isVoid(field);
+
+        return new List<>(
+            "    public " + type + " " + getMethodName(field) + "() {",
+            "        return new " + arrayTypeName + "<>(",
+//                "            " + getAddressArgument(field) + ",", TODO
+//                "            " + countArgument + ",",
+//                "            ",
+//                "            ",
+            "        );",
+            "    }"
+        );
     }
 
     public @Mandatory List<String> translateNative(@Mandatory VkComponent component, @Mandatory VkField field) {
@@ -176,5 +179,13 @@ public @Service class VkFieldTranslator {
 
     private @Mandatory String getOffsetMethodName(@Mandatory VkField field) {
         return "_get" + capitalizeFirst(field.getName()) + "Offset";
+    }
+
+    private @Mandatory String getAddressArgument(@Mandatory VkField field) {
+        return "address + " + getOffsetFieldName(field);
+    }
+
+    private boolean isVoid(@Mandatory VkField field) {
+        return field.getTypename().equals("void");
     }
 }
