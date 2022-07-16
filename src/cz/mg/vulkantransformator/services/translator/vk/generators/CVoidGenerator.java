@@ -38,7 +38,7 @@ public @Service class CVoidGenerator implements VkGenerator {
             "        1, (a) -> { throw new RuntimeException(\"Cannot create void.\"); }",
             "    );",
             "",
-            "    private final long address;",
+            "    protected final long address;",
             "",
             "    public " + getName() + "(long address) {",
             "        this.address = address;",

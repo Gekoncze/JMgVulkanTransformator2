@@ -8,6 +8,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkField;
 import cz.mg.vulkantransformator.services.translator.vk.generators.CArrayGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.generators.CPointerGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.CVoidGenerator;
 
 public @Service class VkFieldTranslator {
     private static @Optional VkFieldTranslator instance;
@@ -18,6 +19,7 @@ public @Service class VkFieldTranslator {
             instance.vkComponentTranslator = VkComponentTranslator.getInstance();
             instance.pointerGenerator = CPointerGenerator.getInstance();
             instance.arrayGenerator = CArrayGenerator.getInstance();
+            instance.voidGenerator = CVoidGenerator.getInstance();
         }
         return instance;
     }
@@ -25,6 +27,7 @@ public @Service class VkFieldTranslator {
     private VkComponentTranslator vkComponentTranslator;
     private CPointerGenerator pointerGenerator;
     private CArrayGenerator arrayGenerator;
+    private CVoidGenerator voidGenerator;
 
     private VkFieldTranslator() {
     }
@@ -96,22 +99,14 @@ public @Service class VkFieldTranslator {
 
     private @Mandatory List<String> translateJavaGetterPointer1D(@Mandatory VkComponent component, @Mandatory VkField field) {
         String pointerTypeName = pointerGenerator.getName();
-        String type = pointerTypeName + "<" + getTypename(field) + ">";
-
-        String sizeArgument = isVoid(field)
-            ? "1"
-            : field.getTypename() + ".SIZE";
-
-        String factoryArgument = isVoid(field)
-            ? "(a) -> { throw new RuntimeException(\"Unknown type of '" + getFullName(component, field) + "'.\"); }"
-            : "(a) -> new " + field.getTypename() + "(a)";
+        String typeName = getTypename(field);
+        String type = pointerTypeName + "<" + typeName + ">";
 
         return new List<>(
             "    public " + type + " " + getMethodName(field) + "() {",
             "        return new " + pointerTypeName + "<>(",
             "             " + getAddressArgument(field) + ",",
-            "             " + sizeArgument + ",",
-            "             " + factoryArgument,
+            "             " + typeName + ".TYPE",
             "        );",
             "    }"
         );
@@ -119,26 +114,25 @@ public @Service class VkFieldTranslator {
 
     private @Mandatory List<String> translateJavaGetterPointer2D(@Mandatory VkComponent component, @Mandatory VkField field) {
         String pointerTypeName = pointerGenerator.getName();
-        String type = pointerTypeName + "<" + pointerTypeName + "<" + getTypename(field) + ">>";
+        String typeName = getTypename(field);
+        String type = pointerTypeName + "<" + pointerTypeName + "<" + typeName + ">>";
 
-        boolean isVoid = isVoid(field);
-
-        return new List<>(); // TODO
+        return new List<>(
+            // TODO
+        );
     }
 
     private @Mandatory List<String> translateJavaGetterArray(@Mandatory VkComponent component, @Mandatory VkField field) {
         String arrayTypeName = arrayGenerator.getName();
-        String type = arrayTypeName + "<" + getTypename(field) + ">";
-
-        boolean isVoid = isVoid(field);
+        String typeName = getTypename(field);
+        String type = arrayTypeName + "<" + typeName + ">";
 
         return new List<>(
             "    public " + type + " " + getMethodName(field) + "() {",
             "        return new " + arrayTypeName + "<>(",
-//                "            " + getAddressArgument(field) + ",", TODO
-//                "            " + countArgument + ",",
-//                "            ",
-//                "            ",
+                "            " + getAddressArgument(field) + ",",
+                "            " + field.getArray() + ",",
+                "            " + typeName + ".TYPE",
             "        );",
             "    }"
         );
@@ -162,7 +156,7 @@ public @Service class VkFieldTranslator {
     }
 
     private @Mandatory String getTypename(@Mandatory VkField field) {
-        return field.getTypename().equals("void") ? "Object" : field.getTypename();
+        return isVoid(field) ? voidGenerator.getName() : field.getTypename();
     }
 
     private @Mandatory String getFullName(@Mandatory VkComponent component, @Mandatory VkField field) {

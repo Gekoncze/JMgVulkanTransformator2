@@ -7,6 +7,7 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.services.translator.Configuration;
 import cz.mg.vulkantransformator.services.translator.vk.generators.CMemoryGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.CTypeGenerator;
 
 public @Service class VkComponentTranslator {
     private static @Optional VkComponentTranslator instance;
@@ -15,30 +16,29 @@ public @Service class VkComponentTranslator {
         if (instance == null) {
             instance = new VkComponentTranslator();
             instance.memoryGenerator = CMemoryGenerator.getInstance();
+            instance.typeGenerator = CTypeGenerator.getInstance();
         }
         return instance;
     }
 
     private CMemoryGenerator memoryGenerator;
+    private CTypeGenerator typeGenerator;
 
     private VkComponentTranslator() {
     }
 
     public @Mandatory List<String> getCommonJavaHeader(@Mandatory VkComponent component) {
+        String typeName = typeGenerator.getName();
         return new List<>(
             "package " + Configuration.PACKAGE + ";",
             "",
-            "public class " + component.getName() + " {",
-            "    public static final long SIZE = _size();",
-            "",
-            "    private final long address;",
+            "public class " + component.getName() + " extends CVoid {",
+            "    public static final " + typeName + "<" + component.getName() + "> TYPE = new " + typeName + "<>(",
+            "        _size(), " + component.getName() + "::new",
+            "    );",
             "",
             "    public " + component.getName() + "(long address) {",
-            "        this.address = address;",
-            "    }",
-            "",
-            "    public long address() {",
-            "        return address;",
+            "        super(address);",
             "    }",
             "",
             "    private static native long _size();",
