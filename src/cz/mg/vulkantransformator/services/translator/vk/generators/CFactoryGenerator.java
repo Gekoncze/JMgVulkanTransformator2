@@ -12,12 +12,9 @@ public @Service class CFactoryGenerator implements VkGenerator {
     public static @Mandatory CFactoryGenerator getInstance() {
         if (instance == null) {
             instance = new CFactoryGenerator();
-            instance.typeGenerator = CTypeGenerator.getInstance();
         }
         return instance;
     }
-
-    private CTypeGenerator typeGenerator;
 
     private CFactoryGenerator() {
     }
@@ -29,7 +26,6 @@ public @Service class CFactoryGenerator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateJava() {
-        String genericTypeName = typeGenerator.getName() + "<T>";
         return new List<>(
             "package " + Configuration.PACKAGE + ";",
             "",

@@ -6,37 +6,31 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.Configuration;
 
-public @Service class CVoidGenerator implements VkGenerator {
-    private static @Optional CVoidGenerator instance;
+public @Service class CObjectGenerator implements VkGenerator {
+    private static @Optional CObjectGenerator instance;
 
-    public static @Mandatory CVoidGenerator getInstance() {
+    public static @Mandatory CObjectGenerator getInstance() {
         if (instance == null) {
-            instance = new CVoidGenerator();
-            instance.typeGenerator = CTypeGenerator.getInstance();
+            instance = new CObjectGenerator();
         }
         return instance;
     }
 
-    private CTypeGenerator typeGenerator;
-
-    private CVoidGenerator() {
+    private CObjectGenerator() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "CVoid";
+        return "CObject";
     }
 
     @Override
     public @Mandatory List<String> generateJava() {
-        String typeName = typeGenerator.getName();
         return new List<>(
             "package " + Configuration.PACKAGE + ";",
             "",
             "public class " + getName() + " {",
-            "    public static final " + typeName + "<" + getName() + "> TYPE = new " + typeName + "<>(",
-            "        1, (a) -> { throw new RuntimeException(\"Cannot create void.\"); }",
-            "    );",
+            "    public static final long SIZE = 1;",
             "",
             "    protected final long address;",
             "",

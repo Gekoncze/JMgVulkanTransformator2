@@ -20,8 +20,7 @@ public @Service class VulkanTranslator {
             instance.memoryGenerator = CMemoryGenerator.getInstance();
             instance.pointerGenerator = CPointerGenerator.getInstance();
             instance.arrayGenerator = CArrayGenerator.getInstance();
-            instance.classGenerator = CTypeGenerator.getInstance();
-            instance.voidGenerator = CVoidGenerator.getInstance();
+            instance.objectGenerator = CObjectGenerator.getInstance();
             instance.factoryGenerator = CFactoryGenerator.getInstance();
             instance.structureTranslator = VkStructureTranslator.getInstance();
         }
@@ -31,8 +30,7 @@ public @Service class VulkanTranslator {
     private CMemoryGenerator memoryGenerator;
     private CPointerGenerator pointerGenerator;
     private CArrayGenerator arrayGenerator;
-    private CTypeGenerator classGenerator;
-    private CVoidGenerator voidGenerator;
+    private CObjectGenerator objectGenerator;
     private CFactoryGenerator factoryGenerator;
 
     private VkStructureTranslator structureTranslator;
@@ -45,8 +43,7 @@ public @Service class VulkanTranslator {
             memoryGenerator,
             pointerGenerator,
             arrayGenerator,
-            classGenerator,
-            voidGenerator,
+            objectGenerator,
             factoryGenerator
         );
 

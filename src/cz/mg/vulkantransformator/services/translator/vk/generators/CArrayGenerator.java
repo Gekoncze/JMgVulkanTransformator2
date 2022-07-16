@@ -12,12 +12,12 @@ public @Service class CArrayGenerator implements VkGenerator {
     public static @Mandatory CArrayGenerator getInstance() {
         if (instance == null) {
             instance = new CArrayGenerator();
-            instance.typeGenerator = CTypeGenerator.getInstance();
+            instance.factoryGenerator = CFactoryGenerator.getInstance();
         }
         return instance;
     }
 
-    private CTypeGenerator typeGenerator;
+    private CFactoryGenerator factoryGenerator;
 
     private CArrayGenerator() {
     }
@@ -29,24 +29,26 @@ public @Service class CArrayGenerator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateJava() {
-        String genericTypeName = typeGenerator.getName() + "<T>";
+        String genericFactoryName = factoryGenerator.getName() + "<T>";
         return new List<>(
             "package " + Configuration.PACKAGE + ";",
             "",
             "public class " + getName() + "<T> {",
             "    private final long address;",
             "    private final int count;",
-            "    private final " + genericTypeName + " type;",
+            "    private final long size;",
+            "    private final " + genericFactoryName + " factory;",
             "",
-            "    public " + getName() + "(long address, int count, " + genericTypeName + " type) {",
+            "    public " + getName() + "(long address, int count, long size, " + genericFactoryName + " factory) {",
             "        this.address = address;",
             "        this.count = count;",
-            "        this.type = type;",
+            "        this.size = size;",
+            "        this.factory = factory;",
             "    }",
             "",
             "    public T get(int i) {",
             "        if (i >= 0 && i < count) {",
-            "            return type.getFactory().create(address + i * type.getSize());",
+            "            return factory.create(address + i * size);",
             "        } else {",
             "            throw new ArrayIndexOutOfBoundsException(i + \" out of \" + count);",
             "        }",

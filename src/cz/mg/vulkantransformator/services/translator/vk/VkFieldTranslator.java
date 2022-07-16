@@ -8,7 +8,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkField;
 import cz.mg.vulkantransformator.services.translator.vk.generators.CArrayGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.generators.CPointerGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.generators.CVoidGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.CObjectGenerator;
 
 public @Service class VkFieldTranslator {
     private static @Optional VkFieldTranslator instance;
@@ -19,7 +19,7 @@ public @Service class VkFieldTranslator {
             instance.vkComponentTranslator = VkComponentTranslator.getInstance();
             instance.pointerGenerator = CPointerGenerator.getInstance();
             instance.arrayGenerator = CArrayGenerator.getInstance();
-            instance.voidGenerator = CVoidGenerator.getInstance();
+            instance.objectGenerator = CObjectGenerator.getInstance();
         }
         return instance;
     }
@@ -27,7 +27,7 @@ public @Service class VkFieldTranslator {
     private VkComponentTranslator vkComponentTranslator;
     private CPointerGenerator pointerGenerator;
     private CArrayGenerator arrayGenerator;
-    private CVoidGenerator voidGenerator;
+    private CObjectGenerator objectGenerator;
 
     private VkFieldTranslator() {
     }
@@ -104,7 +104,8 @@ public @Service class VkFieldTranslator {
             "    public " + type + " " + getMethodName(field) + "() {",
             "        return new " + pointerName + "<>(",
             "             " + getAddressArgument(field) + ",",
-            "             " + field.getTypename() + ".TYPE",
+            "             " + field.getTypename() + ".SIZE,",
+            "             " + field.getTypename() + "::new",
             "        );",
             "    }"
         );
@@ -125,7 +126,8 @@ public @Service class VkFieldTranslator {
             "        return new " + arrayName + "<>(",
                 "            " + getAddressArgument(field) + ",",
                 "            " + field.getArray() + ",",
-                "            " + field.getTypename() + ".TYPE",
+                "            " + field.getTypename() + ".SIZE,",
+                "            " + field.getTypename() + "::new",
             "        );",
             "    }"
         );
@@ -179,7 +181,7 @@ public @Service class VkFieldTranslator {
     private @Mandatory VkField transformField(@Mandatory VkComponent component, @Mandatory VkField field) {
         if (isVoid(field)) {
             return new VkField(
-                voidGenerator.getName(),
+                objectGenerator.getName(),
                 field.getPointers(),
                 field.getName(),
                 field.getArray()
