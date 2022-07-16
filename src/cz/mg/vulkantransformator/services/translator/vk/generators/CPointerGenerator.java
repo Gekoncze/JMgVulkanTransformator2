@@ -13,11 +13,13 @@ public @Service class CPointerGenerator implements VkGenerator {
         if (instance == null) {
             instance = new CPointerGenerator();
             instance.memoryGenerator = CMemoryGenerator.getInstance();
+            instance.typeGenerator = CTypeGenerator.getInstance();
         }
         return instance;
     }
 
     private CMemoryGenerator memoryGenerator;
+    private CTypeGenerator typeGenerator;
 
     private CPointerGenerator() {
     }
@@ -29,37 +31,34 @@ public @Service class CPointerGenerator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateJava() {
+        String typeName = typeGenerator.getName();
+        String type = typeName + "<T>";
         return new List<>(
             "package " + Configuration.PACKAGE + ";",
             "",
             "public class " + getName() + "<T> {",
-            "    public static final long SIZE = _size();",
+            "    public static final " + typeName + "<" + getName() + "> TYPE = new " + typeName + "<>(",
+            "        _size(), (a) -> { throw new RuntimeException(\"Cannot create pointer.\"); }",
+            "    );",
             "",
             "    private final long address;",
-            "    private final long size;",
-            "    private final Factory<T> factory;",
+            "    private final " + type + " type;",
             "",
-            "    public " + getName() + "(long address, long size, Factory<T> factory) {",
+            "    public " + getName() + "(long address, " + type + " type) {",
             "        this.address = address;",
-            "        this.size = size;",
-            "        this.factory = factory;",
+            "        this.type = type;",
             "    }",
             "",
             "    private static native long _size();",
             "",
             "    public T getTarget() {",
-            "        long targetAddress = get();",
-            "        if (targetAddress != CMemory.NULL) {",
-            "            return factory.create(targetAddress);",
-            "        } else {",
-            "            throw new NullPointerException();",
-            "        }",
+            "        return getTarget(0);",
             "    }",
             "",
             "    public T getTarget(int i) {",
-            "        long targetAddress = get() + i * size;",
+            "        long targetAddress = get() + i * type.getSize();",
             "        if (targetAddress != CMemory.NULL) {",
-            "            return factory.create(targetAddress);",
+            "            return type.getFactory().create(targetAddress);",
             "        } else {",
             "            throw new NullPointerException();",
             "        }",
@@ -76,10 +75,6 @@ public @Service class CPointerGenerator implements VkGenerator {
             "    }",
             "",
             "    private static native void _set(long address, long value);",
-            "",
-            "    public interface Factory<T> {",
-            "        T create(long address);",
-            "    }",
             "}"
         );
     }

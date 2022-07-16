@@ -6,10 +6,7 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
-import cz.mg.vulkantransformator.services.translator.vk.generators.CArrayGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.generators.VkGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.generators.CMemoryGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.generators.CPointerGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.*;
 import cz.mg.vulkantransformator.services.translator.vk.VkStructureTranslator;
 import cz.mg.vulkantransformator.services.translator.vk.VkTranslator;
 
@@ -23,6 +20,8 @@ public @Service class VulkanTranslator {
             instance.memoryGenerator = CMemoryGenerator.getInstance();
             instance.pointerGenerator = CPointerGenerator.getInstance();
             instance.arrayGenerator = CArrayGenerator.getInstance();
+            instance.classGenerator = CTypeGenerator.getInstance();
+            instance.voidGenerator = CVoidGenerator.getInstance();
             instance.structureTranslator = VkStructureTranslator.getInstance();
         }
         return instance;
@@ -31,6 +30,9 @@ public @Service class VulkanTranslator {
     private CMemoryGenerator memoryGenerator;
     private CPointerGenerator pointerGenerator;
     private CArrayGenerator arrayGenerator;
+    private CTypeGenerator classGenerator;
+    private CVoidGenerator voidGenerator;
+
     private VkStructureTranslator structureTranslator;
 
     private VulkanTranslator() {
@@ -40,7 +42,9 @@ public @Service class VulkanTranslator {
         List<VkGenerator> generators = new List<>(
             memoryGenerator,
             pointerGenerator,
-            arrayGenerator
+            arrayGenerator,
+            classGenerator,
+            voidGenerator
         );
 
         List<VkTranslator> translators = new List<>(

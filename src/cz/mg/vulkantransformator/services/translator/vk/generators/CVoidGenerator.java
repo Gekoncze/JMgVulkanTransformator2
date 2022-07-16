@@ -6,12 +6,12 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.Configuration;
 
-public @Service class CArrayGenerator implements VkGenerator {
-    private static @Optional CArrayGenerator instance;
+public @Service class CVoidGenerator implements VkGenerator {
+    private static @Optional CVoidGenerator instance;
 
-    public static @Mandatory CArrayGenerator getInstance() {
+    public static @Mandatory CVoidGenerator getInstance() {
         if (instance == null) {
-            instance = new CArrayGenerator();
+            instance = new CVoidGenerator();
             instance.typeGenerator = CTypeGenerator.getInstance();
         }
         return instance;
@@ -19,37 +19,33 @@ public @Service class CArrayGenerator implements VkGenerator {
 
     private CTypeGenerator typeGenerator;
 
-    private CArrayGenerator() {
+    private CVoidGenerator() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "CArray";
+        return "CVoid";
     }
 
     @Override
     public @Mandatory List<String> generateJava() {
-        String typeName = typeGenerator.getName() + "<T>";
+        String typeName = typeGenerator.getName();
         return new List<>(
             "package " + Configuration.PACKAGE + ";",
             "",
-            "public class " + getName() + "<T> {",
-            "    private final long address;",
-            "    private final int count;",
-            "    private final " + typeName + " type;",
+            "public class " + getName() + " {",
+            "    public static final " + typeName + "<" + getName() + "> TYPE = new " + typeName + "<>(",
+            "        1, (a) -> { throw new RuntimeException(\"Cannot create void.\"); }",
+            "    );",
             "",
-            "    public " + getName() + "(long address, int count, " + typeName + " type) {",
+            "    private final long address;",
+            "",
+            "    public " + getName() + "(long address) {",
             "        this.address = address;",
-            "        this.count = count;",
-            "        this.type = type;",
             "    }",
             "",
-            "    public T get(int i) {",
-            "        if (i >= 0 && i < count) {",
-            "            return type.getFactory().create(address + i * type.getSize());",
-            "        } else {",
-            "            throw new ArrayIndexOutOfBoundsException(i + \" out of \" + count);",
-            "        }",
+            "    public long getAddress() {",
+            "        return address;",
             "    }",
             "}"
         );
