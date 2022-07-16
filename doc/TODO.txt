@@ -4,4 +4,3 @@ investigate
 
 move generated c classes to its own package
 add primitive type generators
-add 2D pointer class
