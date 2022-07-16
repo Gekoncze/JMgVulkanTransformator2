@@ -96,7 +96,8 @@ public @Service class VkFieldTranslator {
 
     private @Mandatory List<String> translateJavaGetterPointer1D(@Mandatory VkComponent component, @Mandatory VkField field) {
         String fullName = getFullName(component, field);
-        String type = pointerGenerator.getName() + "<" + getTypename(field) + ">";
+        String pointerTypeName = pointerGenerator.getName();
+        String type = pointerTypeName + "<" + getTypename(field) + ">";
         String methodName = getMethodName(field);
         String addressArgument = "address + " + getOffsetFieldName(field);
         String sizeArgument = field.getTypename() + ".SIZE";
@@ -106,7 +107,7 @@ public @Service class VkFieldTranslator {
         if (field.getTypename().equals("void")) {
             return new List<>(
                 "    public " + type + " " + methodName + "() {",
-                "        return new " + type + "(",
+                "        return new " + pointerTypeName + "<>(",
                 "             " + addressArgument + ",",
                 "             " + voidSizeArgument + ",",
                 "             " + voidFactoryArgument,
