@@ -38,11 +38,10 @@ public @Service class VkFieldTranslator {
         List<String> lines = new List<>();
         lines.addLast("    private static final long " + offsetFieldName + " = " + offsetMethodName + "();");
         lines.addLast("");
-        lines.addCollectionLast(translateJavaGetter(component, field));
+        lines.addCollectionLast(translateJavaGetter(component, transformField(component, field)));
         lines.addLast("");
         lines.addLast("    private static native long " + offsetMethodName + "();");
         return lines;
-
     }
 
     private @Mandatory List<String> translateJavaGetter(@Mandatory VkComponent component, @Mandatory VkField field) {
@@ -88,7 +87,7 @@ public @Service class VkFieldTranslator {
         if (field.getPointers() == 1) {
             return translateJavaGetterPointer1D(component, field);
         } else if (field.getPointers() == 2) {
-            return translateJavaGetterPointer2D(component, field);
+            return new List<>();
         } else {
             String target = component.getName() + "." + field.getName();
             throw new UnsupportedOperationException(
@@ -98,41 +97,29 @@ public @Service class VkFieldTranslator {
     }
 
     private @Mandatory List<String> translateJavaGetterPointer1D(@Mandatory VkComponent component, @Mandatory VkField field) {
-        String pointerTypeName = pointerGenerator.getName();
-        String typeName = getTypename(field);
-        String type = pointerTypeName + "<" + typeName + ">";
+        String pointerName = pointerGenerator.getName();
+        String type = pointerName + "<" + field.getTypename() + ">";
 
         return new List<>(
             "    public " + type + " " + getMethodName(field) + "() {",
-            "        return new " + pointerTypeName + "<>(",
+            "        return new " + pointerName + "<>(",
             "             " + getAddressArgument(field) + ",",
-            "             " + typeName + ".TYPE",
+            "             " + field.getTypename() + ".TYPE",
             "        );",
             "    }"
         );
     }
 
-    private @Mandatory List<String> translateJavaGetterPointer2D(@Mandatory VkComponent component, @Mandatory VkField field) {
-        String pointerTypeName = pointerGenerator.getName();
-        String typeName = getTypename(field);
-        String type = pointerTypeName + "<" + pointerTypeName + "<" + typeName + ">>";
-
-        return new List<>(
-            // TODO
-        );
-    }
-
     private @Mandatory List<String> translateJavaGetterArray(@Mandatory VkComponent component, @Mandatory VkField field) {
-        String arrayTypeName = arrayGenerator.getName();
-        String typeName = getTypename(field);
-        String type = arrayTypeName + "<" + typeName + ">";
+        String arrayName = arrayGenerator.getName();
+        String type = arrayName + "<" + field.getTypename() + ">";
 
         return new List<>(
             "    public " + type + " " + getMethodName(field) + "() {",
-            "        return new " + arrayTypeName + "<>(",
+            "        return new " + arrayName + "<>(",
                 "            " + getAddressArgument(field) + ",",
                 "            " + field.getArray() + ",",
-                "            " + typeName + ".TYPE",
+                "            " + field.getTypename() + ".TYPE",
             "        );",
             "    }"
         );
@@ -153,10 +140,6 @@ public @Service class VkFieldTranslator {
 
     private @Mandatory String capitalizeFirst(@Mandatory String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
-    }
-
-    private @Mandatory String getTypename(@Mandatory VkField field) {
-        return isVoid(field) ? voidGenerator.getName() : field.getTypename();
     }
 
     private @Mandatory String getFullName(@Mandatory VkComponent component, @Mandatory VkField field) {
@@ -181,5 +164,31 @@ public @Service class VkFieldTranslator {
 
     private boolean isVoid(@Mandatory VkField field) {
         return field.getTypename().equals("void");
+    }
+
+    private boolean isChar(@Mandatory VkField field) {
+        return field.getTypename().equals("char");
+    }
+
+    private @Mandatory VkField transformField(@Mandatory VkComponent component, @Mandatory VkField field) {
+        if (isVoid(field)) {
+            return new VkField(
+                voidGenerator.getName(),
+                field.getPointers(),
+                field.getName(),
+                field.getArray()
+            );
+        }
+
+        if (isChar(field)) {
+            return new VkField(
+                "uint8_t",
+                field.getPointers(),
+                field.getName(),
+                field.getArray()
+            );
+        }
+
+        return field;
     }
 }

@@ -29,16 +29,16 @@ public @Service class CArrayGenerator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateJava() {
-        String typeName = typeGenerator.getName() + "<T>";
+        String genericTypeName = typeGenerator.getName() + "<T>";
         return new List<>(
             "package " + Configuration.PACKAGE + ";",
             "",
             "public class " + getName() + "<T> {",
             "    private final long address;",
             "    private final int count;",
-            "    private final " + typeName + " type;",
+            "    private final " + genericTypeName + " type;",
             "",
-            "    public " + getName() + "(long address, int count, " + typeName + " type) {",
+            "    public " + getName() + "(long address, int count, " + genericTypeName + " type) {",
             "        this.address = address;",
             "        this.count = count;",
             "        this.type = type;",
