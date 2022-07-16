@@ -2,5 +2,4 @@ investigate
     is long arithmetic the same as pointer arithmetic?
         add a runtime check for various cases like overflow etc
 
-move generated c classes to its own package
 add primitive type generators

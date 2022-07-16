@@ -7,6 +7,7 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.services.translator.Configuration;
 import cz.mg.vulkantransformator.services.translator.vk.generators.CMemoryGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.CObjectGenerator;
 
 public @Service class VkComponentTranslator {
     private static @Optional VkComponentTranslator instance;
@@ -15,20 +16,24 @@ public @Service class VkComponentTranslator {
         if (instance == null) {
             instance = new VkComponentTranslator();
             instance.memoryGenerator = CMemoryGenerator.getInstance();
+            instance.objectGenerator = CObjectGenerator.getInstance();
         }
         return instance;
     }
 
     private CMemoryGenerator memoryGenerator;
+    private CObjectGenerator objectGenerator;
 
     private VkComponentTranslator() {
     }
 
     public @Mandatory List<String> getCommonJavaHeader(@Mandatory VkComponent component) {
         return new List<>(
-            "package " + Configuration.PACKAGE + ";",
+            "package " + Configuration.VULKAN_PACKAGE + ";",
             "",
-            "public class " + component.getName() + " extends CVoid {",
+            "import " + Configuration.C_PACKAGE + ".*;",
+            "",
+            "public class " + component.getName() + " extends " + objectGenerator.getName() + " {",
             "    public static final long SIZE = _size();",
             "",
             "    public " + component.getName() + "(long address) {",
@@ -73,6 +78,6 @@ public @Service class VkComponentTranslator {
     }
 
     public @Mandatory String getNativeComponentPath(@Mandatory VkComponent component) {
-        return Configuration.FUNCTION + "_" + component.getName() + "_";
+        return Configuration.VULKAN_FUNCTION + "_" + component.getName() + "_";
     }
 }

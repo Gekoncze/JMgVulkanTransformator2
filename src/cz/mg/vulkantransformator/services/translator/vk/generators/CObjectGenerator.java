@@ -20,6 +20,11 @@ public @Service class CObjectGenerator implements VkGenerator {
     }
 
     @Override
+    public boolean isVulkan() {
+        return false;
+    }
+
+    @Override
     public @Mandatory String getName() {
         return "CObject";
     }
@@ -27,7 +32,7 @@ public @Service class CObjectGenerator implements VkGenerator {
     @Override
     public @Mandatory List<String> generateJava() {
         return new List<>(
-            "package " + Configuration.PACKAGE + ";",
+            "package " + Configuration.C_PACKAGE + ";",
             "",
             "public class " + getName() + " {",
             "    public static final long SIZE = 1;",

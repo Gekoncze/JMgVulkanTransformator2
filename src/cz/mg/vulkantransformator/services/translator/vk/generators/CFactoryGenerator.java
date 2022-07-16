@@ -20,6 +20,11 @@ public @Service class CFactoryGenerator implements VkGenerator {
     }
 
     @Override
+    public boolean isVulkan() {
+        return false;
+    }
+
+    @Override
     public @Mandatory String getName() {
         return "CFactory";
     }
@@ -27,7 +32,7 @@ public @Service class CFactoryGenerator implements VkGenerator {
     @Override
     public @Mandatory List<String> generateJava() {
         return new List<>(
-            "package " + Configuration.PACKAGE + ";",
+            "package " + Configuration.C_PACKAGE + ";",
             "",
             "public interface " + getName() + "<T> {",
             "    T create(long address);",

@@ -25,6 +25,11 @@ public @Service class CPointerGenerator implements VkGenerator {
     }
 
     @Override
+    public boolean isVulkan() {
+        return false;
+    }
+
+    @Override
     public @Mandatory String getName() {
         return "CPointer";
     }
@@ -33,7 +38,7 @@ public @Service class CPointerGenerator implements VkGenerator {
     public @Mandatory List<String> generateJava() {
         String genericFactoryName = factoryGenerator.getName() + "<T>";
         return new List<>(
-            "package " + Configuration.PACKAGE + ";",
+            "package " + Configuration.C_PACKAGE + ";",
             "",
             "public class " + getName() + "<T> extends CVoid {",
             "    public static final long SIZE = _size();",
@@ -79,7 +84,7 @@ public @Service class CPointerGenerator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        String path = Configuration.FUNCTION + "_" + getName() + "_";
+        String path = Configuration.C_FUNCTION + "_" + getName() + "_";
         return new List<>(
             "#include \"" + memoryGenerator.getName() + ".h\"",
             "",

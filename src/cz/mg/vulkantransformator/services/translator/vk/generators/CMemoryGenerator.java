@@ -20,6 +20,11 @@ public @Service class CMemoryGenerator implements VkGenerator {
     }
 
     @Override
+    public boolean isVulkan() {
+        return false;
+    }
+
+    @Override
     public @Mandatory String getName() {
         return "CMemory";
     }
@@ -27,7 +32,7 @@ public @Service class CMemoryGenerator implements VkGenerator {
     @Override
     public @Mandatory List<String> generateJava() {
         return new List<>(
-            "package " + Configuration.PACKAGE + ";",
+            "package " + Configuration.C_PACKAGE + ";",
             "",
             "public class " + getName() + " implements AutoCloseable {",
             "    public static final long NULL = getNull();",
@@ -73,7 +78,7 @@ public @Service class CMemoryGenerator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        String path = Configuration.FUNCTION + "_" + getName() + "_";
+        String path = Configuration.C_FUNCTION + "_" + getName() + "_";
         return new List<>(
             "#include \"" + getName() + "\"",
             "",

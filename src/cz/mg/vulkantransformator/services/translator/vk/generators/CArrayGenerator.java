@@ -23,6 +23,11 @@ public @Service class CArrayGenerator implements VkGenerator {
     }
 
     @Override
+    public boolean isVulkan() {
+        return false;
+    }
+
+    @Override
     public @Mandatory String getName() {
         return "CArray";
     }
@@ -31,7 +36,7 @@ public @Service class CArrayGenerator implements VkGenerator {
     public @Mandatory List<String> generateJava() {
         String genericFactoryName = factoryGenerator.getName() + "<T>";
         return new List<>(
-            "package " + Configuration.PACKAGE + ";",
+            "package " + Configuration.C_PACKAGE + ";",
             "",
             "public class " + getName() + "<T> {",
             "    private final long address;",

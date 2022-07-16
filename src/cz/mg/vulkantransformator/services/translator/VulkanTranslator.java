@@ -58,15 +58,15 @@ public @Service class VulkanTranslator {
 
         for (VkGenerator generator : generators) {
             files.addLast(
-                createJavaFile(generator.getName(), generator.generateJava())
+                createJavaFile(generator.getName(), generator.generateJava(), generator.isVulkan())
             );
 
             files.addLast(
-                createNativeFileC(generator.getName(), generator.generateNativeC())
+                createNativeFileC(generator.getName(), generator.generateNativeC(), generator.isVulkan())
             );
 
             files.addLast(
-                createNativeFileH(generator.getName(), generator.generateNativeH())
+                createNativeFileH(generator.getName(), generator.generateNativeH(), generator.isVulkan())
             );
         }
 
@@ -74,11 +74,11 @@ public @Service class VulkanTranslator {
             for (VkTranslator translator : translators) {
                 if (translator.targetClass().equals(component.getClass())) {
                     files.addLast(
-                        createJavaFile(component.getName(), translator.translateJava(index, component))
+                        createJavaFile(component.getName(), translator.translateJava(index, component), true)
                     );
 
                     files.addLast(
-                        createNativeFileC(component.getName(), translator.translateNative(index, component))
+                        createNativeFileC(component.getName(), translator.translateNative(index, component), true)
                     );
                 }
             }
@@ -87,18 +87,21 @@ public @Service class VulkanTranslator {
         return files;
     }
 
-    private @Mandatory File createJavaFile(@Mandatory String name, @Mandatory List<String> lines) {
-        String filename = Configuration.DIRECTORY + "/" + name + ".java";
+    private @Mandatory File createJavaFile(@Mandatory String name, @Mandatory List<String> lines, boolean isVulkan) {
+        String directory = isVulkan ? Configuration.VULKAN_DIRECTORY : Configuration.C_DIRECTORY;
+        String filename = directory + "/" + name + ".java";
         return new File(filename, lines);
     }
 
-    private @Mandatory File createNativeFileC(@Mandatory String name, @Mandatory List<String> lines) {
-        String filename = Configuration.DIRECTORY + "/" + name + ".c";
+    private @Mandatory File createNativeFileC(@Mandatory String name, @Mandatory List<String> lines, boolean isVulkan) {
+        String directory = isVulkan ? Configuration.VULKAN_DIRECTORY : Configuration.C_DIRECTORY;
+        String filename = directory + "/" + name + ".c";
         return new File(filename, lines);
     }
 
-    private @Mandatory File createNativeFileH(@Mandatory String name, @Mandatory List<String> lines) {
-        String filename = Configuration.DIRECTORY + "/" + name + ".h";
+    private @Mandatory File createNativeFileH(@Mandatory String name, @Mandatory List<String> lines, boolean isVulkan) {
+        String directory = isVulkan ? Configuration.VULKAN_DIRECTORY : Configuration.C_DIRECTORY;
+        String filename = directory + "/" + name + ".h";
         return new File(filename, lines);
     }
 }
