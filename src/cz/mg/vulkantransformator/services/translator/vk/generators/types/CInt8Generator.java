@@ -30,7 +30,7 @@ public @Service class CInt8Generator implements VkGenerator {
 
     @Override
     public @Mandatory String getName() {
-        return "int8_t";
+        return "CInt8";
     }
 
     @Override
@@ -40,7 +40,7 @@ public @Service class CInt8Generator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jbyte", getName());
+        return typeGenerator.generateNative(getName(), "jbyte", "int8_t");
     }
 
     @Override

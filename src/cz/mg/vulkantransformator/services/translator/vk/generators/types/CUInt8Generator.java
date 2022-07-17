@@ -30,7 +30,7 @@ public @Service class CUInt8Generator implements VkGenerator {
 
     @Override
     public @Mandatory String getName() {
-        return "uint8_t";
+        return "CUInt8";
     }
 
     @Override
@@ -40,7 +40,7 @@ public @Service class CUInt8Generator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jbyte", getName());
+        return typeGenerator.generateNative(getName(), "jbyte", "uint8_t");
     }
 
     @Override

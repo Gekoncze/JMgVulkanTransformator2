@@ -30,7 +30,7 @@ public @Service class CInt64Generator implements VkGenerator {
 
     @Override
     public @Mandatory String getName() {
-        return "int64_t";
+        return "CInt64";
     }
 
     @Override
@@ -40,7 +40,7 @@ public @Service class CInt64Generator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jlong", getName());
+        return typeGenerator.generateNative(getName(), "jlong", "int64_t");
     }
 
     @Override

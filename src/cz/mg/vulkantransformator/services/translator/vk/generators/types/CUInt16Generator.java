@@ -30,7 +30,7 @@ public @Service class CUInt16Generator implements VkGenerator {
 
     @Override
     public @Mandatory String getName() {
-        return "uint16_t";
+        return "CUInt16";
     }
 
     @Override
@@ -40,7 +40,7 @@ public @Service class CUInt16Generator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jshort", getName());
+        return typeGenerator.generateNative(getName(), "jshort", "uint16_t");
     }
 
     @Override

@@ -30,7 +30,7 @@ public @Service class CCharGenerator implements VkGenerator {
 
     @Override
     public @Mandatory String getName() {
-        return "char_t";
+        return "CChar";
     }
 
     @Override

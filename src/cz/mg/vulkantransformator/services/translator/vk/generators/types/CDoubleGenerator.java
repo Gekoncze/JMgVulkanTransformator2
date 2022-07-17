@@ -30,7 +30,7 @@ public @Service class CDoubleGenerator implements VkGenerator {
 
     @Override
     public @Mandatory String getName() {
-        return "double_t";
+        return "CDouble";
     }
 
     @Override

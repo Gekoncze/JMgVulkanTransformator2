@@ -30,7 +30,7 @@ public @Service class CFloatGenerator implements VkGenerator {
 
     @Override
     public @Mandatory String getName() {
-        return "float_t";
+        return "CFloat";
     }
 
     @Override

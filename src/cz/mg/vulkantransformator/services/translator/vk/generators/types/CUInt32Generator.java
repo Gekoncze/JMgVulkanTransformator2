@@ -30,7 +30,7 @@ public @Service class CUInt32Generator implements VkGenerator {
 
     @Override
     public @Mandatory String getName() {
-        return "uint32_t";
+        return "CUInt32";
     }
 
     @Override
@@ -40,7 +40,7 @@ public @Service class CUInt32Generator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jint", getName());
+        return typeGenerator.generateNative(getName(), "jint", "uint32_t");
     }
 
     @Override
