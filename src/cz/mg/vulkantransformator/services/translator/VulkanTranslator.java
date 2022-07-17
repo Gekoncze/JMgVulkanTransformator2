@@ -32,6 +32,8 @@ public @Service class VulkanTranslator {
             instance.int16Generator = CInt16Generator.getInstance();
             instance.int32Generator = CInt32Generator.getInstance();
             instance.int64Generator = CInt64Generator.getInstance();
+            instance.floatGenerator = CFloatGenerator.getInstance();
+            instance.doubleGenerator = CDoubleGenerator.getInstance();
             instance.structureTranslator = VkStructureTranslator.getInstance();
         }
         return instance;
@@ -52,6 +54,8 @@ public @Service class VulkanTranslator {
     private CInt16Generator int16Generator;
     private CInt32Generator int32Generator;
     private CInt64Generator int64Generator;
+    private CFloatGenerator floatGenerator;
+    private CDoubleGenerator doubleGenerator;
 
     private VkStructureTranslator structureTranslator;
 
@@ -73,7 +77,9 @@ public @Service class VulkanTranslator {
             int8Generator,
             int16Generator,
             int32Generator,
-            int64Generator
+            int64Generator,
+            floatGenerator,
+            doubleGenerator
         );
 
         List<VkTranslator> translators = new List<>(
