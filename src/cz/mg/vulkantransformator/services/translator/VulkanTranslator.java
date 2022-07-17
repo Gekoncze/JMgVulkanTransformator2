@@ -9,7 +9,10 @@ import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.vk.generators.*;
 import cz.mg.vulkantransformator.services.translator.vk.VkStructureTranslator;
 import cz.mg.vulkantransformator.services.translator.vk.VkTranslator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.types.CUInt16Generator;
 import cz.mg.vulkantransformator.services.translator.vk.generators.types.CUInt32Generator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.types.CUInt64Generator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.types.CUInt8Generator;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public @Service class VulkanTranslator {
@@ -23,7 +26,10 @@ public @Service class VulkanTranslator {
             instance.arrayGenerator = CArrayGenerator.getInstance();
             instance.objectGenerator = CObjectGenerator.getInstance();
             instance.factoryGenerator = CFactoryGenerator.getInstance();
+            instance.uInt8Generator = CUInt8Generator.getInstance();
+            instance.uInt16Generator = CUInt16Generator.getInstance();
             instance.uInt32Generator = CUInt32Generator.getInstance();
+            instance.uInt64Generator = CUInt64Generator.getInstance();
             instance.structureTranslator = VkStructureTranslator.getInstance();
         }
         return instance;
@@ -35,7 +41,10 @@ public @Service class VulkanTranslator {
     private CObjectGenerator objectGenerator;
     private CFactoryGenerator factoryGenerator;
 
+    private CUInt8Generator uInt8Generator;
+    private CUInt16Generator uInt16Generator;
     private CUInt32Generator uInt32Generator;
+    private CUInt64Generator uInt64Generator;
 
     private VkStructureTranslator structureTranslator;
 
@@ -49,7 +58,10 @@ public @Service class VulkanTranslator {
             arrayGenerator,
             objectGenerator,
             factoryGenerator,
-            uInt32Generator
+            uInt8Generator,
+            uInt16Generator,
+            uInt32Generator,
+            uInt64Generator
         );
 
         List<VkTranslator> translators = new List<>(
