@@ -9,10 +9,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.vk.generators.*;
 import cz.mg.vulkantransformator.services.translator.vk.VkStructureTranslator;
 import cz.mg.vulkantransformator.services.translator.vk.VkTranslator;
-import cz.mg.vulkantransformator.services.translator.vk.generators.types.CUInt16Generator;
-import cz.mg.vulkantransformator.services.translator.vk.generators.types.CUInt32Generator;
-import cz.mg.vulkantransformator.services.translator.vk.generators.types.CUInt64Generator;
-import cz.mg.vulkantransformator.services.translator.vk.generators.types.CUInt8Generator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.types.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public @Service class VulkanTranslator {
@@ -26,6 +23,7 @@ public @Service class VulkanTranslator {
             instance.arrayGenerator = CArrayGenerator.getInstance();
             instance.objectGenerator = CObjectGenerator.getInstance();
             instance.factoryGenerator = CFactoryGenerator.getInstance();
+            instance.charGenerator = CCharGenerator.getInstance();
             instance.uInt8Generator = CUInt8Generator.getInstance();
             instance.uInt16Generator = CUInt16Generator.getInstance();
             instance.uInt32Generator = CUInt32Generator.getInstance();
@@ -41,6 +39,7 @@ public @Service class VulkanTranslator {
     private CObjectGenerator objectGenerator;
     private CFactoryGenerator factoryGenerator;
 
+    private CCharGenerator charGenerator;
     private CUInt8Generator uInt8Generator;
     private CUInt16Generator uInt16Generator;
     private CUInt32Generator uInt32Generator;
@@ -58,6 +57,7 @@ public @Service class VulkanTranslator {
             arrayGenerator,
             objectGenerator,
             factoryGenerator,
+            charGenerator,
             uInt8Generator,
             uInt16Generator,
             uInt32Generator,

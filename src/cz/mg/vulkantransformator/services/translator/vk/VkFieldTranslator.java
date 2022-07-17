@@ -200,7 +200,7 @@ public @Service class VkFieldTranslator {
 
         if (isChar(field)) {
             return new VkField(
-                "uint8_t",
+                "char_t",
                 field.getPointers(),
                 field.getName(),
                 field.getArray()
