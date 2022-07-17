@@ -9,6 +9,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.vk.generators.*;
 import cz.mg.vulkantransformator.services.translator.vk.VkStructureTranslator;
 import cz.mg.vulkantransformator.services.translator.vk.VkTranslator;
+import cz.mg.vulkantransformator.services.translator.vk.generators.types.CUInt32Generator;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public @Service class VulkanTranslator {
@@ -22,6 +23,7 @@ public @Service class VulkanTranslator {
             instance.arrayGenerator = CArrayGenerator.getInstance();
             instance.objectGenerator = CObjectGenerator.getInstance();
             instance.factoryGenerator = CFactoryGenerator.getInstance();
+            instance.uInt32Generator = CUInt32Generator.getInstance();
             instance.structureTranslator = VkStructureTranslator.getInstance();
         }
         return instance;
@@ -32,6 +34,8 @@ public @Service class VulkanTranslator {
     private CArrayGenerator arrayGenerator;
     private CObjectGenerator objectGenerator;
     private CFactoryGenerator factoryGenerator;
+
+    private CUInt32Generator uInt32Generator;
 
     private VkStructureTranslator structureTranslator;
 
@@ -44,7 +48,8 @@ public @Service class VulkanTranslator {
             pointerGenerator,
             arrayGenerator,
             objectGenerator,
-            factoryGenerator
+            factoryGenerator,
+            uInt32Generator
         );
 
         List<VkTranslator> translators = new List<>(

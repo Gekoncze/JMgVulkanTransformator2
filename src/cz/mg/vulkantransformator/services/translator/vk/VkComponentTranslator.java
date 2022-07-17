@@ -58,7 +58,6 @@ public @Service class VkComponentTranslator {
     public @Mandatory List<String> getCommonNativeHeader(@Mandatory VkComponent component) {
         String path = getNativeComponentPath(component);
         return new List<>(
-            "#include <jni.h>",
             "#include <vulkan/vulkan.h>",
             "#include \"" + memoryGenerator.getName() + ".h\"",
             "",

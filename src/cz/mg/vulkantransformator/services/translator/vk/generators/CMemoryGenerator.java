@@ -119,6 +119,7 @@ public @Service class CMemoryGenerator implements VkGenerator {
         return new List<>(
             "#include <stdlib.h>",
             "#include <string.h>",
+            "#include <jni.h>",
             "",
             "void* l2a(jlong l);",
             "jlong a2l(void* a);"

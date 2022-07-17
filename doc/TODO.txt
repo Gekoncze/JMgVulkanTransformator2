@@ -3,3 +3,4 @@ investigate
         add a runtime check for various cases like overflow etc
 
 add primitive type generators
+add runtime check for jni vs native type sizes
