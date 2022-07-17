@@ -4,6 +4,8 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
+import cz.mg.collections.map.Map;
+import cz.mg.collections.pair.Pair;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkField;
 import cz.mg.vulkantransformator.services.translator.vk.generators.CArrayGenerator;
@@ -24,6 +26,24 @@ public @Service class VkFieldTranslator {
         return instance;
     }
 
+    private static final Map<String, String> nameMap = new Map<>(
+        50,
+        new List<>(
+            new Pair<>("void", "CObject"),
+            new Pair<>("char", "CChar"),
+            new Pair<>("uint8_t", "CUInt8"),
+            new Pair<>("uint16_t", "CUInt16"),
+            new Pair<>("uint32_t", "CUInt32"),
+            new Pair<>("uint64_t", "CUInt64"),
+            new Pair<>("int8_t", "CInt8"),
+            new Pair<>("int16_t", "CInt16"),
+            new Pair<>("int32_t", "CInt32"),
+            new Pair<>("int64_t", "CInt64"),
+            new Pair<>("float", "CFloat"),
+            new Pair<>("double", "CDouble")
+        )
+    );
+
     private VkComponentTranslator vkComponentTranslator;
     private CPointerGenerator pointerGenerator;
     private CArrayGenerator arrayGenerator;
@@ -38,7 +58,7 @@ public @Service class VkFieldTranslator {
         List<String> lines = new List<>();
         lines.addLast("    private static final long " + offsetFieldName + " = " + offsetMethodName + "();");
         lines.addLast("");
-        lines.addCollectionLast(translateJavaGetter(component, transformField(component, field)));
+        lines.addCollectionLast(translateJavaGetter(component, transformField(field)));
         lines.addLast("");
         lines.addLast("    private static native long " + offsetMethodName + "();");
         return lines;
@@ -180,27 +200,12 @@ public @Service class VkFieldTranslator {
         return "address + " + getOffsetFieldName(field);
     }
 
-    private boolean isVoid(@Mandatory VkField field) {
-        return field.getTypename().equals("void");
-    }
+    private @Mandatory VkField transformField(@Mandatory VkField field) {
+        String altName = nameMap.getOptional(field.getTypename());
 
-    private boolean isChar(@Mandatory VkField field) {
-        return field.getTypename().equals("char");
-    }
-
-    private @Mandatory VkField transformField(@Mandatory VkComponent component, @Mandatory VkField field) {
-        if (isVoid(field)) {
+        if (altName != null) {
             return new VkField(
-                objectGenerator.getName(),
-                field.getPointers(),
-                field.getName(),
-                field.getArray()
-            );
-        }
-
-        if (isChar(field)) {
-            return new VkField(
-                "char_t",
+                altName,
                 field.getPointers(),
                 field.getName(),
                 field.getArray()
