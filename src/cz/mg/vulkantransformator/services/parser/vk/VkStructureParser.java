@@ -36,7 +36,7 @@ public @Service class VkStructureParser implements VkParser {
             instance.patternMatcher = PatternMatcher.getInstance();
             instance.statementParser = StatementParser.getInstance();
             instance.tokenRemover = TokenRemover.getInstance();
-            instance.fieldParser = VkFieldParser.getInstance();
+            instance.variableParser = VkVariableParser.getInstance();
         }
         return instance;
     }
@@ -44,7 +44,7 @@ public @Service class VkStructureParser implements VkParser {
     private PatternMatcher patternMatcher;
     private StatementParser statementParser;
     private TokenRemover tokenRemover;
-    private VkFieldParser fieldParser;
+    private VkVariableParser variableParser;
 
     private VkStructureParser() {
     }
@@ -78,8 +78,8 @@ public @Service class VkStructureParser implements VkParser {
 
         List<Statement> fieldStatements = statementParser.parse(tokens);
         for (Statement fieldStatement : fieldStatements) {
-            if (fieldParser.matches(fieldStatement)) {
-                structure.getFields().addLast(fieldParser.parse(fieldStatement));
+            if (variableParser.matches(fieldStatement)) {
+                structure.getFields().addLast(variableParser.parse(fieldStatement));
             } else {
                 throw new ParseException(fieldStatement.getTokens().getFirst(), "Illegal field declaration.");
             }

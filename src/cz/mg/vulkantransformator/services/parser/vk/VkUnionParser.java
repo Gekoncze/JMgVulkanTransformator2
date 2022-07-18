@@ -32,7 +32,7 @@ public @Service class VkUnionParser implements VkParser {
             instance.patternMatcher = PatternMatcher.getInstance();
             instance.statementParser = StatementParser.getInstance();
             instance.tokenRemover = TokenRemover.getInstance();
-            instance.fieldParser = VkFieldParser.getInstance();
+            instance.variableParser = VkVariableParser.getInstance();
         }
         return instance;
     }
@@ -40,7 +40,7 @@ public @Service class VkUnionParser implements VkParser {
     private PatternMatcher patternMatcher;
     private StatementParser statementParser;
     private TokenRemover tokenRemover;
-    private VkFieldParser fieldParser;
+    private VkVariableParser variableParser;
 
     private VkUnionParser() {
     }
@@ -74,8 +74,8 @@ public @Service class VkUnionParser implements VkParser {
         List<Statement> fieldStatements = statementParser.parse(tokens);
 
         for (Statement fieldStatement : fieldStatements) {
-            if (fieldParser.matches(fieldStatement)) {
-                union.getFields().addLast(fieldParser.parse(fieldStatement));
+            if (variableParser.matches(fieldStatement)) {
+                union.getFields().addLast(variableParser.parse(fieldStatement));
             } else {
                 throw new ParseException(fieldStatement.getTokens().getFirst(), "Illegal field declaration.");
             }

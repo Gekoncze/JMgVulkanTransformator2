@@ -10,7 +10,7 @@ import cz.mg.collections.list.List;
 public @Entity class VkFunction implements VkComponent {
     private String name;
     private VkVariable output;
-    private List<VkVariable> input;
+    private List<VkVariable> input = new List<>();
 
     public VkFunction() {
     }
@@ -21,13 +21,25 @@ public @Entity class VkFunction implements VkComponent {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Optional @Part
     public VkVariable getOutput() {
         return output;
     }
 
+    public void setOutput(VkVariable output) {
+        this.output = output;
+    }
+
     @Mandatory @Part
     public List<VkVariable> getInput() {
         return input;
+    }
+
+    public void setInput(List<VkVariable> input) {
+        this.input = input;
     }
 }

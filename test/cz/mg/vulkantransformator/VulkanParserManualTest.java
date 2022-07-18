@@ -23,30 +23,7 @@ public @Test class VulkanParserManualTest {
         VkRoot root = parser.parse(new VkVersion(1, 0), loader.load(PATH));
 
         for (VkComponent component : root.getComponents()) {
-            if (component instanceof VkStructure) {
-                VkStructure structure = (VkStructure) component;
-                System.out.println("Found structure " + structure.getName() + ".");
-            }
-
-            if (component instanceof VkUnion) {
-                VkUnion union = (VkUnion) component;
-                System.out.println("Found union " + union.getName() + ".");
-            }
-
-            if (component instanceof VkEnum) {
-                VkEnum vkEnum = (VkEnum) component;
-                System.out.println("Found enum " + vkEnum.getName() + ".");
-            }
-
-            if (component instanceof VkFlags) {
-                VkFlags flags = (VkFlags) component;
-                System.out.println("Found flags " + flags.getName() + ".");
-            }
-
-            if (component instanceof VkType) {
-                VkType handle = (VkType) component;
-                System.out.println("Found type " + handle.getName() + ".");
-            }
+            System.out.println("Found " + component.getClass().getSimpleName() + " " + component.getName() + ".");
         }
     }
 }

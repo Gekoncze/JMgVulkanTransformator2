@@ -34,6 +34,7 @@ public @Service class VulkanParser {
             instance.flagsParser = VkFlagsParser.getInstance();
             instance.handleParser = VkHandleParser.getInstance();
             instance.typeParser = VkTypeParser.getInstance();
+            instance.functionParser = VkFunctionParser.getInstance();
         }
         return instance;
     }
@@ -50,6 +51,7 @@ public @Service class VulkanParser {
     private VkFlagsParser flagsParser;
     private VkHandleParser handleParser;
     private VkTypeParser typeParser;
+    private VkFunctionParser functionParser;
 
     private VulkanParser() {
     }
@@ -74,7 +76,8 @@ public @Service class VulkanParser {
             enumParser,
             flagsParser,
             handleParser,
-            typeParser
+            typeParser,
+            functionParser
         );
 
         for (Statement statement : statements) {

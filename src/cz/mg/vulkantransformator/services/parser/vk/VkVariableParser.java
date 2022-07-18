@@ -26,12 +26,12 @@ import cz.mg.vulkantransformator.utilities.code.TokenType;
  *     const VkPipelineColorBlendAttachmentState*    pAttachments
  *     float                                         blendConstants[4]
  */
-public @Service class VkFieldParser implements VkParser {
-    private static @Optional VkFieldParser instance;
+public @Service class VkVariableParser implements VkParser {
+    private static @Optional VkVariableParser instance;
 
-    public static @Mandatory VkFieldParser getInstance() {
+    public static @Mandatory VkVariableParser getInstance() {
         if (instance == null) {
-            instance = new VkFieldParser();
+            instance = new VkVariableParser();
             instance.patternMatcher = PatternMatcher.getInstance();
             instance.tokenRemover = TokenRemover.getInstance();
         }
@@ -41,7 +41,7 @@ public @Service class VkFieldParser implements VkParser {
     private PatternMatcher patternMatcher;
     private TokenRemover tokenRemover;
 
-    private VkFieldParser() {
+    private VkVariableParser() {
     }
 
     @Override
