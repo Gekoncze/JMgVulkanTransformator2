@@ -1,19 +1,20 @@
 package cz.mg.vulkantransformator.entities.vulkan;
 
 import cz.mg.annotations.classes.Entity;
+import cz.mg.annotations.requirement.Required;
 import cz.mg.annotations.storage.Part;
 import cz.mg.annotations.storage.Value;
 import cz.mg.collections.list.List;
 
 public @Entity class VkStructure implements VkComponent {
     private String name;
-    private List<VkField> fields = new List<>();
+    private List<VkVariable> fields = new List<>();
 
     public VkStructure() {
     }
 
-    @Value
     @Override
+    @Required @Value
     public String getName() {
         return name;
     }
@@ -22,12 +23,12 @@ public @Entity class VkStructure implements VkComponent {
         this.name = name;
     }
 
-    @Part
-    public List<VkField> getFields() {
+    @Required @Part
+    public List<VkVariable> getFields() {
         return fields;
     }
 
-    public void setFields(List<VkField> fields) {
+    public void setFields(List<VkVariable> fields) {
         this.fields = fields;
     }
 }

@@ -1,6 +1,7 @@
 package cz.mg.vulkantransformator.entities.preprocessor;
 
 import cz.mg.annotations.classes.Entity;
+import cz.mg.annotations.requirement.Required;
 import cz.mg.annotations.storage.Part;
 import cz.mg.annotations.storage.Value;
 import cz.mg.collections.list.List;
@@ -20,7 +21,7 @@ public @Entity class Definition {
         this.expression = expression;
     }
 
-    @Value
+    @Required @Value
     public Token getName() {
         return name;
     }
@@ -29,7 +30,7 @@ public @Entity class Definition {
         this.name = name;
     }
 
-    @Part
+    @Required @Part
     public List<Token> getParameters() {
         return parameters;
     }
@@ -38,7 +39,7 @@ public @Entity class Definition {
         this.parameters = parameters;
     }
 
-    @Part
+    @Required @Part
     public List<Token> getExpression() {
         return expression;
     }

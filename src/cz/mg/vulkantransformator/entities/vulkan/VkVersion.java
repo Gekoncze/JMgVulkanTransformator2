@@ -1,6 +1,7 @@
 package cz.mg.vulkantransformator.entities.vulkan;
 
 import cz.mg.annotations.classes.Entity;
+import cz.mg.annotations.requirement.Required;
 import cz.mg.annotations.storage.Value;
 
 public @Entity class VkVersion {
@@ -15,7 +16,7 @@ public @Entity class VkVersion {
         this.minor = minor;
     }
 
-    @Value
+    @Required @Value
     public Integer getMajor() {
         return major;
     }
@@ -24,7 +25,7 @@ public @Entity class VkVersion {
         this.major = major;
     }
 
-    @Value
+    @Required @Value
     public Integer getMinor() {
         return minor;
     }

@@ -7,7 +7,7 @@ import cz.mg.collections.list.List;
 import cz.mg.collections.map.Map;
 import cz.mg.collections.pair.Pair;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
-import cz.mg.vulkantransformator.entities.vulkan.VkField;
+import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 import cz.mg.vulkantransformator.services.translator.vk.generators.CArrayGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.generators.CPointerGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.generators.CObjectGenerator;
@@ -52,7 +52,7 @@ public @Service class VkFieldTranslator {
     private VkFieldTranslator() {
     }
 
-    public @Mandatory List<String> translateJava(@Mandatory VkComponent component, @Mandatory VkField field) {
+    public @Mandatory List<String> translateJava(@Mandatory VkComponent component, @Mandatory VkVariable field) {
         String offsetFieldName = getOffsetFieldName(field);
         String offsetMethodName = getOffsetMethodName(field);
         List<String> lines = new List<>();
@@ -64,7 +64,7 @@ public @Service class VkFieldTranslator {
         return lines;
     }
 
-    private @Mandatory List<String> translateJavaGetter(@Mandatory VkComponent component, @Mandatory VkField field) {
+    private @Mandatory List<String> translateJavaGetter(@Mandatory VkComponent component, @Mandatory VkVariable field) {
         if (field.getArray() > 0 && field.getPointers() > 0) {
             throw new UnsupportedOperationException(
                 "Unsupported pointer and array options for '" + getFullName(component, field) + "': "
@@ -92,7 +92,7 @@ public @Service class VkFieldTranslator {
         }
     }
 
-    private @Mandatory List<String> translateJavaGetterValue(@Mandatory VkComponent component, @Mandatory VkField field) {
+    private @Mandatory List<String> translateJavaGetterValue(@Mandatory VkComponent component, @Mandatory VkVariable field) {
         String type = field.getTypename();
         String methodName = getMethodName(field);
         String offsetFieldName = getOffsetFieldName(field);
@@ -103,7 +103,7 @@ public @Service class VkFieldTranslator {
         );
     }
 
-    private @Mandatory List<String> translateJavaGetterPointer(@Mandatory VkComponent component, @Mandatory VkField field) {
+    private @Mandatory List<String> translateJavaGetterPointer(@Mandatory VkComponent component, @Mandatory VkVariable field) {
         if (field.getPointers() == 1) {
             return translateJavaGetterPointer1D(component, field);
         } else if (field.getPointers() == 2) {
@@ -116,7 +116,7 @@ public @Service class VkFieldTranslator {
         }
     }
 
-    private @Mandatory List<String> translateJavaGetterPointer1D(@Mandatory VkComponent component, @Mandatory VkField field) {
+    private @Mandatory List<String> translateJavaGetterPointer1D(@Mandatory VkComponent component, @Mandatory VkVariable field) {
         String pointerName = pointerGenerator.getName();
         String type = pointerName + "<" + field.getTypename() + ">";
         return new List<>(
@@ -130,7 +130,7 @@ public @Service class VkFieldTranslator {
         );
     }
 
-    private @Mandatory List<String> translateJavaGetterPointer2D(@Mandatory VkComponent component, @Mandatory VkField field) {
+    private @Mandatory List<String> translateJavaGetterPointer2D(@Mandatory VkComponent component, @Mandatory VkVariable field) {
         String pointerName = pointerGenerator.getName();
         String type = pointerName + "<" + pointerName + "<" + field.getTypename() + ">>";
         return new List<>(
@@ -148,7 +148,7 @@ public @Service class VkFieldTranslator {
         );
     }
 
-    private @Mandatory List<String> translateJavaGetterArray(@Mandatory VkComponent component, @Mandatory VkField field) {
+    private @Mandatory List<String> translateJavaGetterArray(@Mandatory VkComponent component, @Mandatory VkVariable field) {
         String arrayName = arrayGenerator.getName();
         String type = arrayName + "<" + field.getTypename() + ">";
         return new List<>(
@@ -163,7 +163,7 @@ public @Service class VkFieldTranslator {
         );
     }
 
-    public @Mandatory List<String> translateNative(@Mandatory VkComponent component, @Mandatory VkField field) {
+    public @Mandatory List<String> translateNative(@Mandatory VkComponent component, @Mandatory VkVariable field) {
         String path = vkComponentTranslator.getNativeComponentPath(component);
         String methodName = getOffsetMethodName(field);
         return new List<>(
@@ -180,31 +180,31 @@ public @Service class VkFieldTranslator {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 
-    private @Mandatory String getFullName(@Mandatory VkComponent component, @Mandatory VkField field) {
+    private @Mandatory String getFullName(@Mandatory VkComponent component, @Mandatory VkVariable field) {
         return component.getName() + "." + field.getName();
     }
 
-    private @Mandatory String getMethodName(@Mandatory VkField field) {
+    private @Mandatory String getMethodName(@Mandatory VkVariable field) {
         return "get" + capitalizeFirst(field.getName());
     }
 
-    private @Mandatory String getOffsetFieldName(@Mandatory VkField field) {
+    private @Mandatory String getOffsetFieldName(@Mandatory VkVariable field) {
         return field.getName().toUpperCase() + "_OFFSET";
     }
 
-    private @Mandatory String getOffsetMethodName(@Mandatory VkField field) {
+    private @Mandatory String getOffsetMethodName(@Mandatory VkVariable field) {
         return "_get" + capitalizeFirst(field.getName()) + "Offset";
     }
 
-    private @Mandatory String getAddressArgument(@Mandatory VkField field) {
+    private @Mandatory String getAddressArgument(@Mandatory VkVariable field) {
         return "address + " + getOffsetFieldName(field);
     }
 
-    private @Mandatory VkField transformField(@Mandatory VkField field) {
+    private @Mandatory VkVariable transformField(@Mandatory VkVariable field) {
         String altName = nameMap.getOptional(field.getTypename());
 
         if (altName != null) {
-            return new VkField(
+            return new VkVariable(
                 altName,
                 field.getPointers(),
                 field.getName(),

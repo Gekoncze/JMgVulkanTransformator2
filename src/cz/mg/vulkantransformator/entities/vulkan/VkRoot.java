@@ -1,6 +1,7 @@
 package cz.mg.vulkantransformator.entities.vulkan;
 
 import cz.mg.annotations.classes.Entity;
+import cz.mg.annotations.requirement.Required;
 import cz.mg.annotations.storage.Part;
 import cz.mg.collections.list.List;
 
@@ -15,7 +16,7 @@ public @Entity class VkRoot {
         this.version = version;
     }
 
-    @Part
+    @Required @Part
     public VkVersion getVersion() {
         return version;
     }
@@ -24,7 +25,7 @@ public @Entity class VkRoot {
         this.version = version;
     }
 
-    @Part
+    @Required @Part
     public List<VkComponent> getComponents() {
         return components;
     }

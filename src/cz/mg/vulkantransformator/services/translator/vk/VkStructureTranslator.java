@@ -5,7 +5,7 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
-import cz.mg.vulkantransformator.entities.vulkan.VkField;
+import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 import cz.mg.vulkantransformator.entities.vulkan.VkStructure;
 import cz.mg.vulkantransformator.services.translator.Index;
 
@@ -40,7 +40,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
             vkComponentTranslator.getCommonJavaHeader(structure)
         );
 
-        for (VkField field : structure.getFields()) {
+        for (VkVariable field : structure.getFields()) {
             lines.addCollectionLast(
                 fieldTranslator.translateJava(structure, field)
             );
@@ -65,7 +65,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
             vkComponentTranslator.getCommonNativeHeader(structure)
         );
 
-        for (VkField field : structure.getFields()) {
+        for (VkVariable field : structure.getFields()) {
             lines.addCollectionLast(
                 fieldTranslator.translateNative(structure, field)
             );

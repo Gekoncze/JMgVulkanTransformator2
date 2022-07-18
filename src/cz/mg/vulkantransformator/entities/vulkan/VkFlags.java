@@ -1,6 +1,7 @@
 package cz.mg.vulkantransformator.entities.vulkan;
 
 import cz.mg.annotations.classes.Entity;
+import cz.mg.annotations.requirement.Required;
 import cz.mg.annotations.storage.Value;
 
 public @Entity class VkFlags implements VkComponent {
@@ -9,8 +10,8 @@ public @Entity class VkFlags implements VkComponent {
     public VkFlags() {
     }
 
-    @Value
     @Override
+    @Required @Value
     public String getName() {
         return name;
     }

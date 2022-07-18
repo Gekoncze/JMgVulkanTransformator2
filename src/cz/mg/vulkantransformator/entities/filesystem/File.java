@@ -1,6 +1,7 @@
 package cz.mg.vulkantransformator.entities.filesystem;
 
 import cz.mg.annotations.classes.Entity;
+import cz.mg.annotations.requirement.Required;
 import cz.mg.annotations.storage.Part;
 import cz.mg.annotations.storage.Value;
 import cz.mg.collections.list.List;
@@ -17,7 +18,7 @@ public @Entity class File {
         this.lines = lines;
     }
 
-    @Value
+    @Required @Value
     public String getName() {
         return name;
     }
@@ -26,7 +27,7 @@ public @Entity class File {
         this.name = name;
     }
 
-    @Part
+    @Required @Part
     public List<String> getLines() {
         return lines;
     }

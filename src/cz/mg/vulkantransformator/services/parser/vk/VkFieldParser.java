@@ -5,7 +5,7 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.collections.list.ListItem;
-import cz.mg.vulkantransformator.entities.vulkan.VkField;
+import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 import cz.mg.vulkantransformator.services.parser.matcher.Matchers;
 import cz.mg.vulkantransformator.services.parser.matcher.PatternMatcher;
 import cz.mg.vulkantransformator.services.parser.other.ParseException;
@@ -55,7 +55,7 @@ public @Service class VkFieldParser implements VkParser {
     }
 
     @Override
-    public @Mandatory VkField parse(@Mandatory Statement statement) {
+    public @Mandatory VkVariable parse(@Mandatory Statement statement) {
         List<Token> tokens = new List<>(statement.getTokens());
 
         removeConstTokens(tokens);
@@ -67,7 +67,7 @@ public @Service class VkFieldParser implements VkParser {
         String name = tokenRemover.removeFirst(tokens, TokenType.NAME).getText();
         tokenRemover.verifyNoMoreTokens(tokens);
 
-        return new VkField(typename, pointers, name, array);
+        return new VkVariable(typename, pointers, name, array);
     }
 
     private void removeConstTokens(@Mandatory List<Token> tokens) {

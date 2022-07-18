@@ -1,25 +1,26 @@
 package cz.mg.vulkantransformator.entities.vulkan;
 
 import cz.mg.annotations.classes.Entity;
+import cz.mg.annotations.requirement.Required;
 import cz.mg.annotations.storage.Value;
 
-public @Entity class VkField implements VkComponent {
+public @Entity class VkVariable implements VkComponent {
     private String typename;
     private Integer pointers;
     private String name;
     private Integer array;
 
-    public VkField() {
+    public VkVariable() {
     }
 
-    public VkField(String typename, Integer pointers, String name, Integer array) {
+    public VkVariable(String typename, Integer pointers, String name, Integer array) {
         this.typename = typename;
         this.pointers = pointers;
         this.name = name;
         this.array = array;
     }
 
-    @Value
+    @Required @Value
     public String getTypename() {
         return typename;
     }
@@ -29,7 +30,7 @@ public @Entity class VkField implements VkComponent {
     }
 
     /** number of pointer dimensions */
-    @Value
+    @Required @Value
     public Integer getPointers() {
         return pointers;
     }
@@ -38,8 +39,8 @@ public @Entity class VkField implements VkComponent {
         this.pointers = pointers;
     }
 
-    @Value
     @Override
+    @Required @Value
     public String getName() {
         return name;
     }
@@ -49,7 +50,7 @@ public @Entity class VkField implements VkComponent {
     }
 
     /** array size */
-    @Value
+    @Required @Value
     public Integer getArray() {
         return array;
     }
