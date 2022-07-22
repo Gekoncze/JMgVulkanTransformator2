@@ -1,17 +1,17 @@
-package cz.mg.vulkantransformator.services.translator.vk.generators.types;
+package cz.mg.vulkantransformator.services.translator.generators.types;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.vk.generators.VkGenerator;
+import cz.mg.vulkantransformator.services.translator.generators.Generator;
 
-public @Service class CUInt8Generator implements VkGenerator {
-    private static @Optional CUInt8Generator instance;
+public @Service class CDoubleGenerator implements Generator {
+    private static @Optional CDoubleGenerator instance;
 
-    public static @Mandatory CUInt8Generator getInstance() {
+    public static @Mandatory CDoubleGenerator getInstance() {
         if (instance == null) {
-            instance = new CUInt8Generator();
+            instance = new CDoubleGenerator();
             instance.typeGenerator = CTypeGenerator.getInstance();
         }
         return instance;
@@ -19,7 +19,7 @@ public @Service class CUInt8Generator implements VkGenerator {
 
     private CTypeGenerator typeGenerator;
 
-    private CUInt8Generator() {
+    private CDoubleGenerator() {
     }
 
 
@@ -30,17 +30,17 @@ public @Service class CUInt8Generator implements VkGenerator {
 
     @Override
     public @Mandatory String getName() {
-        return "CUInt8";
+        return "CDouble";
     }
 
     @Override
     public @Mandatory List<String> generateJava() {
-        return typeGenerator.generateJava(getName(), "byte");
+        return typeGenerator.generateJava(getName(), "double");
     }
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jbyte", "uint8_t");
+        return typeGenerator.generateNative(getName(), "jdouble", "double");
     }
 
     @Override

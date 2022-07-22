@@ -8,9 +8,9 @@ import cz.mg.collections.map.Map;
 import cz.mg.collections.pair.Pair;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
-import cz.mg.vulkantransformator.services.translator.vk.generators.CArrayGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.generators.CPointerGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.generators.CObjectGenerator;
+import cz.mg.vulkantransformator.services.translator.generators.CArrayGenerator;
+import cz.mg.vulkantransformator.services.translator.generators.CPointerGenerator;
+import cz.mg.vulkantransformator.services.translator.generators.CObjectGenerator;
 
 public @Service class VkFieldTranslator {
     private static @Optional VkFieldTranslator instance;

@@ -6,8 +6,8 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.services.translator.Configuration;
-import cz.mg.vulkantransformator.services.translator.vk.generators.CMemoryGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.generators.CObjectGenerator;
+import cz.mg.vulkantransformator.services.translator.generators.CMemoryGenerator;
+import cz.mg.vulkantransformator.services.translator.generators.CObjectGenerator;
 
 public @Service class VkComponentTranslator {
     private static @Optional VkComponentTranslator instance;

@@ -1,17 +1,17 @@
-package cz.mg.vulkantransformator.services.translator.vk.generators.types;
+package cz.mg.vulkantransformator.services.translator.generators.types;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.vk.generators.VkGenerator;
+import cz.mg.vulkantransformator.services.translator.generators.Generator;
 
-public @Service class CUInt32Generator implements VkGenerator {
-    private static @Optional CUInt32Generator instance;
+public @Service class CFloatGenerator implements Generator {
+    private static @Optional CFloatGenerator instance;
 
-    public static @Mandatory CUInt32Generator getInstance() {
+    public static @Mandatory CFloatGenerator getInstance() {
         if (instance == null) {
-            instance = new CUInt32Generator();
+            instance = new CFloatGenerator();
             instance.typeGenerator = CTypeGenerator.getInstance();
         }
         return instance;
@@ -19,7 +19,7 @@ public @Service class CUInt32Generator implements VkGenerator {
 
     private CTypeGenerator typeGenerator;
 
-    private CUInt32Generator() {
+    private CFloatGenerator() {
     }
 
 
@@ -30,17 +30,17 @@ public @Service class CUInt32Generator implements VkGenerator {
 
     @Override
     public @Mandatory String getName() {
-        return "CUInt32";
+        return "CFloat";
     }
 
     @Override
     public @Mandatory List<String> generateJava() {
-        return typeGenerator.generateJava(getName(), "int");
+        return typeGenerator.generateJava(getName(), "float");
     }
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jint", "uint32_t");
+        return typeGenerator.generateNative(getName(), "jfloat", "float");
     }
 
     @Override

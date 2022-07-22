@@ -6,10 +6,10 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
-import cz.mg.vulkantransformator.services.translator.vk.generators.*;
+import cz.mg.vulkantransformator.services.translator.generators.*;
+import cz.mg.vulkantransformator.services.translator.generators.types.*;
 import cz.mg.vulkantransformator.services.translator.vk.VkStructureTranslator;
 import cz.mg.vulkantransformator.services.translator.vk.VkTranslator;
-import cz.mg.vulkantransformator.services.translator.vk.generators.types.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public @Service class VulkanTranslator {
@@ -63,7 +63,7 @@ public @Service class VulkanTranslator {
     }
 
     public @Mandatory List<File> export(@Mandatory VkRoot root) {
-        List<VkGenerator> generators = new List<>(
+        List<Generator> generators = new List<>(
             memoryGenerator,
             pointerGenerator,
             arrayGenerator,
@@ -91,7 +91,7 @@ public @Service class VulkanTranslator {
 
         List<File> files = new List<>();
 
-        for (VkGenerator generator : generators) {
+        for (Generator generator : generators) {
             files.addLast(
                 createJavaFile(generator.getName(), generator.generateJava(), generator.isVulkan())
             );

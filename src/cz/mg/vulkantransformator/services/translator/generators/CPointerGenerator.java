@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.vk.generators;
+package cz.mg.vulkantransformator.services.translator.generators;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
@@ -6,7 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.Configuration;
 
-public @Service class CPointerGenerator implements VkGenerator {
+public @Service class CPointerGenerator implements Generator {
     private static @Optional CPointerGenerator instance;
 
     public static @Mandatory CPointerGenerator getInstance() {

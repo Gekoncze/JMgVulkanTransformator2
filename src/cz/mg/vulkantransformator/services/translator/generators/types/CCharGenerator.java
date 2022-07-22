@@ -1,12 +1,12 @@
-package cz.mg.vulkantransformator.services.translator.vk.generators.types;
+package cz.mg.vulkantransformator.services.translator.generators.types;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.vk.generators.VkGenerator;
+import cz.mg.vulkantransformator.services.translator.generators.Generator;
 
-public @Service class CCharGenerator implements VkGenerator {
+public @Service class CCharGenerator implements Generator {
     private static @Optional CCharGenerator instance;
 
     public static @Mandatory CCharGenerator getInstance() {

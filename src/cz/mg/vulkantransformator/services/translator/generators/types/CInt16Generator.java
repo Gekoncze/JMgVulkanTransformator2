@@ -1,17 +1,17 @@
-package cz.mg.vulkantransformator.services.translator.vk.generators.types;
+package cz.mg.vulkantransformator.services.translator.generators.types;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.vk.generators.VkGenerator;
+import cz.mg.vulkantransformator.services.translator.generators.Generator;
 
-public @Service class CUInt16Generator implements VkGenerator {
-    private static @Optional CUInt16Generator instance;
+public @Service class CInt16Generator implements Generator {
+    private static @Optional CInt16Generator instance;
 
-    public static @Mandatory CUInt16Generator getInstance() {
+    public static @Mandatory CInt16Generator getInstance() {
         if (instance == null) {
-            instance = new CUInt16Generator();
+            instance = new CInt16Generator();
             instance.typeGenerator = CTypeGenerator.getInstance();
         }
         return instance;
@@ -19,7 +19,7 @@ public @Service class CUInt16Generator implements VkGenerator {
 
     private CTypeGenerator typeGenerator;
 
-    private CUInt16Generator() {
+    private CInt16Generator() {
     }
 
 
@@ -30,7 +30,7 @@ public @Service class CUInt16Generator implements VkGenerator {
 
     @Override
     public @Mandatory String getName() {
-        return "CUInt16";
+        return "CInt16";
     }
 
     @Override
@@ -40,7 +40,7 @@ public @Service class CUInt16Generator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jshort", "uint16_t");
+        return typeGenerator.generateNative(getName(), "jshort", "int16_t");
     }
 
     @Override
