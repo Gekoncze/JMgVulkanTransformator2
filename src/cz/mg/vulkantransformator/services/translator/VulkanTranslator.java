@@ -10,6 +10,7 @@ import cz.mg.vulkantransformator.services.translator.generators.*;
 import cz.mg.vulkantransformator.services.translator.generators.types.*;
 import cz.mg.vulkantransformator.services.translator.vk.VkStructureTranslator;
 import cz.mg.vulkantransformator.services.translator.vk.VkTranslator;
+import cz.mg.vulkantransformator.services.translator.vk.VkUnionTranslator;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public @Service class VulkanTranslator {
@@ -35,6 +36,7 @@ public @Service class VulkanTranslator {
             instance.floatGenerator = CFloatGenerator.getInstance();
             instance.doubleGenerator = CDoubleGenerator.getInstance();
             instance.structureTranslator = VkStructureTranslator.getInstance();
+            instance.unionTranslator = VkUnionTranslator.getInstance();
         }
         return instance;
     }
@@ -58,6 +60,7 @@ public @Service class VulkanTranslator {
     private CDoubleGenerator doubleGenerator;
 
     private VkStructureTranslator structureTranslator;
+    private VkUnionTranslator unionTranslator;
 
     private VulkanTranslator() {
     }
@@ -83,7 +86,8 @@ public @Service class VulkanTranslator {
         );
 
         List<VkTranslator> translators = new List<>(
-            structureTranslator
+            structureTranslator,
+            unionTranslator
             // TODO - add more translators
         );
 
