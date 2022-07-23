@@ -5,6 +5,7 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.preprocessor.Definition;
+import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.entities.vulkan.VkVersion;
 import cz.mg.vulkantransformator.services.parser.segmentation.LineParser;
@@ -63,7 +64,9 @@ public @Service class VulkanParser {
         List<List<Token>> joinedLinesTokens = splicer.splice(linesTokens);
         List<Token> tokens = preprocessor.preprocess(joinedLinesTokens, definitions);
         List<Statement> statements = statementParser.parse(tokens);
-        return parseStatements(version, statements);
+        VkRoot root = parseStatements(version, statements);
+        addDefinitions(root, definitions);
+        return root;
     }
 
     private @Mandatory VkRoot parseStatements(@Mandatory VkVersion version, @Mandatory List<Statement> statements) {
@@ -90,5 +93,24 @@ public @Service class VulkanParser {
         }
 
         return root;
+    }
+
+    private void addDefinitions(@Mandatory VkRoot root, @Mandatory List<Definition> definitions) {
+        for (Definition definition : definitions)
+        {
+            if (definition.getParameters().isEmpty() && !definition.getExpression().isEmpty())
+            {
+                StringBuilder value = new StringBuilder();
+                for (Token expression : definition.getExpression())
+                {
+                    value.append(expression.getText());
+                }
+
+                VkConstant constant = new VkConstant();
+                constant.setName(definition.getName().getText());
+                constant.setValue(value.toString());
+                root.getComponents().addLast(constant);
+            }
+        }
     }
 }

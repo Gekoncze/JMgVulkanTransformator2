@@ -41,7 +41,10 @@ public @Service class VkTypeParser implements VkParser {
             statement,
             true,
             Matchers.text("typedef"),
-            Matchers.text("uint64_t"),
+            Matchers.oneOf(
+                Matchers.text("uint64_t"),
+                Matchers.text("uint32_t")
+            ),
             Matchers.type(TokenType.NAME)
         );
     }
@@ -51,7 +54,7 @@ public @Service class VkTypeParser implements VkParser {
         List<Token> tokens = new List<>(statement.getTokens());
 
         tokenRemover.removeFirst(tokens, "typedef");
-        tokenRemover.removeFirst(tokens, "uint64_t");
+        tokenRemover.removeFirst(tokens, TokenType.NAME);
 
         VkType type = new VkType();
         type.setName(tokenRemover.removeFirst(tokens, TokenType.NAME).getText());

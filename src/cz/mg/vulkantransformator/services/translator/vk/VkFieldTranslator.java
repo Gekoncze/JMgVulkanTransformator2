@@ -10,7 +10,6 @@ import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 import cz.mg.vulkantransformator.services.translator.generators.CArrayGenerator;
 import cz.mg.vulkantransformator.services.translator.generators.CPointerGenerator;
-import cz.mg.vulkantransformator.services.translator.generators.CObjectGenerator;
 
 public @Service class VkFieldTranslator {
     private static @Optional VkFieldTranslator instance;
@@ -21,7 +20,6 @@ public @Service class VkFieldTranslator {
             instance.vkComponentTranslator = VkComponentTranslator.getInstance();
             instance.pointerGenerator = CPointerGenerator.getInstance();
             instance.arrayGenerator = CArrayGenerator.getInstance();
-            instance.objectGenerator = CObjectGenerator.getInstance();
         }
         return instance;
     }
@@ -47,7 +45,6 @@ public @Service class VkFieldTranslator {
     private VkComponentTranslator vkComponentTranslator;
     private CPointerGenerator pointerGenerator;
     private CArrayGenerator arrayGenerator;
-    private CObjectGenerator objectGenerator;
 
     private VkFieldTranslator() {
     }

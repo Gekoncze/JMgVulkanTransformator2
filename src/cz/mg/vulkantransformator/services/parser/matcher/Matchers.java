@@ -16,4 +16,16 @@ public @Utility class Matchers {
     public static @Mandatory Matcher type(@Mandatory TokenType type) {
         return token -> token.getType().equals(type);
     }
+
+    public static @Mandatory Matcher oneOf(Matcher... matchers) {
+        return token -> {
+            for (Matcher matcher : matchers) {
+                if (matcher.matches(token)) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+    }
 }
