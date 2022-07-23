@@ -4,9 +4,11 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.entities.vulkan.*;
-import cz.mg.vulkantransformator.services.translator.Configuration;
+import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
+import cz.mg.vulkantransformator.entities.vulkan.VkType;
 import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.vk.types.VkBool32TypeTranslator;
+import cz.mg.vulkantransformator.services.translator.vk.types.VkSpecialTypeTranslator;
 
 public @Service class VkTypeTranslator implements VkTranslator<VkType> {
     private static @Optional VkTypeTranslator instance;
@@ -15,11 +17,13 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
         if (instance == null) {
             instance = new VkTypeTranslator();
             instance.vkComponentTranslator = VkComponentTranslator.getInstance();
+            instance.vkBool32TypeTranslator = VkBool32TypeTranslator.getInstance();
         }
         return instance;
     }
 
     private VkComponentTranslator vkComponentTranslator;
+    private VkBool32TypeTranslator vkBool32TypeTranslator;
 
     private VkTypeTranslator() {
     }
@@ -37,26 +41,16 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
             vkComponentTranslator.getCommonJavaHeader(type)
         );
 
-        if (type.getName().equals("VkBool32"))
-        {
-            String vkTrue = ((VkConstant)index.getComponent("VK_TRUE")).getValue();
-            String vkFalse = ((VkConstant)index.getComponent("VK_FALSE")).getValue();
+        List<VkSpecialTypeTranslator> specialTypeTranslators = new List<>(
+            vkBool32TypeTranslator
+        );
 
-            lines.addCollectionLast(
-                new List<>(
-                    "    public boolean get() {",
-                    "        return _get(address) != " + vkFalse + ";",
-                    "    }",
-                    "",
-                    "    private static native int _get(long address);",
-                    "",
-                    "    public void set(boolean value) {",
-                    "        _set2(address, value ? " + vkTrue + " : " + vkFalse + ");",
-                    "    }",
-                    "",
-                    "    private static native void _set2(long address, int value);"
-                )
-            );
+        for (VkSpecialTypeTranslator specialTypeTranslator : specialTypeTranslators) {
+            if (specialTypeTranslator.getName().equals(type.getName())) {
+                lines.addCollectionLast(
+                    specialTypeTranslator.translateJava(index, type)
+                );
+            }
         }
 
         lines.addCollectionLast(
@@ -74,22 +68,16 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
             vkComponentTranslator.getCommonNativeHeader(type)
         );
 
-        if (type.getName().equals("VkBool32"))
-        {
-            String path = Configuration.VULKAN_FUNCTION + "_VkBool32_";
-            lines.addCollectionLast(
-                new List<>(
-                    "JNIEXPORT jint JNICALL Java_" + path + "_get(JNIEnv* env, jclass clazz, jlong address) {",
-                    "    VkBool32* a = (VkBool32*) l2a(address);",
-                    "    return *a;",
-                    "}",
-                    "",
-                    "JNIEXPORT void JNICALL Java_" + path + "_set2(JNIEnv* env, jclass clazz, jlong address, jint value) {",
-                    "    VkBool32* a = (VkBool32*) l2a(address);",
-                    "    *a = value;",
-                    "}"
-                )
-            );
+        List<VkSpecialTypeTranslator> specialTypeTranslators = new List<>(
+            vkBool32TypeTranslator
+        );
+
+        for (VkSpecialTypeTranslator specialTypeTranslator : specialTypeTranslators) {
+            if (specialTypeTranslator.getName().equals(type.getName())) {
+                lines.addCollectionLast(
+                    specialTypeTranslator.translateNative(index, type)
+                );
+            }
         }
 
         lines.addCollectionLast(
