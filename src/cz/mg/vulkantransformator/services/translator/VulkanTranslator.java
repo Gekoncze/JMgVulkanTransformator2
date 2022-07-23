@@ -8,10 +8,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.generators.*;
 import cz.mg.vulkantransformator.services.translator.generators.types.*;
-import cz.mg.vulkantransformator.services.translator.vk.VkStructureTranslator;
-import cz.mg.vulkantransformator.services.translator.vk.VkTranslator;
-import cz.mg.vulkantransformator.services.translator.vk.VkTypeTranslator;
-import cz.mg.vulkantransformator.services.translator.vk.VkUnionTranslator;
+import cz.mg.vulkantransformator.services.translator.vk.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public @Service class VulkanTranslator {
@@ -43,12 +40,14 @@ public @Service class VulkanTranslator {
                 VkUnionTranslator.getInstance(),
                 VkTypeTranslator.getInstance()
             );
+            instance.constantTranslator = VkConstantTranslator.getInstance();
         }
         return instance;
     }
 
     private List<Generator> generators;
     private List<VkTranslator> translators;
+    private VkConstantTranslator constantTranslator;
 
     private VulkanTranslator() {
     }
@@ -76,15 +75,39 @@ public @Service class VulkanTranslator {
             for (VkTranslator translator : translators) {
                 if (translator.targetClass().equals(component.getClass())) {
                     files.addLast(
-                        createJavaFile(component.getName(), translator.translateJava(index, component), true)
+                        createJavaFile(
+                            component.getName(),
+                            translator.translateJava(index, component),
+                            true
+                        )
                     );
 
                     files.addLast(
-                        createNativeFileC(component.getName(), translator.translateNative(index, component), true)
+                        createNativeFileC(
+                            component.getName(),
+                            translator.translateNative(index, component),
+                            true
+                        )
                     );
                 }
             }
         }
+
+        files.addLast(
+            createJavaFile(
+                constantTranslator.getName(),
+                constantTranslator.translateJava(index, root),
+                true
+            )
+        );
+
+        files.addLast(
+            createNativeFileC(
+                constantTranslator.getName(),
+                constantTranslator.translateNative(index, root),
+                true
+            )
+        );
 
         return files;
     }
