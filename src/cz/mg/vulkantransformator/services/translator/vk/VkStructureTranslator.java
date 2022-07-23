@@ -15,13 +15,13 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
     public static @Mandatory VkStructureTranslator getInstance() {
         if (instance == null) {
             instance = new VkStructureTranslator();
-            instance.vkComponentTranslator = VkComponentTranslator.getInstance();
+            instance.componentTranslator = VkComponentTranslator.getInstance();
             instance.fieldTranslator = VkFieldTranslator.getInstance();
         }
         return instance;
     }
 
-    private VkComponentTranslator vkComponentTranslator;
+    private VkComponentTranslator componentTranslator;
     private VkFieldTranslator fieldTranslator;
 
     private VkStructureTranslator() {
@@ -37,7 +37,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            vkComponentTranslator.getCommonJavaHeader(structure)
+            componentTranslator.getCommonJavaHeader(structure)
         );
 
         for (VkVariable field : structure.getFields()) {
@@ -51,7 +51,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
         }
 
         lines.addCollectionLast(
-            vkComponentTranslator.getCommonJavaFooter(structure)
+            componentTranslator.getCommonJavaFooter(structure)
         );
 
         return lines;
@@ -62,7 +62,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            vkComponentTranslator.getCommonNativeHeader(structure)
+            componentTranslator.getCommonNativeHeader(structure)
         );
 
         for (VkVariable field : structure.getFields()) {
@@ -72,7 +72,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
         }
 
         lines.addCollectionLast(
-            vkComponentTranslator.getCommonNativeFooter(structure)
+            componentTranslator.getCommonNativeFooter(structure)
         );
 
         return lines;

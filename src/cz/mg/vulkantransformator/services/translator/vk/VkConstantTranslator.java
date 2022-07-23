@@ -120,7 +120,7 @@ public @Service class VkConstantTranslator {
                             "const char* _" + constant.getName() + " = " + constant.getName() + ";",
                             "",
                             "JNIEXPORT jlong JNICALL Java_" + path + "get_" + constant.getName() + "(JNIEnv* env, jclass clazz) {",
-                            "    return a2l(_" + constant.getName() + ");",
+                            "    return a2l(&_" + constant.getName() + ");",
                             "}",
                             ""
                         )

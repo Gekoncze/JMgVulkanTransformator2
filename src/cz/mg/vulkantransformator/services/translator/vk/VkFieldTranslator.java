@@ -17,7 +17,7 @@ public @Service class VkFieldTranslator {
     public static @Mandatory VkFieldTranslator getInstance() {
         if (instance == null) {
             instance = new VkFieldTranslator();
-            instance.vkComponentTranslator = VkComponentTranslator.getInstance();
+            instance.componentTranslator = VkComponentTranslator.getInstance();
             instance.pointerGenerator = CPointerGenerator.getInstance();
             instance.arrayGenerator = CArrayGenerator.getInstance();
         }
@@ -42,7 +42,7 @@ public @Service class VkFieldTranslator {
         )
     );
 
-    private VkComponentTranslator vkComponentTranslator;
+    private VkComponentTranslator componentTranslator;
     private CPointerGenerator pointerGenerator;
     private CArrayGenerator arrayGenerator;
 
@@ -161,7 +161,7 @@ public @Service class VkFieldTranslator {
     }
 
     public @Mandatory List<String> translateNative(@Mandatory VkComponent component, @Mandatory VkVariable field) {
-        String path = vkComponentTranslator.getNativeComponentPath(component);
+        String path = componentTranslator.getNativeComponentPath(component);
         String methodName = getOffsetMethodName(field);
         return new List<>(
             "JNIEXPORT jlong JNICALL Java_" + path + methodName + "(JNIEnv* env, jclass clazz) {",

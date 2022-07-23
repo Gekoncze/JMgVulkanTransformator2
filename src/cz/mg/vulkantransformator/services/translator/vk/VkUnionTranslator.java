@@ -15,13 +15,13 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
     public static @Mandatory VkUnionTranslator getInstance() {
         if (instance == null) {
             instance = new VkUnionTranslator();
-            instance.vkComponentTranslator = VkComponentTranslator.getInstance();
+            instance.componentTranslator = VkComponentTranslator.getInstance();
             instance.fieldTranslator = VkFieldTranslator.getInstance();
         }
         return instance;
     }
 
-    private VkComponentTranslator vkComponentTranslator;
+    private VkComponentTranslator componentTranslator;
     private VkFieldTranslator fieldTranslator;
 
     private VkUnionTranslator() {
@@ -37,7 +37,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            vkComponentTranslator.getCommonJavaHeader(union)
+            componentTranslator.getCommonJavaHeader(union)
         );
 
         for (VkVariable field : union.getFields()) {
@@ -51,7 +51,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
         }
 
         lines.addCollectionLast(
-            vkComponentTranslator.getCommonJavaFooter(union)
+            componentTranslator.getCommonJavaFooter(union)
         );
 
         return lines;
@@ -62,7 +62,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            vkComponentTranslator.getCommonNativeHeader(union)
+            componentTranslator.getCommonNativeHeader(union)
         );
 
         for (VkVariable field : union.getFields()) {
@@ -72,7 +72,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
         }
 
         lines.addCollectionLast(
-            vkComponentTranslator.getCommonNativeFooter(union)
+            componentTranslator.getCommonNativeFooter(union)
         );
 
         return lines;
