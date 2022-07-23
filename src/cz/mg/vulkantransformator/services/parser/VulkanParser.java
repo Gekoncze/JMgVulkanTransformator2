@@ -29,13 +29,15 @@ public @Service class VulkanParser {
             instance.splicer = Splicer.getInstance();
             instance.preprocessor = Preprocessor.getInstance();
             instance.statementParser = StatementParser.getInstance();
-            instance.structureParser = VkStructureParser.getInstance();
-            instance.unionParser = VkUnionParser.getInstance();
-            instance.enumParser = VkEnumParser.getInstance();
-            instance.flagsParser = VkFlagsParser.getInstance();
-            instance.handleParser = VkHandleParser.getInstance();
-            instance.typeParser = VkTypeParser.getInstance();
-            instance.functionParser = VkFunctionParser.getInstance();
+            instance.parsers = new List<>(
+                VkStructureParser.getInstance(),
+                VkUnionParser.getInstance(),
+                VkEnumParser.getInstance(),
+                VkFlagsParser.getInstance(),
+                VkHandleParser.getInstance(),
+                VkTypeParser.getInstance(),
+                VkFunctionParser.getInstance()
+            );
         }
         return instance;
     }
@@ -45,14 +47,7 @@ public @Service class VulkanParser {
     private Splicer splicer;
     private Preprocessor preprocessor;
     private StatementParser statementParser;
-
-    private VkStructureParser structureParser;
-    private VkUnionParser unionParser;
-    private VkEnumParser enumParser;
-    private VkFlagsParser flagsParser;
-    private VkHandleParser handleParser;
-    private VkTypeParser typeParser;
-    private VkFunctionParser functionParser;
+    private List<VkParser> parsers;
 
     private VulkanParser() {
     }
@@ -72,16 +67,6 @@ public @Service class VulkanParser {
     private @Mandatory VkRoot parseStatements(@Mandatory VkVersion version, @Mandatory List<Statement> statements) {
         VkRoot root = new VkRoot(version);
         root.setVersion(version);
-
-        List<VkParser> parsers = new List<>(
-            structureParser,
-            unionParser,
-            enumParser,
-            flagsParser,
-            handleParser,
-            typeParser,
-            functionParser
-        );
 
         for (Statement statement : statements) {
             for (VkParser parser : parsers) {

@@ -20,81 +20,40 @@ public @Service class VulkanTranslator {
     public static @Mandatory VulkanTranslator getInstance() {
         if (instance == null) {
             instance = new VulkanTranslator();
-            instance.memoryGenerator = CMemoryGenerator.getInstance();
-            instance.pointerGenerator = CPointerGenerator.getInstance();
-            instance.arrayGenerator = CArrayGenerator.getInstance();
-            instance.objectGenerator = CObjectGenerator.getInstance();
-            instance.factoryGenerator = CFactoryGenerator.getInstance();
-            instance.charGenerator = CCharGenerator.getInstance();
-            instance.uInt8Generator = CUInt8Generator.getInstance();
-            instance.uInt16Generator = CUInt16Generator.getInstance();
-            instance.uInt32Generator = CUInt32Generator.getInstance();
-            instance.uInt64Generator = CUInt64Generator.getInstance();
-            instance.int8Generator = CInt8Generator.getInstance();
-            instance.int16Generator = CInt16Generator.getInstance();
-            instance.int32Generator = CInt32Generator.getInstance();
-            instance.int64Generator = CInt64Generator.getInstance();
-            instance.floatGenerator = CFloatGenerator.getInstance();
-            instance.doubleGenerator = CDoubleGenerator.getInstance();
-            instance.structureTranslator = VkStructureTranslator.getInstance();
-            instance.unionTranslator = VkUnionTranslator.getInstance();
-            instance.typeTranslator = VkTypeTranslator.getInstance();
+            instance.generators = new List<>(
+                CMemoryGenerator.getInstance(),
+                CPointerGenerator.getInstance(),
+                CArrayGenerator.getInstance(),
+                CObjectGenerator.getInstance(),
+                CFactoryGenerator.getInstance(),
+                CCharGenerator.getInstance(),
+                CUInt8Generator.getInstance(),
+                CUInt16Generator.getInstance(),
+                CUInt32Generator.getInstance(),
+                CUInt64Generator.getInstance(),
+                CInt8Generator.getInstance(),
+                CInt16Generator.getInstance(),
+                CInt32Generator.getInstance(),
+                CInt64Generator.getInstance(),
+                CFloatGenerator.getInstance(),
+                CDoubleGenerator.getInstance()
+            );
+            instance.translators = new List<>(
+                VkStructureTranslator.getInstance(),
+                VkUnionTranslator.getInstance(),
+                VkTypeTranslator.getInstance()
+            );
         }
         return instance;
     }
 
-    private CMemoryGenerator memoryGenerator;
-    private CPointerGenerator pointerGenerator;
-    private CArrayGenerator arrayGenerator;
-    private CObjectGenerator objectGenerator;
-    private CFactoryGenerator factoryGenerator;
-
-    private CCharGenerator charGenerator;
-    private CUInt8Generator uInt8Generator;
-    private CUInt16Generator uInt16Generator;
-    private CUInt32Generator uInt32Generator;
-    private CUInt64Generator uInt64Generator;
-    private CInt8Generator int8Generator;
-    private CInt16Generator int16Generator;
-    private CInt32Generator int32Generator;
-    private CInt64Generator int64Generator;
-    private CFloatGenerator floatGenerator;
-    private CDoubleGenerator doubleGenerator;
-
-    private VkStructureTranslator structureTranslator;
-    private VkUnionTranslator unionTranslator;
-    private VkTypeTranslator typeTranslator;
+    private List<Generator> generators;
+    private List<VkTranslator> translators;
 
     private VulkanTranslator() {
     }
 
     public @Mandatory List<File> export(@Mandatory VkRoot root) {
-        List<Generator> generators = new List<>(
-            memoryGenerator,
-            pointerGenerator,
-            arrayGenerator,
-            objectGenerator,
-            factoryGenerator,
-            charGenerator,
-            uInt8Generator,
-            uInt16Generator,
-            uInt32Generator,
-            uInt64Generator,
-            int8Generator,
-            int16Generator,
-            int32Generator,
-            int64Generator,
-            floatGenerator,
-            doubleGenerator
-        );
-
-        List<VkTranslator> translators = new List<>(
-            structureTranslator,
-            unionTranslator,
-            typeTranslator
-            // TODO - add more translators
-        );
-
         Index index = new Index(root);
 
         List<File> files = new List<>();
