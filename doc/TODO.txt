@@ -1,5 +1,4 @@
-investigate
-    is long arithmetic the same as pointer arithmetic?
-        add a runtime check for various cases like overflow etc
-
 add runtime check for jni vs native type sizes
+add runtime check for pointer arithmetic
+    overflow might theoretically cause problems if there was an overflow check!
+                check both directions
