@@ -1,5 +1,4 @@
 add vk function translator
-add vk function pointer translator
 
 add utility class for strings
 
