@@ -1,4 +1,6 @@
 add vk function translator
+add vk function pointer translator
+
 add utility class for strings
 
 add runtime check for enum size (must equal int32_t size)

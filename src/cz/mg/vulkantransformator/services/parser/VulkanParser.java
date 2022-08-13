@@ -36,7 +36,8 @@ public @Service class VulkanParser {
                 VkFlagsParser.getInstance(),
                 VkHandleParser.getInstance(),
                 VkTypeParser.getInstance(),
-                VkFunctionParser.getInstance()
+                VkFunctionParser.getInstance(),
+                VkFunctionPointerParser.getInstance()
             );
         }
         return instance;
