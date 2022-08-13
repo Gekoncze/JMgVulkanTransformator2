@@ -1,4 +1,4 @@
-add vk flags translator
+add size_t typeK
 add vk function translator
 add utility class for strings
 

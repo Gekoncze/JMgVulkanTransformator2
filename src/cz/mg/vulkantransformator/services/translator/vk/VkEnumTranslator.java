@@ -52,7 +52,8 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
             "        _set2(address, flag);",
             "    }",
             "",
-            "    private native void _set2(long address, int value);"
+            "    private native void _set2(long address, int value);",
+            ""
         ));
 
         for (VkEnumEntry entry : enumeration.getEntries()) {
@@ -60,6 +61,8 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
                 enumEntryTranslator.translateJava(enumeration, entry)
             );
         }
+
+        componentTranslator.removeLastEmptyLine(lines);
 
         lines.addCollectionLast(
             componentTranslator.getCommonJavaFooter(enumeration)

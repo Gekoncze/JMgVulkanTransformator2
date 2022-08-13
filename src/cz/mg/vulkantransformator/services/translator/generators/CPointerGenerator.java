@@ -14,12 +14,14 @@ public @Service class CPointerGenerator implements Generator {
             instance = new CPointerGenerator();
             instance.memoryGenerator = CMemoryGenerator.getInstance();
             instance.factoryGenerator = CFactoryGenerator.getInstance();
+            instance.objectGenerator = CObjectGenerator.getInstance();
         }
         return instance;
     }
 
     private CMemoryGenerator memoryGenerator;
     private CFactoryGenerator factoryGenerator;
+    private CObjectGenerator objectGenerator;
 
     private CPointerGenerator() {
     }
@@ -40,7 +42,7 @@ public @Service class CPointerGenerator implements Generator {
         return new List<>(
             "package " + Configuration.C_PACKAGE + ";",
             "",
-            "public class " + getName() + "<T> extends CVoid {",
+            "public class " + getName() + "<T> extends " + objectGenerator.getName() + " {",
             "    public static final long SIZE = _size();",
             "",
             "    private final long size;",

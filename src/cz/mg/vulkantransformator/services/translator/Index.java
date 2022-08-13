@@ -17,7 +17,7 @@ public @Utility class Index {
         }
     }
 
-    public @Mandatory VkComponent getComponent(@Mandatory String name) {
-        return components.get(name);
+    public @Mandatory Map<String, VkComponent> getComponents() {
+        return components;
     }
 }

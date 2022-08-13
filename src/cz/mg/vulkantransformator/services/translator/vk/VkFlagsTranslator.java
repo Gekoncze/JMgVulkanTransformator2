@@ -38,7 +38,6 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
             componentTranslator.getCommonJavaHeader(flags)
         );
 
-        String flagBitsName = getFlagBitsName(flags);
         lines.addCollectionLast(new List<>(
             "    public int get() {",
             "        return _get2(address);",
@@ -52,23 +51,11 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
             "",
             "    private native void _set2(long address, int value);",
             "",
-            "    public void add(" + flagBitsName + " flag) {",
-            "        _add(address, flag.getAddress());",
-            "    }",
-            "",
-            "    private static native void _add(long address, long flagAddress);",
-            "",
             "    public void add(int flag) {",
             "        _add2(address, flag);",
             "    }",
             "",
             "    private static native void _add2(long address, int flag);",
-            "",
-            "    public void remove(" + flagBitsName + " flag) {",
-            "        _remove(address, flag.getAddress());",
-            "    }",
-            "",
-            "    private static native void _remove(long address, long flagAddress);",
             "",
             "    public void remove(int flag) {",
             "        _remove2(address, flag);",
@@ -76,6 +63,25 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
             "",
             "    private static native void _remove2(long address, int flag);"
         ));
+
+        String flagBitsName = getFlagBitsName(index, flags);
+        if (flagBitsName != null) {
+            lines.addCollectionLast(new List<>(
+                "    public void add(" + flagBitsName + " flag) {",
+                "        _add(address, flag.getAddress());",
+                "    }",
+                "",
+                "    private static native void _add(long address, long flagAddress);",
+                "",
+                "    public void remove(" + flagBitsName + " flag) {",
+                "        _remove(address, flag.getAddress());",
+                "    }",
+                "",
+                "    private static native void _remove(long address, long flagAddress);"
+            ));
+        }
+
+        componentTranslator.removeLastEmptyLine(lines);
 
         lines.addCollectionLast(
             componentTranslator.getCommonJavaFooter(flags)
@@ -94,7 +100,6 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
 
         String path = Configuration.VULKAN_FUNCTION + "_" + flags.getName() + "_";
         String name = flags.getName();
-        String flagBitsName = getFlagBitsName(flags);
         lines.addCollectionLast(new List<>(
             "JNIEXPORT jint JNICALL Java_" + path + "_get2(JNIEnv* env, jclass clazz, jlong address) {",
             "    " + name + "* a = (" + name + "*) l2a(address);",
@@ -106,21 +111,9 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
             "    *a = value;",
             "}",
             "",
-            "JNIEXPORT void JNICALL Java_" + path + "_add(JNIEnv* env, jclass clazz, jlong address, jlong flagAddress) {",
-            "    " + name + "* a = (" + name + "*) l2a(address);",
-            "    " + flagBitsName + "* b = (" + flagBitsName + "*) l2a(flagAddress);",
-            "    *a |= *b;",
-            "}",
-            "",
             "JNIEXPORT void JNICALL Java_" + path + "_add2(JNIEnv* env, jclass clazz, jlong address, jint value) {",
             "    " + name + "* a = (" + name + "*) l2a(address);",
             "    *a |= value;",
-            "}",
-            "",
-            "JNIEXPORT void JNICALL Java_" + path + "_remove(JNIEnv* env, jclass clazz, jlong address, jlong flagAddress) {",
-            "    " + name + "* a = (" + name + "*) l2a(address);",
-            "    " + flagBitsName + "* b = (" + flagBitsName + "*) l2a(flagAddress);",
-            "    *a &= ~(*b)",
             "}",
             "",
             "JNIEXPORT void JNICALL Java_" + path + "_remove2(JNIEnv* env, jclass clazz, jlong address, jint value) {",
@@ -130,6 +123,23 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
             ""
         ));
 
+        String flagBitsName = getFlagBitsName(index, flags);
+        if (flagBitsName != null) {
+            lines.addCollectionLast(new List<>(
+                "JNIEXPORT void JNICALL Java_" + path + "_add(JNIEnv* env, jclass clazz, jlong address, jlong flagAddress) {",
+                "    " + name + "* a = (" + name + "*) l2a(address);",
+                "    " + flagBitsName + "* b = (" + flagBitsName + "*) l2a(flagAddress);",
+                "    *a |= *b;",
+                "}",
+                "",
+                "JNIEXPORT void JNICALL Java_" + path + "_remove(JNIEnv* env, jclass clazz, jlong address, jlong flagAddress) {",
+                "    " + name + "* a = (" + name + "*) l2a(address);",
+                "    " + flagBitsName + "* b = (" + flagBitsName + "*) l2a(flagAddress);",
+                "    *a &= ~(*b)",
+                "}"
+            ));
+        }
+
         lines.addCollectionLast(
             componentTranslator.getCommonNativeFooter(flags)
         );
@@ -137,8 +147,10 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         return lines;
     }
 
-    private @Mandatory String getFlagBitsName(@Mandatory VkFlags flags)
+    private @Optional String getFlagBitsName(@Mandatory Index index, @Mandatory VkFlags flags)
     {
-        return flags.getName().replace("Flags", "FlagBits");
+        String targetName = flags.getName().replace("Flags", "FlagBits");
+        Object target = index.getComponents().getOptional(targetName);
+        return target != null ? targetName : null;
     }
 }

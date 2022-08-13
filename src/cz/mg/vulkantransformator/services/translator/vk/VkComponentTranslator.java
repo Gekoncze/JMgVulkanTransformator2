@@ -79,4 +79,12 @@ public @Service class VkComponentTranslator {
     public @Mandatory String getNativeComponentPath(@Mandatory VkComponent component) {
         return Configuration.VULKAN_FUNCTION + "_" + component.getName() + "_";
     }
+
+    public void removeLastEmptyLine(@Mandatory List<String> lines) {
+        if (!lines.isEmpty()) {
+            if (lines.getLast().isEmpty()) {
+                lines.removeLast();
+            }
+        }
+    }
 }

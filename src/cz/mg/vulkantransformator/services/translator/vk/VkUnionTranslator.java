@@ -44,11 +44,9 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
             lines.addCollectionLast(
                 fieldTranslator.translateJava(union, field)
             );
-
-            if (field != union.getFields().getLast()) {
-                lines.addLast("");
-            }
         }
+
+        componentTranslator.removeLastEmptyLine(lines);
 
         lines.addCollectionLast(
             componentTranslator.getCommonJavaFooter(union)

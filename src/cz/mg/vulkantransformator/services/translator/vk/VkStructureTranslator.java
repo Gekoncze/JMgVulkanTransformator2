@@ -44,11 +44,9 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
             lines.addCollectionLast(
                 fieldTranslator.translateJava(structure, field)
             );
-
-            if (field != structure.getFields().getLast()) {
-                lines.addLast("");
-            }
         }
+
+        componentTranslator.removeLastEmptyLine(lines);
 
         lines.addCollectionLast(
             componentTranslator.getCommonJavaFooter(structure)
