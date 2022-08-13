@@ -39,7 +39,8 @@ public @Service class VulkanTranslator {
                 VkStructureTranslator.getInstance(),
                 VkUnionTranslator.getInstance(),
                 VkTypeTranslator.getInstance(),
-                VkEnumTranslator.getInstance()
+                VkEnumTranslator.getInstance(),
+                VkFlagsTranslator.getInstance()
             );
             instance.constantTranslator = VkConstantTranslator.getInstance();
         }

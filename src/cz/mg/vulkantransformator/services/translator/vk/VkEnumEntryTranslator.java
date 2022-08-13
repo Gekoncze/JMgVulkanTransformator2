@@ -28,6 +28,8 @@ public @Service class VkEnumEntryTranslator {
             "         get_" + entry.getName() + "()",
             "    );",
             "",
+            "    public static final int " + entry.getName() + "_I" + " = " + entry.getName() + ".get();",
+            "",
             "    private static native long get_" + entry.getName() + "();",
             ""
         );
@@ -35,13 +37,13 @@ public @Service class VkEnumEntryTranslator {
 
     public @Mandatory List<String> translateNative(@Mandatory VkEnum enumeration, @Mandatory VkEnumEntry entry) {
         String path = Configuration.VULKAN_FUNCTION + "_" + enumeration.getName() + "_";
-       return new List<>(
-           enumeration.getName() + " _" + entry.getName() + " = " + entry.getName() + ";",
-           "",
-           "JNIEXPORT jlong JNICALL Java_" + path + "get_" + entry.getName() + "(JNIEnv* env, jclass clazz) {",
-           "    return a2l(&_" + entry.getName() + ");",
-           "}",
-           ""
-       );
+        return new List<>(
+            enumeration.getName() + " _" + entry.getName() + " = " + entry.getName() + ";",
+            "",
+            "JNIEXPORT jlong JNICALL Java_" + path + "get_" + entry.getName() + "(JNIEnv* env, jclass clazz) {",
+            "    return a2l(&_" + entry.getName() + ");",
+            "}",
+            ""
+        );
     }
 }
