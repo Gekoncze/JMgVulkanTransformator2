@@ -39,7 +39,8 @@ public @Service class VkFieldTranslator {
             new Pair<>("int64_t", "CInt64"),
             new Pair<>("float", "CFloat"),
             new Pair<>("double", "CDouble"),
-            new Pair<>("int", "CInt32")
+            new Pair<>("int", "CInt32"),
+            new Pair<>("size_t", "CSize")
         )
     );
 

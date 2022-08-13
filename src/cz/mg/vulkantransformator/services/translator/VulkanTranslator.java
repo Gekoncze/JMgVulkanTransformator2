@@ -33,7 +33,8 @@ public @Service class VulkanTranslator {
                 CInt32Generator.getInstance(),
                 CInt64Generator.getInstance(),
                 CFloatGenerator.getInstance(),
-                CDoubleGenerator.getInstance()
+                CDoubleGenerator.getInstance(),
+                CSizeGenerator.getInstance()
             );
             instance.translators = new List<>(
                 VkStructureTranslator.getInstance(),
