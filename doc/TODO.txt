@@ -1,4 +1,3 @@
-add utility class for strings
 add make file generator
 
 add runtime check for enum size (must equal int32_t size)
@@ -6,3 +5,8 @@ add runtime check for jni vs native type sizes
 add runtime check for pointer arithmetic
     overflow might theoretically cause problems if there was an overflow check!
         check both directions
+
+add support for platform specific code
+    linux
+    windows
+    mac
