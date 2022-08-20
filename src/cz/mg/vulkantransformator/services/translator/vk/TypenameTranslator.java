@@ -33,7 +33,8 @@ public @Service class TypenameTranslator {
             new Pair<>("float", "CFloat"),
             new Pair<>("double", "CDouble"),
             new Pair<>("int", "CInt32"),
-            new Pair<>("size_t", "CSize")
+            new Pair<>("size_t", "CSize"),
+            new Pair<>("VkMemoryRequirements2KHR", "VkMemoryRequirements2") // quick fix for typedef
         )
     );
 

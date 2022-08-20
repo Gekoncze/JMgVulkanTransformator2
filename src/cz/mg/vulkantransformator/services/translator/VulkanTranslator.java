@@ -45,6 +45,7 @@ public @Service class VulkanTranslator {
                 VkFunctionPointerTranslator.getInstance()
             );
             instance.constantTranslator = VkConstantTranslator.getInstance();
+            instance.functionsTranslator = VkFunctionsTranslator.getInstance();
         }
         return instance;
     }
@@ -52,6 +53,7 @@ public @Service class VulkanTranslator {
     private List<Generator> generators;
     private List<VkTranslator> translators;
     private VkConstantTranslator constantTranslator;
+    private VkFunctionsTranslator functionsTranslator;
 
     private VulkanTranslator() {
     }
@@ -109,6 +111,22 @@ public @Service class VulkanTranslator {
             createNativeFileC(
                 constantTranslator.getName(),
                 constantTranslator.translateNative(index, root),
+                true
+            )
+        );
+
+        files.addLast(
+            createJavaFile(
+                functionsTranslator.getName(),
+                functionsTranslator.translateJava(index, root),
+                true
+            )
+        );
+
+        files.addLast(
+            createNativeFileC(
+                functionsTranslator.getName(),
+                functionsTranslator.translateNative(index, root),
                 true
             )
         );

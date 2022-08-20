@@ -13,11 +13,13 @@ public @Service class CArrayGenerator implements Generator {
         if (instance == null) {
             instance = new CArrayGenerator();
             instance.factoryGenerator = CFactoryGenerator.getInstance();
+            instance.objectGenerator = CObjectGenerator.getInstance();
         }
         return instance;
     }
 
     private CFactoryGenerator factoryGenerator;
+    private CObjectGenerator objectGenerator;
 
     private CArrayGenerator() {
     }
@@ -38,14 +40,13 @@ public @Service class CArrayGenerator implements Generator {
         return new List<>(
             "package " + Configuration.C_PACKAGE + ";",
             "",
-            "public class " + getName() + "<T> {",
-            "    private final long address;",
+            "public class " + getName() + "<T> extends " + objectGenerator.getName() + " {",
             "    private final int count;",
             "    private final long size;",
             "    private final " + genericFactoryName + " factory;",
             "",
             "    public " + getName() + "(long address, int count, long size, " + genericFactoryName + " factory) {",
-            "        this.address = address;",
+            "        super(address);",
             "        this.count = count;",
             "        this.size = size;",
             "        this.factory = factory;",
