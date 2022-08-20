@@ -35,12 +35,12 @@ public @Service class CCharGenerator implements Generator {
 
     @Override
     public @Mandatory List<String> generateJava() {
-        return typeGenerator.generateJava(getName(), "char");
+        return typeGenerator.generateJava(getName(), "byte");
     }
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jchar", "char");
+        return typeGenerator.generateNative(getName(), "jbyte", "char");
     }
 
     @Override
