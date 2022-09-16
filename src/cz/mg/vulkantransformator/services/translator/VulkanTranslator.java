@@ -71,8 +71,8 @@ public @Service class VulkanTranslator {
         List<File> vulkanFiles = createVulkanFiles(root);
         List<File> makeFiles = createMakeFiles(cFiles, vulkanFiles);
         List<File> files = new List<>();
-        //files.addCollectionLast(cFiles);
-        //files.addCollectionLast(vulkanFiles);
+        files.addCollectionLast(cFiles);
+        files.addCollectionLast(vulkanFiles);
         files.addCollectionLast(makeFiles);
         return files;
     }
@@ -103,7 +103,7 @@ public @Service class VulkanTranslator {
             );
         }
 
-        return files;
+        return removeEmptyFiles(files);
     }
 
     private @Mandatory List<File> createVulkanFiles(@Mandatory VkRoot root) {
@@ -163,7 +163,7 @@ public @Service class VulkanTranslator {
             )
         );
 
-        return files;
+        return removeEmptyFiles(files);
     }
 
     private @Mandatory List<File> createMakeFiles(@Mandatory List<File> cFiles, @Mandatory List<File> vulkanFiles) {
@@ -193,6 +193,18 @@ public @Service class VulkanTranslator {
             )
         );
 
-        return files;
+        return removeEmptyFiles(files);
+    }
+
+    private @Mandatory List<File> removeEmptyFiles(@Mandatory List<File> files) {
+        List<File> newFiles = new List<>();
+        for (File file : files) {
+            if (file.getLines() != null) {
+                if (file.getLines().count() > 0) {
+                    newFiles.addLast(file);
+                }
+            }
+        }
+        return newFiles;
     }
 }
