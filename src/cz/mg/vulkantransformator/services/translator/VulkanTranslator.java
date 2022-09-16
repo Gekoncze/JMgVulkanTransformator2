@@ -71,8 +71,8 @@ public @Service class VulkanTranslator {
         List<File> vulkanFiles = createVulkanFiles(root);
         List<File> makeFiles = createMakeFiles(cFiles, vulkanFiles);
         List<File> files = new List<>();
-        files.addCollectionLast(cFiles);
-        files.addCollectionLast(vulkanFiles);
+        //files.addCollectionLast(cFiles);
+        //files.addCollectionLast(vulkanFiles);
         files.addCollectionLast(makeFiles);
         return files;
     }
@@ -172,14 +172,24 @@ public @Service class VulkanTranslator {
         files.addLast(
             new File(
                 Path.of(C_DIRECTORY, "makefile"),
-                makefileGenerator.create(C_LIBRARY, cFiles)
+                makefileGenerator.create(
+                    cFiles,
+                    C_LIBRARY,
+                    new List<>(JAVA_DIRECTORY, JAVA_DIRECTORY_MD),
+                    new List<>()
+                )
             )
         );
 
         files.addLast(
             new File(
                 Path.of(VULKAN_DIRECTORY, "makefile"),
-                makefileGenerator.create(VULKAN_LIBRARY, vulkanFiles)
+                makefileGenerator.create(
+                    vulkanFiles,
+                    VULKAN_LIBRARY,
+                    new List<>(),
+                    new List<>()
+                )
             )
         );
 

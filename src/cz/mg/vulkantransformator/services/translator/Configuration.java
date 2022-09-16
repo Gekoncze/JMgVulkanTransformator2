@@ -14,4 +14,7 @@ public @Utility class Configuration {
 
     public static @Mandatory String C_LIBRARY = "jmgc";
     public static @Mandatory String VULKAN_LIBRARY = "jmgvulkan";
+
+    public static @Mandatory String JAVA_DIRECTORY = "/usr/lib/jvm/default-java/include";
+    public static @Mandatory String JAVA_DIRECTORY_MD = "/usr/lib/jvm/default-java/include/linux";
 }
