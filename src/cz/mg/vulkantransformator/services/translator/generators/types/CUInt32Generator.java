@@ -4,9 +4,9 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.generators.Generator;
+import cz.mg.vulkantransformator.services.translator.generators.CGenerator;
 
-public @Service class CUInt32Generator implements Generator {
+public @Service class CUInt32Generator implements CGenerator {
     private static @Optional CUInt32Generator instance;
 
     public static @Mandatory CUInt32Generator getInstance() {
@@ -20,12 +20,6 @@ public @Service class CUInt32Generator implements Generator {
     private CTypeGenerator typeGenerator;
 
     private CUInt32Generator() {
-    }
-
-
-    @Override
-    public boolean isVulkan() {
-        return false;
     }
 
     @Override

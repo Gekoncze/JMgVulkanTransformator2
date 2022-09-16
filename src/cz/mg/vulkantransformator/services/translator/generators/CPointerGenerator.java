@@ -6,7 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.Configuration;
 
-public @Service class CPointerGenerator implements Generator {
+public @Service class CPointerGenerator implements CGenerator {
     private static @Optional CPointerGenerator instance;
 
     public static @Mandatory CPointerGenerator getInstance() {
@@ -24,11 +24,6 @@ public @Service class CPointerGenerator implements Generator {
     private CObjectGenerator objectGenerator;
 
     private CPointerGenerator() {
-    }
-
-    @Override
-    public boolean isVulkan() {
-        return false;
     }
 
     @Override

@@ -6,25 +6,27 @@ import cz.mg.annotations.storage.Part;
 import cz.mg.annotations.storage.Value;
 import cz.mg.collections.list.List;
 
+import java.nio.file.Path;
+
 public @Entity class File {
-    private String name;
+    private Path path;
     private List<String> lines;
 
     public File() {
     }
 
-    public File(String name, List<String> lines) {
-        this.name = name;
+    public File(Path path, List<String> lines) {
+        this.path = path;
         this.lines = lines;
     }
 
     @Required @Value
-    public String getName() {
-        return name;
+    public Path getPath() {
+        return path;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPath(Path path) {
+        this.path = path;
     }
 
     @Required @Part

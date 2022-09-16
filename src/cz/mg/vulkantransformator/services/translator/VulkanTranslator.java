@@ -10,6 +10,10 @@ import cz.mg.vulkantransformator.services.translator.generators.*;
 import cz.mg.vulkantransformator.services.translator.generators.types.*;
 import cz.mg.vulkantransformator.services.translator.vk.*;
 
+import java.nio.file.Path;
+
+import static cz.mg.vulkantransformator.services.translator.Configuration.*;
+
 @SuppressWarnings({"rawtypes", "unchecked"})
 public @Service class VulkanTranslator {
     private static VulkanTranslator instance;
@@ -51,7 +55,7 @@ public @Service class VulkanTranslator {
         return instance;
     }
 
-    private List<Generator> generators;
+    private List<CGenerator> generators;
     private List<VkTranslator> translators;
     private VkConstantTranslator constantTranslator;
     private VkFunctionsTranslator functionsTranslator;
@@ -64,17 +68,26 @@ public @Service class VulkanTranslator {
 
         List<File> files = new List<>();
 
-        for (Generator generator : generators) {
+        for (CGenerator generator : generators) {
             files.addLast(
-                createJavaFile(generator.getName(), generator.generateJava(), generator.isVulkan())
+                new File(
+                    Path.of(C_DIRECTORY, generator.getName() + ".java"),
+                    generator.generateJava()
+                )
             );
 
             files.addLast(
-                createNativeFileC(generator.getName(), generator.generateNativeC(), generator.isVulkan())
+                new File(
+                    Path.of(C_DIRECTORY, generator.getName() + ".c"),
+                    generator.generateNativeC()
+                )
             );
 
             files.addLast(
-                createNativeFileH(generator.getName(), generator.generateNativeH(), generator.isVulkan())
+                new File(
+                    Path.of(C_DIRECTORY, generator.getName() + ".h"),
+                    generator.generateNativeH()
+                )
             );
         }
 
@@ -82,18 +95,16 @@ public @Service class VulkanTranslator {
             for (VkTranslator translator : translators) {
                 if (translator.targetClass().equals(component.getClass())) {
                     files.addLast(
-                        createJavaFile(
-                            component.getName(),
-                            translator.translateJava(index, component),
-                            true
+                        new File(
+                            Path.of(VULKAN_DIRECTORY, component.getName() + ".java"),
+                            translator.translateJava(index, component)
                         )
                     );
 
                     files.addLast(
-                        createNativeFileC(
-                            component.getName(),
-                            translator.translateNative(index, component),
-                            true
+                        new File(
+                            Path.of(VULKAN_DIRECTORY, component.getName() + ".c"),
+                            translator.translateNative(index, component)
                         )
                     );
                 }
@@ -101,55 +112,33 @@ public @Service class VulkanTranslator {
         }
 
         files.addLast(
-            createJavaFile(
-                constantTranslator.getName(),
-                constantTranslator.translateJava(index, root),
-                true
+            new File(
+                Path.of(VULKAN_DIRECTORY, constantTranslator.getName() + ".java"),
+                constantTranslator.translateJava(index, root)
             )
         );
 
         files.addLast(
-            createNativeFileC(
-                constantTranslator.getName(),
-                constantTranslator.translateNative(index, root),
-                true
+            new File(
+                Path.of(VULKAN_DIRECTORY, constantTranslator.getName() + ".c"),
+                constantTranslator.translateNative(index, root)
             )
         );
 
         files.addLast(
-            createJavaFile(
-                functionsTranslator.getName(),
-                functionsTranslator.translateJava(index, root),
-                true
+            new File(
+                Path.of(VULKAN_DIRECTORY, functionsTranslator.getName() + ".java"),
+                functionsTranslator.translateJava(index, root)
             )
         );
 
         files.addLast(
-            createNativeFileC(
-                functionsTranslator.getName(),
-                functionsTranslator.translateNative(index, root),
-                true
+            new File(
+                Path.of(VULKAN_DIRECTORY, functionsTranslator.getName() + ".c"),
+                functionsTranslator.translateNative(index, root)
             )
         );
 
         return files;
-    }
-
-    private @Mandatory File createJavaFile(@Mandatory String name, @Mandatory List<String> lines, boolean isVulkan) {
-        String directory = isVulkan ? Configuration.VULKAN_DIRECTORY : Configuration.C_DIRECTORY;
-        String filename = directory + "/" + name + ".java";
-        return new File(filename, lines);
-    }
-
-    private @Mandatory File createNativeFileC(@Mandatory String name, @Mandatory List<String> lines, boolean isVulkan) {
-        String directory = isVulkan ? Configuration.VULKAN_DIRECTORY : Configuration.C_DIRECTORY;
-        String filename = directory + "/" + name + ".c";
-        return new File(filename, lines);
-    }
-
-    private @Mandatory File createNativeFileH(@Mandatory String name, @Mandatory List<String> lines, boolean isVulkan) {
-        String directory = isVulkan ? Configuration.VULKAN_DIRECTORY : Configuration.C_DIRECTORY;
-        String filename = directory + "/" + name + ".h";
-        return new File(filename, lines);
     }
 }

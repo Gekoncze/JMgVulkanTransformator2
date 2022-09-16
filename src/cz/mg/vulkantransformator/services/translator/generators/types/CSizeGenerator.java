@@ -4,9 +4,9 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.generators.Generator;
+import cz.mg.vulkantransformator.services.translator.generators.CGenerator;
 
-public @Service class CSizeGenerator implements Generator {
+public @Service class CSizeGenerator implements CGenerator {
     private static @Optional CSizeGenerator instance;
 
     public static @Mandatory CSizeGenerator getInstance() {
@@ -20,12 +20,6 @@ public @Service class CSizeGenerator implements Generator {
     private CTypeGenerator typeGenerator;
 
     private CSizeGenerator() {
-    }
-
-
-    @Override
-    public boolean isVulkan() {
-        return false;
     }
 
     @Override

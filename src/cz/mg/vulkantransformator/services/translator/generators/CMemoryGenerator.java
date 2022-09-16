@@ -6,7 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.Configuration;
 
-public @Service class CMemoryGenerator implements Generator {
+public @Service class CMemoryGenerator implements CGenerator {
     private static @Optional CMemoryGenerator instance;
 
     public static @Mandatory CMemoryGenerator getInstance() {
@@ -17,11 +17,6 @@ public @Service class CMemoryGenerator implements Generator {
     }
 
     private CMemoryGenerator() {
-    }
-
-    @Override
-    public boolean isVulkan() {
-        return false;
     }
 
     @Override

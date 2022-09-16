@@ -4,9 +4,9 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.generators.Generator;
+import cz.mg.vulkantransformator.services.translator.generators.CGenerator;
 
-public @Service class CInt64Generator implements Generator {
+public @Service class CInt64Generator implements CGenerator {
     private static @Optional CInt64Generator instance;
 
     public static @Mandatory CInt64Generator getInstance() {
@@ -20,12 +20,6 @@ public @Service class CInt64Generator implements Generator {
     private CTypeGenerator typeGenerator;
 
     private CInt64Generator() {
-    }
-
-
-    @Override
-    public boolean isVulkan() {
-        return false;
     }
 
     @Override

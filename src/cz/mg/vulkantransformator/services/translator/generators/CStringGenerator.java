@@ -7,7 +7,7 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.Configuration;
 import cz.mg.vulkantransformator.services.translator.generators.types.CCharGenerator;
 
-public @Service class CStringGenerator implements Generator {
+public @Service class CStringGenerator implements CGenerator {
     private static @Optional CStringGenerator instance;
 
     public static @Mandatory CStringGenerator getInstance() {
@@ -23,11 +23,6 @@ public @Service class CStringGenerator implements Generator {
     private CCharGenerator charGenerator;
 
     private CStringGenerator() {
-    }
-
-    @Override
-    public boolean isVulkan() {
-        return false;
     }
 
     @Override

@@ -44,19 +44,17 @@ public @Service class VulkanTransformator {
     public void transform(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
         VkVersion version = new VkVersion(1, 1);
 
+        Path inputPath = inputDirectory.resolve(VULKAN_FILE_NAME).toAbsolutePath();
+        File inputFile = new File(inputPath, null);
+        fileReaderService.load(inputFile);
+
         List<File> files = vulkanTranslator.export(
-            vulkanParser.parse(version,
-                fileReaderService.load(
-                    inputDirectory
-                        .resolve(VULKAN_FILE_NAME)
-                        .toAbsolutePath()
-                        .toString()
-                )
-            )
+            vulkanParser.parse(version, inputFile)
         );
 
         for (File file : files) {
-            file.setName(outputDirectory.resolve(file.getName()).toAbsolutePath().toString());
+            Path outputPath = outputDirectory.resolve(file.getPath());
+            file.setPath(outputPath);
             fileWriterService.save(file);
         }
     }

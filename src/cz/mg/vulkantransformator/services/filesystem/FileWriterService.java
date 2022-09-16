@@ -24,7 +24,7 @@ public @Service class FileWriterService {
     }
 
     public void save(@Mandatory File file) {
-        Path path = Path.of(file.getName());
+        Path path = file.getPath();
 
         try {
             Files.createDirectories(path.getParent());
@@ -32,7 +32,7 @@ public @Service class FileWriterService {
             throw new RuntimeException(e);
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getName()))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path.toFile()))) {
             for (String line : file.getLines()) {
                 writer.write(line);
                 writer.write("\n");

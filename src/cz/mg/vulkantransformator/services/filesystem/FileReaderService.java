@@ -22,14 +22,13 @@ public @Service class FileReaderService {
     private FileReaderService() {
     }
 
-    public @Mandatory File load(@Mandatory String path) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
-            List<String> lines = new List<>();
+    public void load(@Mandatory File file) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file.getPath().toFile()))) {
+            file.setLines(new List<>());
             String line;
             while ((line = reader.readLine()) != null) {
-                lines.addLast(line);
+                file.getLines().addLast(line);
             }
-            return new File(path, lines);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
