@@ -75,7 +75,7 @@ public @Service class CMemoryGenerator implements CGenerator {
     public @Mandatory List<String> generateNativeC() {
         String path = Configuration.C_FUNCTION + "_" + getName() + "_";
         return new List<>(
-            "#include \"" + getName() + "\"",
+            "#include \"" + getName() + ".h\"",
             "",
             "void* l2a(jlong l) {",
             "    union {",

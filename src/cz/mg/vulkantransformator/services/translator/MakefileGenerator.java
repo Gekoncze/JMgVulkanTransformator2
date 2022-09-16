@@ -30,11 +30,14 @@ public @Service class MakefileGenerator {
             "OBJECTS = " + getObjects(files),
             "INCLUDES = " + getIncludes(includes),
             "LIBS = " + getLibs(libs),
-            "NAME = " + name,
+            "NAME = " + "lib" + name + ".so",
             "",
-            name + ":${OBJ}",
+            "${NAME}:${OBJ}",
             "\tgcc -c -Wall -Werror -fpic ${INCLUDES} ${SOURCES}",
-            "\tgcc -o ${NAME} -shared ${LIBS} ${OBJECTS}"
+            "\tgcc -o ${NAME} -shared ${LIBS} ${OBJECTS}",
+            "",
+            "clean:",
+            "\trm -f " + getObjects(files)
         );
     }
 

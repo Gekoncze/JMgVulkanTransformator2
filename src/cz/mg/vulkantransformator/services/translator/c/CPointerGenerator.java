@@ -91,7 +91,7 @@ public @Service class CPointerGenerator implements CGenerator {
             "",
             "JNIEXPORT jlong JNICALL Java_" + path + "_get(JNIEnv* env, jclass clazz, jlong address) {",
             "    void** a = (void**) l2a(address);",
-            "    return *a;",
+            "    return a2l(*a);",
             "}",
             "",
             "JNIEXPORT void JNICALL Java_" + path + "_set(JNIEnv* env, jclass clazz, jlong address, jlong value) {",

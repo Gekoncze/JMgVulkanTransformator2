@@ -63,6 +63,7 @@ public @Service class CTypeGenerator {
         String path = Configuration.C_FUNCTION + "_" + className + "_";
         return new List<>(
             "#include \"" + memoryGenerator.getName() + ".h\"",
+            "#include <stdint.h>",
             "",
             "JNIEXPORT jlong JNICALL Java_" + path + "_size(JNIEnv* env, jclass clazz) {",
             "    return sizeof(" + nativeType + ");",

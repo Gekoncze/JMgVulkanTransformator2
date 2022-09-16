@@ -4,6 +4,8 @@ add runtime check for pointer arithmetic
     overflow might theoretically cause problems if there was an overflow check!
         check both directions
 
+add loading of native libraries in java
+
 add support for platform specific code
     linux
     windows
