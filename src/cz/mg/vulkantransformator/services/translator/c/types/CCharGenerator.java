@@ -1,17 +1,17 @@
-package cz.mg.vulkantransformator.services.translator.generators.types;
+package cz.mg.vulkantransformator.services.translator.c.types;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.generators.CGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CGenerator;
 
-public @Service class CDoubleGenerator implements CGenerator {
-    private static @Optional CDoubleGenerator instance;
+public @Service class CCharGenerator implements CGenerator {
+    private static @Optional CCharGenerator instance;
 
-    public static @Mandatory CDoubleGenerator getInstance() {
+    public static @Mandatory CCharGenerator getInstance() {
         if (instance == null) {
-            instance = new CDoubleGenerator();
+            instance = new CCharGenerator();
             instance.typeGenerator = CTypeGenerator.getInstance();
         }
         return instance;
@@ -19,22 +19,22 @@ public @Service class CDoubleGenerator implements CGenerator {
 
     private CTypeGenerator typeGenerator;
 
-    private CDoubleGenerator() {
+    private CCharGenerator() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "CDouble";
+        return "CChar";
     }
 
     @Override
     public @Mandatory List<String> generateJava() {
-        return typeGenerator.generateJava(getName(), "double");
+        return typeGenerator.generateJava(getName(), "byte");
     }
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jdouble", "double");
+        return typeGenerator.generateNative(getName(), "jbyte", "char");
     }
 
     @Override

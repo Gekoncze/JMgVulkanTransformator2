@@ -1,11 +1,11 @@
-package cz.mg.vulkantransformator.services.translator.generators;
+package cz.mg.vulkantransformator.services.translator.c;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.Configuration;
-import cz.mg.vulkantransformator.services.translator.generators.types.CCharGenerator;
+import cz.mg.vulkantransformator.services.translator.c.types.CCharGenerator;
 
 public @Service class CStringGenerator implements CGenerator {
     private static @Optional CStringGenerator instance;

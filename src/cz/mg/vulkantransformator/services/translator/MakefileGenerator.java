@@ -6,20 +6,20 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 
-public @Service class MakefileCreator {
-    private static @Optional MakefileCreator instance;
+public @Service class MakefileGenerator {
+    private static @Optional MakefileGenerator instance;
 
-    public static @Mandatory MakefileCreator getInstance() {
+    public static @Mandatory MakefileGenerator getInstance() {
         if (instance == null) {
-            instance = new MakefileCreator();
+            instance = new MakefileGenerator();
         }
         return instance;
     }
 
-    private MakefileCreator() {
+    private MakefileGenerator() {
     }
 
-    public @Mandatory File create(@Mandatory List<File> files) {
-        throw new UnsupportedOperationException(); // TODO
+    public @Mandatory List<String> create(@Mandatory String name, @Mandatory List<File> files) {
+        return new List<>(); // TODO
     }
 }

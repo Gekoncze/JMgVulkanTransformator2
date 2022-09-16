@@ -1,17 +1,17 @@
-package cz.mg.vulkantransformator.services.translator.generators.types;
+package cz.mg.vulkantransformator.services.translator.c.types;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.generators.CGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CGenerator;
 
-public @Service class CUInt64Generator implements CGenerator {
-    private static @Optional CUInt64Generator instance;
+public @Service class CInt64Generator implements CGenerator {
+    private static @Optional CInt64Generator instance;
 
-    public static @Mandatory CUInt64Generator getInstance() {
+    public static @Mandatory CInt64Generator getInstance() {
         if (instance == null) {
-            instance = new CUInt64Generator();
+            instance = new CInt64Generator();
             instance.typeGenerator = CTypeGenerator.getInstance();
         }
         return instance;
@@ -19,12 +19,12 @@ public @Service class CUInt64Generator implements CGenerator {
 
     private CTypeGenerator typeGenerator;
 
-    private CUInt64Generator() {
+    private CInt64Generator() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "CUInt64";
+        return "CInt64";
     }
 
     @Override
@@ -34,7 +34,7 @@ public @Service class CUInt64Generator implements CGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jlong", "uint64_t");
+        return typeGenerator.generateNative(getName(), "jlong", "int64_t");
     }
 
     @Override

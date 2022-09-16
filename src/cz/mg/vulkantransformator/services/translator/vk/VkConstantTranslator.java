@@ -9,10 +9,10 @@ import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.Configuration;
 import cz.mg.vulkantransformator.services.translator.Index;
-import cz.mg.vulkantransformator.services.translator.generators.CMemoryGenerator;
-import cz.mg.vulkantransformator.services.translator.generators.CObjectGenerator;
-import cz.mg.vulkantransformator.services.translator.generators.CPointerGenerator;
-import cz.mg.vulkantransformator.services.translator.generators.types.CCharGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CMemoryGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CObjectGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CPointerGenerator;
+import cz.mg.vulkantransformator.services.translator.c.types.CCharGenerator;
 
 public @Service class VkConstantTranslator {
     private static @Optional VkConstantTranslator instance;

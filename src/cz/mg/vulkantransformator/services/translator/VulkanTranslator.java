@@ -3,11 +3,12 @@ package cz.mg.vulkantransformator.services.translator;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.collections.list.List;
+import cz.mg.collections.map.Map;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
-import cz.mg.vulkantransformator.services.translator.generators.*;
-import cz.mg.vulkantransformator.services.translator.generators.types.*;
+import cz.mg.vulkantransformator.services.translator.c.*;
+import cz.mg.vulkantransformator.services.translator.c.types.*;
 import cz.mg.vulkantransformator.services.translator.vk.*;
 
 import java.nio.file.Path;
@@ -51,6 +52,7 @@ public @Service class VulkanTranslator {
             );
             instance.constantTranslator = VkConstantTranslator.getInstance();
             instance.functionsTranslator = VkFunctionsTranslator.getInstance();
+            instance.makefileGenerator = MakefileGenerator.getInstance();
         }
         return instance;
     }
@@ -59,13 +61,23 @@ public @Service class VulkanTranslator {
     private List<VkTranslator> translators;
     private VkConstantTranslator constantTranslator;
     private VkFunctionsTranslator functionsTranslator;
+    private MakefileGenerator makefileGenerator;
 
     private VulkanTranslator() {
     }
 
     public @Mandatory List<File> export(@Mandatory VkRoot root) {
-        Index index = new Index(root);
+        List<File> cFiles = createCFiles();
+        List<File> vulkanFiles = createVulkanFiles(root);
+        List<File> makeFiles = createMakeFiles(cFiles, vulkanFiles);
+        List<File> files = new List<>();
+        files.addCollectionLast(cFiles);
+        files.addCollectionLast(vulkanFiles);
+        files.addCollectionLast(makeFiles);
+        return files;
+    }
 
+    private @Mandatory List<File> createCFiles() {
         List<File> files = new List<>();
 
         for (CGenerator generator : generators) {
@@ -91,23 +103,35 @@ public @Service class VulkanTranslator {
             );
         }
 
-        for (VkComponent component : root.getComponents()) {
-            for (VkTranslator translator : translators) {
-                if (translator.targetClass().equals(component.getClass())) {
-                    files.addLast(
-                        new File(
-                            Path.of(VULKAN_DIRECTORY, component.getName() + ".java"),
-                            translator.translateJava(index, component)
-                        )
-                    );
+        return files;
+    }
 
-                    files.addLast(
-                        new File(
-                            Path.of(VULKAN_DIRECTORY, component.getName() + ".c"),
-                            translator.translateNative(index, component)
-                        )
-                    );
-                }
+    private @Mandatory List<File> createVulkanFiles(@Mandatory VkRoot root) {
+        Index index = new Index(root);
+
+        List<File> files = new List<>();
+
+        Map<Class, VkTranslator> translatorMap = new Map<>(100);
+        for (VkTranslator translator : translators) {
+            translatorMap.set(translator.targetClass(), translator);
+        }
+
+        for (VkComponent component : root.getComponents()) {
+            VkTranslator translator = translatorMap.getOptional(component.getClass());
+            if (translator != null) {
+                files.addLast(
+                    new File(
+                        Path.of(VULKAN_DIRECTORY, component.getName() + ".java"),
+                        translator.translateJava(index, component)
+                    )
+                );
+
+                files.addLast(
+                    new File(
+                        Path.of(VULKAN_DIRECTORY, component.getName() + ".c"),
+                        translator.translateNative(index, component)
+                    )
+                );
             }
         }
 
@@ -136,6 +160,26 @@ public @Service class VulkanTranslator {
             new File(
                 Path.of(VULKAN_DIRECTORY, functionsTranslator.getName() + ".c"),
                 functionsTranslator.translateNative(index, root)
+            )
+        );
+
+        return files;
+    }
+
+    private @Mandatory List<File> createMakeFiles(@Mandatory List<File> cFiles, @Mandatory List<File> vulkanFiles) {
+        List<File> files = new List<>();
+
+        files.addLast(
+            new File(
+                Path.of(C_DIRECTORY, "makefile"),
+                makefileGenerator.create(C_LIBRARY, cFiles)
+            )
+        );
+
+        files.addLast(
+            new File(
+                Path.of(VULKAN_DIRECTORY, "makefile"),
+                makefileGenerator.create(VULKAN_LIBRARY, vulkanFiles)
             )
         );
 

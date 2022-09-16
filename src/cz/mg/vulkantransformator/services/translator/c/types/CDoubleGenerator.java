@@ -1,17 +1,17 @@
-package cz.mg.vulkantransformator.services.translator.generators.types;
+package cz.mg.vulkantransformator.services.translator.c.types;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.generators.CGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CGenerator;
 
-public @Service class CUInt16Generator implements CGenerator {
-    private static @Optional CUInt16Generator instance;
+public @Service class CDoubleGenerator implements CGenerator {
+    private static @Optional CDoubleGenerator instance;
 
-    public static @Mandatory CUInt16Generator getInstance() {
+    public static @Mandatory CDoubleGenerator getInstance() {
         if (instance == null) {
-            instance = new CUInt16Generator();
+            instance = new CDoubleGenerator();
             instance.typeGenerator = CTypeGenerator.getInstance();
         }
         return instance;
@@ -19,22 +19,22 @@ public @Service class CUInt16Generator implements CGenerator {
 
     private CTypeGenerator typeGenerator;
 
-    private CUInt16Generator() {
+    private CDoubleGenerator() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "CUInt16";
+        return "CDouble";
     }
 
     @Override
     public @Mandatory List<String> generateJava() {
-        return typeGenerator.generateJava(getName(), "short");
+        return typeGenerator.generateJava(getName(), "double");
     }
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jshort", "uint16_t");
+        return typeGenerator.generateNative(getName(), "jdouble", "double");
     }
 
     @Override

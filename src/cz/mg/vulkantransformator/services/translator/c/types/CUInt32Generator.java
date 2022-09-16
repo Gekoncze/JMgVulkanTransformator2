@@ -1,17 +1,17 @@
-package cz.mg.vulkantransformator.services.translator.generators.types;
+package cz.mg.vulkantransformator.services.translator.c.types;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.generators.CGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CGenerator;
 
-public @Service class CInt8Generator implements CGenerator {
-    private static @Optional CInt8Generator instance;
+public @Service class CUInt32Generator implements CGenerator {
+    private static @Optional CUInt32Generator instance;
 
-    public static @Mandatory CInt8Generator getInstance() {
+    public static @Mandatory CUInt32Generator getInstance() {
         if (instance == null) {
-            instance = new CInt8Generator();
+            instance = new CUInt32Generator();
             instance.typeGenerator = CTypeGenerator.getInstance();
         }
         return instance;
@@ -19,22 +19,22 @@ public @Service class CInt8Generator implements CGenerator {
 
     private CTypeGenerator typeGenerator;
 
-    private CInt8Generator() {
+    private CUInt32Generator() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "CInt8";
+        return "CUInt32";
     }
 
     @Override
     public @Mandatory List<String> generateJava() {
-        return typeGenerator.generateJava(getName(), "byte");
+        return typeGenerator.generateJava(getName(), "int");
     }
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jbyte", "int8_t");
+        return typeGenerator.generateNative(getName(), "jint", "uint32_t");
     }
 
     @Override

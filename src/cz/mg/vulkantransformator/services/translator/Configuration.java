@@ -11,4 +11,7 @@ public @Utility class Configuration {
     public static @Mandatory String C_PACKAGE = "cz.mg.c";
     public static @Mandatory String C_DIRECTORY = C_PACKAGE.replace('.', '/');
     public static @Mandatory String C_FUNCTION = C_PACKAGE.replace('.', '_');
+
+    public static @Mandatory String C_LIBRARY = "jmgc";
+    public static @Mandatory String VULKAN_LIBRARY = "jmgvulkan";
 }

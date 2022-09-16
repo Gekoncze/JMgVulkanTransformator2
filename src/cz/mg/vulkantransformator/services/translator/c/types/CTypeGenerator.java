@@ -1,11 +1,11 @@
-package cz.mg.vulkantransformator.services.translator.generators.types;
+package cz.mg.vulkantransformator.services.translator.c.types;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.Configuration;
-import cz.mg.vulkantransformator.services.translator.generators.CMemoryGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CMemoryGenerator;
 
 public @Service class CTypeGenerator {
     private static @Optional CTypeGenerator instance;

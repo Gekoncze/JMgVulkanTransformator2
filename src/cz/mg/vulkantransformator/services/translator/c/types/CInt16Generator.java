@@ -1,17 +1,17 @@
-package cz.mg.vulkantransformator.services.translator.generators.types;
+package cz.mg.vulkantransformator.services.translator.c.types;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.generators.CGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CGenerator;
 
-public @Service class CFloatGenerator implements CGenerator {
-    private static @Optional CFloatGenerator instance;
+public @Service class CInt16Generator implements CGenerator {
+    private static @Optional CInt16Generator instance;
 
-    public static @Mandatory CFloatGenerator getInstance() {
+    public static @Mandatory CInt16Generator getInstance() {
         if (instance == null) {
-            instance = new CFloatGenerator();
+            instance = new CInt16Generator();
             instance.typeGenerator = CTypeGenerator.getInstance();
         }
         return instance;
@@ -19,22 +19,22 @@ public @Service class CFloatGenerator implements CGenerator {
 
     private CTypeGenerator typeGenerator;
 
-    private CFloatGenerator() {
+    private CInt16Generator() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "CFloat";
+        return "CInt16";
     }
 
     @Override
     public @Mandatory List<String> generateJava() {
-        return typeGenerator.generateJava(getName(), "float");
+        return typeGenerator.generateJava(getName(), "short");
     }
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        return typeGenerator.generateNative(getName(), "jfloat", "float");
+        return typeGenerator.generateNative(getName(), "jshort", "int16_t");
     }
 
     @Override

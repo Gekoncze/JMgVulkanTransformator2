@@ -6,8 +6,8 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
-import cz.mg.vulkantransformator.services.translator.generators.CArrayGenerator;
-import cz.mg.vulkantransformator.services.translator.generators.CPointerGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CArrayGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CPointerGenerator;
 
 public @Service class VkFieldTranslator {
     private static @Optional VkFieldTranslator instance;
