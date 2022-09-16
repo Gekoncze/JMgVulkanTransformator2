@@ -33,7 +33,7 @@ public @Service class MakefileGenerator {
             "NAME = " + "lib" + name + ".so",
             "",
             "${NAME}:${OBJ}",
-            "\tgcc -c -Wall -Werror -fpic ${INCLUDES} ${SOURCES}",
+            "\tgcc -c -fpic ${INCLUDES} ${SOURCES}",
             "\tgcc -o ${NAME} -shared ${LIBS} ${OBJECTS}",
             "",
             "clean:",
