@@ -187,7 +187,7 @@ public @Service class VulkanTranslator {
                 makefileGenerator.create(
                     vulkanFiles,
                     VULKAN_LIBRARY,
-                    new List<>(),
+                    new List<>(JAVA_DIRECTORY, JAVA_DIRECTORY_MD),
                     new List<>()
                 )
             )

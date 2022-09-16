@@ -71,7 +71,7 @@ public @Service class VkFunctionsTranslator {
 
         lines.addCollectionLast(new List<>(
             "#include <vulkan/vulkan.h>",
-            "#include \"" + memoryGenerator.getName() + ".h\"",
+            "#include \"../c/" + memoryGenerator.getName() + ".h\"",
             ""
         ));
 

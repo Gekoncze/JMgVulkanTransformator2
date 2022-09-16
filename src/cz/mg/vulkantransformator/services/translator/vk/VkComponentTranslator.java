@@ -59,7 +59,7 @@ public @Service class VkComponentTranslator {
         String path = getNativeComponentPath(component);
         return new List<>(
             "#include <vulkan/vulkan.h>",
-            "#include \"" + memoryGenerator.getName() + ".h\"",
+            "#include \"../c/" + memoryGenerator.getName() + ".h\"",
             "",
             "JNIEXPORT jlong JNICALL Java_" + path + "_size(JNIEnv* env, jclass clazz) {",
             "    return sizeof(" + component.getName() + ");",

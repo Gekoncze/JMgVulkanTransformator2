@@ -102,7 +102,7 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
 
         String path = Configuration.VULKAN_FUNCTION + "_" + functionsTranslator.getName();
         String methodName = "_" + function.getName();
-        String expressionPrefix = isVoid(function.getOutput()) ? "" : "*output = ";
+        String expressionPrefix = isVoid(function.getOutput()) ? "" : "*_output = ";
 
         lines.addCollectionLast(new List<>(
             "JNIEXPORT void JNICALL Java_" + path + "_" + methodName + "(JNIEnv* env, jclass clazz" + parametersPrefix + parameters + ") {"
@@ -162,7 +162,7 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
         } else if (variable.getPointers() == 2) {
             return typename + "**";
         } else if (variable.getArray() > 0) {
-            return typename + "[" + variable.getArray() + "]";
+            return typename + "*";
         } else {
             throw new UnsupportedOperationException(
                 "Unsupported pointers or array for variable " + variable.getName() + "."

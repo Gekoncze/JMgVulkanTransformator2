@@ -135,7 +135,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
                 "JNIEXPORT void JNICALL Java_" + path + "_remove(JNIEnv* env, jclass clazz, jlong address, jlong flagAddress) {",
                 "    " + name + "* a = (" + name + "*) l2a(address);",
                 "    " + flagBitsName + "* b = (" + flagBitsName + "*) l2a(flagAddress);",
-                "    *a &= ~(*b)",
+                "    *a &= ~(*b);",
                 "}"
             ));
         }
