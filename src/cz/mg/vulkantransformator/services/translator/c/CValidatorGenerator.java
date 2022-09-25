@@ -11,9 +11,12 @@ public class CValidatorGenerator implements CGenerator {
     public static @Mandatory CValidatorGenerator getInstance() {
         if (instance == null) {
             instance = new CValidatorGenerator();
+            instance.memoryGenerator = CMemoryGenerator.getInstance();
         }
         return instance;
     }
+
+    private CMemoryGenerator memoryGenerator;
 
     private CValidatorGenerator() {
     }
@@ -46,7 +49,7 @@ public class CValidatorGenerator implements CGenerator {
         String path = Configuration.C_FUNCTION + "_" + getName() + "_";
         return new List<>(
             "#include <stdint.h>",
-            "#include <jni.h>",
+            "#include \"" + memoryGenerator.getName() + ".h\"",
             "",
             "enum _ValidationEnum0001 {",
             "    one",
@@ -60,6 +63,11 @@ public class CValidatorGenerator implements CGenerator {
             "    if (sizeof(size_t) != 8) return 5;",
             "    if (sizeof(jlong) != 8) return 6;",
             "    if (sizeof(void*) != 8) return 7;",
+            "    if (a2l(l2a(0l)) != 0l) return 8;",
+            "    if (a2l(l2a(1l)) != 1l) return 9;",
+            "    if (a2l(l2a(-1l)) != -1l) return 10;",
+            "    if (a2l(l2a(9223372036854775807l)) != 9223372036854775807l) return 11;",
+            "    if (a2l(l2a(-9223372036854775808l)) != -9223372036854775808l) return 12;",
             "    return 0;",
             "}"
         );
