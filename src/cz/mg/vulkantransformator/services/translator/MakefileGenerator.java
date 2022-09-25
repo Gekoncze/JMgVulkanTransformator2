@@ -37,7 +37,8 @@ public @Service class MakefileGenerator {
             "\tgcc -o ${NAME} -shared ${LIBS} ${OBJECTS}",
             "",
             "clean:",
-            "\trm -f " + getObjects(files)
+            "\trm -f " + getObjects(files),
+            "\trm -f " + "lib" + name + ".so"
         );
     }
 
