@@ -34,10 +34,12 @@ public @Service class CPointerGenerator implements CGenerator {
     @Override
     public @Mandatory List<String> generateJava() {
         String genericFactoryName = factoryGenerator.getName() + "<T>";
+        String memoryName = memoryGenerator.getName();
+        String objectName = objectGenerator.getName();
         return new List<>(
             "package " + Configuration.C_PACKAGE + ";",
             "",
-            "public class " + getName() + "<T> extends " + objectGenerator.getName() + " {",
+            "public class " + getName() + "<T extends " + objectName + "> extends " + objectGenerator.getName() + " {",
             "    public static final long SIZE = _size();",
             "",
             "    private final long size;",
@@ -52,16 +54,15 @@ public @Service class CPointerGenerator implements CGenerator {
             "    private static native long _size();",
             "",
             "    public T getTarget() {",
-            "        return getTarget(0);",
+            "        return create(get());",
             "    }",
             "",
             "    public T getTarget(int i) {",
-            "        long targetAddress = get() + i * size;",
-            "        if (targetAddress != CMemory.NULL) {",
-            "            return factory.create(targetAddress);",
-            "        } else {",
-            "            return null;",
-            "        }",
+            "        return create(offset(get(), i, size));",
+            "    }",
+            "",
+            "    public void setTarget(T target) {",
+            "        set(target == null ? " + memoryName + ".NULL : target.getAddress());",
             "    }",
             "",
             "    public long get() {",
@@ -75,6 +76,16 @@ public @Service class CPointerGenerator implements CGenerator {
             "    }",
             "",
             "    private static native void _set(long address, long value);",
+            "",
+            "    public static native long offset(long address, int i, long size);",
+            "",
+            "    private T create(long targetAddress) {",
+            "        if (targetAddress != " + memoryName + ".NULL) {",
+            "            return factory.create(targetAddress);",
+            "        } else {",
+            "            return null;",
+            "        }",
+            "    }",
             "}"
         );
     }
@@ -97,6 +108,11 @@ public @Service class CPointerGenerator implements CGenerator {
             "JNIEXPORT void JNICALL Java_" + path + "_set(JNIEnv* env, jclass clazz, jlong address, jlong value) {",
             "    void** a = (void**) l2a(address);",
             "    *a = l2a(value);",
+            "}",
+            "",
+            "JNIEXPORT jlong JNICALL Java_" + path + "offset(JNIEnv* env, jclass clazz, jlong address, jint i, jlong size) {",
+            "    void* a = (void*) l2a(address);",
+            "    return a2l(a + i * size);",
             "}"
         );
     }

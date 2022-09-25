@@ -14,12 +14,14 @@ public @Service class CArrayGenerator implements CGenerator {
             instance = new CArrayGenerator();
             instance.factoryGenerator = CFactoryGenerator.getInstance();
             instance.objectGenerator = CObjectGenerator.getInstance();
+            instance.pointerGenerator = CPointerGenerator.getInstance();
         }
         return instance;
     }
 
     private CFactoryGenerator factoryGenerator;
     private CObjectGenerator objectGenerator;
+    private CPointerGenerator pointerGenerator;
 
     private CArrayGenerator() {
     }
@@ -32,6 +34,7 @@ public @Service class CArrayGenerator implements CGenerator {
     @Override
     public @Mandatory List<String> generateJava() {
         String genericFactoryName = factoryGenerator.getName() + "<T>";
+        String pointerName = pointerGenerator.getName();
         return new List<>(
             "package " + Configuration.C_PACKAGE + ";",
             "",
@@ -49,7 +52,7 @@ public @Service class CArrayGenerator implements CGenerator {
             "",
             "    public T get(int i) {",
             "        if (i >= 0 && i < count) {",
-            "            return factory.create(address + i * size);",
+            "            return factory.create(" + pointerName + ".offset(address, i, size));",
             "        } else {",
             "            throw new ArrayIndexOutOfBoundsException(i + \" out of \" + count);",
             "        }",
