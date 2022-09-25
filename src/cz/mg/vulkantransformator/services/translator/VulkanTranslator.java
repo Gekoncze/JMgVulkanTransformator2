@@ -40,7 +40,8 @@ public @Service class VulkanTranslator {
                 CFloatGenerator.getInstance(),
                 CDoubleGenerator.getInstance(),
                 CSizeGenerator.getInstance(),
-                CStringGenerator.getInstance()
+                CStringGenerator.getInstance(),
+                CLibraryGenerator.getInstance()
             );
             instance.translators = new List<>(
                 VkStructureTranslator.getInstance(),
@@ -52,6 +53,7 @@ public @Service class VulkanTranslator {
             );
             instance.constantTranslator = VkConstantTranslator.getInstance();
             instance.functionsTranslator = VkFunctionsTranslator.getInstance();
+            instance.libraryGenerator = VkLibraryGenerator.getInstance();
             instance.makefileGenerator = MakefileGenerator.getInstance();
         }
         return instance;
@@ -61,6 +63,7 @@ public @Service class VulkanTranslator {
     private List<VkTranslator> translators;
     private VkConstantTranslator constantTranslator;
     private VkFunctionsTranslator functionsTranslator;
+    private VkLibraryGenerator libraryGenerator;
     private MakefileGenerator makefileGenerator;
 
     private VulkanTranslator() {
@@ -160,6 +163,13 @@ public @Service class VulkanTranslator {
             new File(
                 Path.of(VULKAN_DIRECTORY, functionsTranslator.getName() + ".c"),
                 functionsTranslator.translateNative(index, root)
+            )
+        );
+
+        files.addLast(
+            new File(
+                Path.of(VULKAN_DIRECTORY, libraryGenerator.getName() + ".java"),
+                libraryGenerator.generateJava()
             )
         );
 
