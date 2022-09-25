@@ -41,7 +41,8 @@ public @Service class VulkanTranslator {
                 CDoubleGenerator.getInstance(),
                 CSizeGenerator.getInstance(),
                 CStringGenerator.getInstance(),
-                CLibraryGenerator.getInstance()
+                CLibraryGenerator.getInstance(),
+                CValidatorGenerator.getInstance()
             );
             instance.translators = new List<>(
                 VkStructureTranslator.getInstance(),
