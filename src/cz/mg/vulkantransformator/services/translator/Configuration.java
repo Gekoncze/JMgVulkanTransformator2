@@ -4,16 +4,25 @@ import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;
 
 public @Utility class Configuration {
-    public static @Mandatory String VULKAN_PACKAGE = "cz.mg.vulkan";
-    public static @Mandatory String VULKAN_DIRECTORY = VULKAN_PACKAGE.replace('.', '/');
-    public static @Mandatory String VULKAN_FUNCTION = VULKAN_PACKAGE.replace('.', '_');
-
-    public static @Mandatory String C_PACKAGE = "cz.mg.c";
-    public static @Mandatory String C_DIRECTORY = C_PACKAGE.replace('.', '/');
-    public static @Mandatory String C_FUNCTION = C_PACKAGE.replace('.', '_');
-
     public static @Mandatory String C_LIBRARY = "jmgc";
     public static @Mandatory String VULKAN_LIBRARY = "jmgvulkan";
+    public static @Mandatory String VULKAN_X11_LIBRARY = "jmgvulkanx11";
+    public static @Mandatory String VULKAN_XCB_LIBRARY = "jmgvulkanxcb";
+    public static @Mandatory String VULKAN_WAYLAND_LIBRARY = "jmgvulkanwayland";
+    public static @Mandatory String VULKAN_ANDROID_LIBRARY = "jmgvulkanandroid";
+
+    public static @Mandatory String C_PACKAGE = "cz.mg.c";
+    public static @Mandatory String VULKAN_PACKAGE = "cz.mg.vulkan";
+    public static @Mandatory String VULKAN_X11_PACKAGE = "cz.mg.vulkan.x11";
+    public static @Mandatory String VULKAN_XCB_PACKAGE = "cz.mg.vulkan.xcb";
+    public static @Mandatory String VULKAN_WAYLAND_PACKAGE = "cz.mg.vulkan.wayland";
+    public static @Mandatory String VULKAN_ANDROID_PACKAGE = "cz.mg.vulkan.android";
+
+    public static @Mandatory String C_DIRECTORY = C_PACKAGE.replace('.', '/');
+    public static @Mandatory String VULKAN_DIRECTORY = VULKAN_PACKAGE.replace('.', '/');
+
+    public static @Mandatory String C_FUNCTION = C_PACKAGE.replace('.', '_');
+    public static @Mandatory String VULKAN_FUNCTION = VULKAN_PACKAGE.replace('.', '_');
 
     public static @Mandatory String JAVA_DIRECTORY = "/usr/lib/jvm/default-java/include";
     public static @Mandatory String JAVA_DIRECTORY_MD = "/usr/lib/jvm/default-java/include/linux";
