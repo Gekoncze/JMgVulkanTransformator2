@@ -1,4 +1,10 @@
 add support for platform specific code
     linux
+        x11
+        xcb
+        wayland
+        android
     windows
-    mac
+    apple
+        macos
+        ios
