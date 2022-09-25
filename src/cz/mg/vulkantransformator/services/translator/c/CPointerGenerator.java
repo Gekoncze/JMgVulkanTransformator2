@@ -60,7 +60,7 @@ public @Service class CPointerGenerator implements CGenerator {
             "        if (targetAddress != CMemory.NULL) {",
             "            return factory.create(targetAddress);",
             "        } else {",
-            "            throw new NullPointerException();",
+            "            return null;",
             "        }",
             "    }",
             "",
