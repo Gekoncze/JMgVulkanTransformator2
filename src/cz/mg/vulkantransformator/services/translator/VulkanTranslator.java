@@ -8,8 +8,10 @@ import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.c.*;
-import cz.mg.vulkantransformator.services.translator.c.types.*;
+import cz.mg.vulkantransformator.services.translator.c.code.*;
+import cz.mg.vulkantransformator.services.translator.c.code.types.*;
 import cz.mg.vulkantransformator.services.translator.vk.*;
+import cz.mg.vulkantransformator.services.translator.vk.code.*;
 
 import java.nio.file.Path;
 
