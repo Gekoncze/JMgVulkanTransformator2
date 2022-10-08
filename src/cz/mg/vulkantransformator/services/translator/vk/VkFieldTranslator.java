@@ -4,10 +4,10 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
+import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
-import cz.mg.vulkantransformator.services.translator.c.CArrayGenerator;
-import cz.mg.vulkantransformator.services.translator.c.CPointerGenerator;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 
 public @Service class VkFieldTranslator {
     private static @Optional VkFieldTranslator instance;
@@ -15,18 +15,16 @@ public @Service class VkFieldTranslator {
     public static @Mandatory VkFieldTranslator getInstance() {
         if (instance == null) {
             instance = new VkFieldTranslator();
-            instance.componentTranslator = VkComponentTranslator.getInstance();
-            instance.pointerGenerator = CPointerGenerator.getInstance();
-            instance.arrayGenerator = CArrayGenerator.getInstance();
             instance.typenameTranslator = TypenameTranslator.getInstance();
+            instance.configuration = VkLibraryConfiguration.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkComponentTranslator componentTranslator;
-    private CPointerGenerator pointerGenerator;
-    private CArrayGenerator arrayGenerator;
     private TypenameTranslator typenameTranslator;
+    private VkLibraryConfiguration configuration;
+    private CodeGenerator codeGenerator;
 
     private VkFieldTranslator() {
     }
@@ -96,11 +94,10 @@ public @Service class VkFieldTranslator {
     }
 
     private @Mandatory List<String> translateJavaGetterPointer1D(@Mandatory VkComponent component, @Mandatory VkVariable field) {
-        String pointerName = pointerGenerator.getName();
-        String type = pointerName + "<" + getTypename(field) + ">";
+        String type = "CPointer<" + getTypename(field) + ">";
         return new List<>(
             "    public " + type + " " + getMethodName(field) + "() {",
-            "        return new " + pointerName + "<>(",
+            "        return new CPointer<>(",
             "             " + getAddressArgument(field) + ",",
             "             " + getTypename(field) + ".SIZE,",
             "             " + getTypename(field) + "::new",
@@ -110,14 +107,13 @@ public @Service class VkFieldTranslator {
     }
 
     private @Mandatory List<String> translateJavaGetterPointer2D(@Mandatory VkComponent component, @Mandatory VkVariable field) {
-        String pointerName = pointerGenerator.getName();
-        String type = pointerName + "<" + pointerName + "<" + getTypename(field) + ">>";
+        String type = "CPointer<CPointer<" + getTypename(field) + ">>";
         return new List<>(
             "    public " + type + " " + getMethodName(field) + "() {",
-            "        return new " + pointerName + "<>(",
+            "        return new CPointer<>(",
             "             " + getAddressArgument(field) + ",",
-            "             " + pointerName + ".SIZE,",
-            "             (a) -> new " + pointerName + "<>(",
+            "             CPointer.SIZE,",
+            "             (a) -> new CPointer<>(",
             "                 a,",
             "                 " + getTypename(field) + ".SIZE,",
             "                 " + getTypename(field) + "::new",
@@ -128,11 +124,10 @@ public @Service class VkFieldTranslator {
     }
 
     private @Mandatory List<String> translateJavaGetterArray(@Mandatory VkComponent component, @Mandatory VkVariable field) {
-        String arrayName = arrayGenerator.getName();
-        String type = arrayName + "<" + getTypename(field) + ">";
+        String type = "CArray<" + getTypename(field) + ">";
         return new List<>(
             "    public " + type + " " + getMethodName(field) + "() {",
-            "        return new " + arrayName + "<>(",
+            "        return new CArray<>(",
                 "            " + getAddressArgument(field) + ",",
                 "            " + field.getArray() + ",",
                 "            " + getTypename(field) + ".SIZE,",
@@ -143,16 +138,19 @@ public @Service class VkFieldTranslator {
     }
 
     public @Mandatory List<String> translateNative(@Mandatory VkComponent component, @Mandatory VkVariable field) {
-        String path = componentTranslator.getNativeComponentPath(component);
-        String methodName = getOffsetMethodName(field);
-        return new List<>(
-            "JNIEXPORT jlong JNICALL Java_" + path + methodName + "(JNIEnv* env, jclass clazz) {",
-            "    " + component.getName() + " component;",
-            "    jlong address = a2l(&component);",
-            "    jlong fieldAddress = a2l(&(component." + field.getName() + "));",
-            "    return fieldAddress - address;",
-            "}"
+        JniFunction function = new JniFunction();
+        function.setOutput("jlong");
+        function.setClassName(component.getName());
+        function.setName(getOffsetMethodName(field));
+        function.setLines(
+            new List<>(
+                component.getName() + " component;",
+                "jlong address = a2l(&component);",
+                "jlong fieldAddress = a2l(&(component." + field.getName() + "));",
+                "return fieldAddress - address;"
+            )
         );
+        return codeGenerator.generateJniFunction(configuration, function);
     }
 
     private @Mandatory String capitalizeFirst(@Mandatory String string) {

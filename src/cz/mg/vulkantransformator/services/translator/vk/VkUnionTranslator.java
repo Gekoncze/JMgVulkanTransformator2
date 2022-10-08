@@ -7,6 +7,7 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkUnion;
 import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
 
 public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
@@ -17,12 +18,14 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
             instance = new VkUnionTranslator();
             instance.componentTranslator = VkComponentTranslator.getInstance();
             instance.fieldTranslator = VkFieldTranslator.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
     private VkComponentTranslator componentTranslator;
     private VkFieldTranslator fieldTranslator;
+    private CodeGenerator codeGenerator;
 
     private VkUnionTranslator() {
     }
@@ -46,7 +49,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
             );
         }
 
-        componentTranslator.removeLastEmptyLine(lines);
+        codeGenerator.removeLastEmptyLine(lines);
 
         lines.addCollectionLast(
             componentTranslator.getCommonJavaFooter(union)

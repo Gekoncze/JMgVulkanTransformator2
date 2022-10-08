@@ -4,9 +4,11 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
+import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkType;
-import cz.mg.vulkantransformator.services.translator.Configuration;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
 
 public @Service class VkDeviceSizeTypeTranslator implements VkSpecialTypeTranslator {
     private static @Optional VkDeviceSizeTypeTranslator instance;
@@ -14,9 +16,14 @@ public @Service class VkDeviceSizeTypeTranslator implements VkSpecialTypeTransla
     public static @Mandatory VkDeviceSizeTypeTranslator getInstance() {
         if (instance == null) {
             instance = new VkDeviceSizeTypeTranslator();
+            instance.configuration = VkLibraryConfiguration.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
+
+    private VkLibraryConfiguration configuration;
+    private CodeGenerator codeGenerator;
 
     private VkDeviceSizeTypeTranslator() {
     }
@@ -45,17 +52,43 @@ public @Service class VkDeviceSizeTypeTranslator implements VkSpecialTypeTransla
 
     @Override
     public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkType type) {
-        String path = Configuration.VULKAN_FUNCTION + "_VkDeviceSize_";
-        return new List<>(
-            "JNIEXPORT jlong JNICALL Java_" + path + "_get(JNIEnv* env, jclass clazz, jlong address) {",
-            "    VkDeviceSize* a = (VkDeviceSize*) l2a(address);",
-            "    return *a;",
-            "}",
-            "",
-            "JNIEXPORT void JNICALL Java_" + path + "_set2(JNIEnv* env, jclass clazz, jlong address, jlong value) {",
-            "    VkDeviceSize* a = (VkDeviceSize*) l2a(address);",
-            "    *a = value;",
-            "}"
+        JniFunction getFunction = new JniFunction();
+        getFunction.setOutput("jlong");
+        getFunction.setClassName(getName());
+        getFunction.setName("_get");
+        getFunction.setInput(
+            new List<>(
+                "jlong address"
+            )
         );
+        getFunction.setLines(
+            new List<>(
+                "VkDeviceSize* a = (VkDeviceSize*) l2a(address);",
+                "return *a;"
+            )
+        );
+
+        JniFunction setFunction = new JniFunction();
+        setFunction.setOutput("void");
+        setFunction.setClassName(getName());
+        setFunction.setName("_set2");
+        setFunction.setInput(
+            new List<>(
+                "jlong address",
+                "jlong value"
+            )
+        );
+        setFunction.setLines(
+            new List<>(
+                "VkDeviceSize* a = (VkDeviceSize*) l2a(address);",
+                "*a = value;"
+            )
+        );
+
+        List<String> lines = new List<>();
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, getFunction));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, setFunction));
+        return lines;
     }
 }

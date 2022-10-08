@@ -4,7 +4,6 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.Configuration;
 
 public @Service class CArrayGenerator implements CGenerator {
     private static @Optional CArrayGenerator instance;
@@ -14,14 +13,14 @@ public @Service class CArrayGenerator implements CGenerator {
             instance = new CArrayGenerator();
             instance.factoryGenerator = CFactoryGenerator.getInstance();
             instance.objectGenerator = CObjectGenerator.getInstance();
-            instance.pointerGenerator = CPointerGenerator.getInstance();
+            instance.configuration = CLibraryConfiguration.getInstance();
         }
         return instance;
     }
 
     private CFactoryGenerator factoryGenerator;
     private CObjectGenerator objectGenerator;
-    private CPointerGenerator pointerGenerator;
+    private CLibraryConfiguration configuration;
 
     private CArrayGenerator() {
     }
@@ -34,9 +33,8 @@ public @Service class CArrayGenerator implements CGenerator {
     @Override
     public @Mandatory List<String> generateJava() {
         String genericFactoryName = factoryGenerator.getName() + "<T>";
-        String pointerName = pointerGenerator.getName();
         return new List<>(
-            "package " + Configuration.C_PACKAGE + ";",
+            "package " + configuration.getJavaPackage() + ";",
             "",
             "public class " + getName() + "<T> extends " + objectGenerator.getName() + " {",
             "    private final int count;",
@@ -52,7 +50,7 @@ public @Service class CArrayGenerator implements CGenerator {
             "",
             "    public T get(int i) {",
             "        if (i >= 0 && i < count) {",
-            "            return factory.create(" + pointerName + ".offset(address, i, size));",
+            "            return factory.create(CPointer.offset(address, i, size));",
             "        } else {",
             "            throw new ArrayIndexOutOfBoundsException(i + \" out of \" + count);",
             "        }",

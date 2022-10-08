@@ -4,6 +4,8 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
+import cz.mg.vulkantransformator.entities.translator.JniFunction;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Configuration;
 
 public @Service class CMemoryGenerator implements CGenerator {
@@ -12,9 +14,14 @@ public @Service class CMemoryGenerator implements CGenerator {
     public static @Mandatory CMemoryGenerator getInstance() {
         if (instance == null) {
             instance = new CMemoryGenerator();
+            instance.configuration = CLibraryConfiguration.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
+
+    private CLibraryConfiguration configuration;
+    private CodeGenerator codeGenerator;
 
     private CMemoryGenerator() {
     }
@@ -27,7 +34,7 @@ public @Service class CMemoryGenerator implements CGenerator {
     @Override
     public @Mandatory List<String> generateJava() {
         return new List<>(
-            "package " + Configuration.C_PACKAGE + ";",
+            "package " + configuration.getJavaPackage() + ";",
             "",
             "public class " + getName() + " implements AutoCloseable {",
             "    public static final long NULL = getNull();",
@@ -73,40 +80,80 @@ public @Service class CMemoryGenerator implements CGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        String path = Configuration.C_FUNCTION + "_" + getName() + "_";
-        return new List<>(
-            "#include \"" + getName() + ".h\"",
-            "",
-            "void* l2a(jlong l) {",
-            "    union {",
-            "        jlong l;",
-            "        void* a;",
-            "    } c;",
-            "    c.l = l;",
-            "    return c.a;",
-            "}",
-            "",
-            "jlong a2l(void* a) {",
-            "    union {",
-            "        jlong l;",
-            "        void* a;",
-            "    } c;",
-            "    c.a = a;",
-            "    return c.l;",
-            "}",
-            "",
-            "JNIEXPORT jlong JNICALL Java_" + path + "getNull(JNIEnv* env, jclass clazz) {",
-            "    return a2l(NULL);",
-            "}",
-            "",
-            "JNIEXPORT jlong JNICALL Java_" + path + "allocate(JNIEnv* env, jclass clazz, jlong size) {",
-            "    return a2l(calloc(1, size));",
-            "}",
-            "",
-            "JNIEXPORT void JNICALL Java_" + path + "free(JNIEnv* env, jclass clazz, jlong address) {",
-            "    free(l2a(address));",
-            "}"
+        List<String> lines = new List<>();
+
+        lines.addCollectionLast(
+            new List<>(
+                "#include \"" + getName() + ".h\"",
+                "",
+                "void* l2a(jlong l) {",
+                "    union {",
+                "        jlong l;",
+                "        void* a;",
+                "    } c;",
+                "    c.l = l;",
+                "    return c.a;",
+                "}",
+                "",
+                "jlong a2l(void* a) {",
+                "    union {",
+                "        jlong l;",
+                "        void* a;",
+                "    } c;",
+                "    c.a = a;",
+                "    return c.l;",
+                "}",
+                ""
+            )
         );
+
+        JniFunction nullFunction = new JniFunction();
+        nullFunction.setOutput("jlong");
+        nullFunction.setClassName(getName());
+        nullFunction.setName("getNull");
+        nullFunction.setLines(
+            new List<>(
+                "return a2l(NULL);"
+            )
+        );
+
+        JniFunction allocateFunction = new JniFunction();
+        allocateFunction.setOutput("jlong");
+        allocateFunction.setClassName(getName());
+        allocateFunction.setName("allocate");
+        allocateFunction.setInput(
+            new List<>(
+                "jlong size"
+            )
+        );
+        allocateFunction.setLines(
+            new List<>(
+                "return a2l(calloc(1, size));"
+            )
+        );
+
+        JniFunction freeFunction = new JniFunction();
+        freeFunction.setOutput("void");
+        freeFunction.setClassName(getName());
+        freeFunction.setName("free");
+        freeFunction.setInput(
+            new List<>(
+                "jlong address"
+            )
+        );
+        freeFunction.setLines(
+            new List<>(
+                "free(l2a(address));"
+            )
+        );
+
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, nullFunction));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, allocateFunction));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, freeFunction));
+
+        return lines;
     }
 
     @Override

@@ -6,6 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkFunctionPointer;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
 
 public @Service class VkFunctionPointerTranslator implements VkTranslator<VkFunctionPointer> {
@@ -15,11 +16,13 @@ public @Service class VkFunctionPointerTranslator implements VkTranslator<VkFunc
         if (instance == null) {
             instance = new VkFunctionPointerTranslator();
             instance.componentTranslator = VkComponentTranslator.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
     private VkComponentTranslator componentTranslator;
+    private CodeGenerator codeGenerator;
 
     private VkFunctionPointerTranslator() {
     }
@@ -37,7 +40,7 @@ public @Service class VkFunctionPointerTranslator implements VkTranslator<VkFunc
             componentTranslator.getCommonJavaHeader(pointer)
         );
 
-        componentTranslator.removeLastEmptyLine(lines);
+        codeGenerator.removeLastEmptyLine(lines);
 
         lines.addCollectionLast(
             componentTranslator.getCommonJavaFooter(pointer)

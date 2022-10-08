@@ -4,7 +4,8 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.Configuration;
+import cz.mg.vulkantransformator.entities.translator.JniFunction;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 
 public @Service class CPointerGenerator implements CGenerator {
     private static @Optional CPointerGenerator instance;
@@ -12,16 +13,16 @@ public @Service class CPointerGenerator implements CGenerator {
     public static @Mandatory CPointerGenerator getInstance() {
         if (instance == null) {
             instance = new CPointerGenerator();
-            instance.memoryGenerator = CMemoryGenerator.getInstance();
             instance.factoryGenerator = CFactoryGenerator.getInstance();
-            instance.objectGenerator = CObjectGenerator.getInstance();
+            instance.configuration = CLibraryConfiguration.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private CMemoryGenerator memoryGenerator;
     private CFactoryGenerator factoryGenerator;
-    private CObjectGenerator objectGenerator;
+    private CLibraryConfiguration configuration;
+    private CodeGenerator codeGenerator;
 
     private CPointerGenerator() {
     }
@@ -34,12 +35,10 @@ public @Service class CPointerGenerator implements CGenerator {
     @Override
     public @Mandatory List<String> generateJava() {
         String genericFactoryName = factoryGenerator.getName() + "<T>";
-        String memoryName = memoryGenerator.getName();
-        String objectName = objectGenerator.getName();
         return new List<>(
-            "package " + Configuration.C_PACKAGE + ";",
+            "package " + configuration.getJavaPackage() + ";",
             "",
-            "public class " + getName() + "<T extends " + objectName + "> extends " + objectGenerator.getName() + " {",
+            "public class " + getName() + "<T extends CObject> extends CObject {",
             "    public static final long SIZE = _size();",
             "",
             "    private final long size;",
@@ -62,7 +61,7 @@ public @Service class CPointerGenerator implements CGenerator {
             "    }",
             "",
             "    public void setTarget(T target) {",
-            "        set(target == null ? " + memoryName + ".NULL : target.getAddress());",
+            "        set(target == null ? CMemory.NULL : target.getAddress());",
             "    }",
             "",
             "    public long get() {",
@@ -80,7 +79,7 @@ public @Service class CPointerGenerator implements CGenerator {
             "    public static native long offset(long address, int i, long size);",
             "",
             "    private T create(long targetAddress) {",
-            "        if (targetAddress != " + memoryName + ".NULL) {",
+            "        if (targetAddress != CMemory.NULL) {",
             "            return factory.create(targetAddress);",
             "        } else {",
             "            return null;",
@@ -92,29 +91,76 @@ public @Service class CPointerGenerator implements CGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        String path = Configuration.C_FUNCTION + "_" + getName() + "_";
-        return new List<>(
-            "#include \"" + memoryGenerator.getName() + ".h\"",
-            "",
-            "JNIEXPORT jlong JNICALL Java_" + path + "_size(JNIEnv* env, jclass clazz) {",
-            "    return sizeof(void*);",
-            "}",
-            "",
-            "JNIEXPORT jlong JNICALL Java_" + path + "_get(JNIEnv* env, jclass clazz, jlong address) {",
-            "    void** a = (void**) l2a(address);",
-            "    return a2l(*a);",
-            "}",
-            "",
-            "JNIEXPORT void JNICALL Java_" + path + "_set(JNIEnv* env, jclass clazz, jlong address, jlong value) {",
-            "    void** a = (void**) l2a(address);",
-            "    *a = l2a(value);",
-            "}",
-            "",
-            "JNIEXPORT jlong JNICALL Java_" + path + "offset(JNIEnv* env, jclass clazz, jlong address, jint i, jlong size) {",
-            "    void* a = (void*) l2a(address);",
-            "    return a2l(a + i * size);",
-            "}"
+        JniFunction sizeFunction = new JniFunction();
+        sizeFunction.setOutput("jlong");
+        sizeFunction.setClassName(getName());
+        sizeFunction.setName("_size");
+        sizeFunction.setLines(
+            new List<>(
+                "return sizeof(void*);"
+            )
         );
+
+        JniFunction getFunction = new JniFunction();
+        getFunction.setOutput("jlong");
+        getFunction.setClassName(getName());
+        getFunction.setName("_get");
+        getFunction.setInput(
+            new List<>(
+                "jlong address"
+            )
+        );
+        getFunction.setLines(
+            new List<>(
+                "void** a = (void**) l2a(address);",
+                "return a2l(*a);"
+            )
+        );
+
+        JniFunction setFunction = new JniFunction();
+        setFunction.setOutput("void");
+        setFunction.setClassName(getName());
+        setFunction.setName("_set");
+        setFunction.setInput(
+            new List<>(
+                "jlong address",
+                "jlong value"
+            )
+        );
+        setFunction.setLines(
+            new List<>(
+                "void** a = (void**) l2a(address);",
+                "*a = l2a(value);"
+            )
+        );
+
+        JniFunction offsetFunction = new JniFunction();
+        offsetFunction.setOutput("jlong");
+        offsetFunction.setClassName(getName());
+        offsetFunction.setName("offset");
+        offsetFunction.setInput(
+            new List<>(
+                "jlong address",
+                "jint i",
+                "jlong size"
+            )
+        );
+        offsetFunction.setLines(
+            new List<>(
+                "void* a = (void*) l2a(address);",
+                "return a2l(a + i * size);"
+            )
+        );
+
+        List<String> lines = codeGenerator.generateNativeHeader(configuration);
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, sizeFunction));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, getFunction));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, setFunction));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, offsetFunction));
+        return lines;
     }
 
     @Override

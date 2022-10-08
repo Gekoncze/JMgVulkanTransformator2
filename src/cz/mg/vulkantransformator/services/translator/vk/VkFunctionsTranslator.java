@@ -7,9 +7,8 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
-import cz.mg.vulkantransformator.services.translator.Configuration;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
-import cz.mg.vulkantransformator.services.translator.c.CMemoryGenerator;
 
 public @Service class VkFunctionsTranslator {
     private static @Optional VkFunctionsTranslator instance;
@@ -18,15 +17,15 @@ public @Service class VkFunctionsTranslator {
         if (instance == null) {
             instance = new VkFunctionsTranslator();
             instance.functionTranslator = VkFunctionTranslator.getInstance();
-            instance.componentTranslator = VkComponentTranslator.getInstance();
-            instance.memoryGenerator = CMemoryGenerator.getInstance();
+            instance.configuration = VkLibraryConfiguration.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
     private VkFunctionTranslator functionTranslator;
-    private VkComponentTranslator componentTranslator;
-    private CMemoryGenerator memoryGenerator;
+    private VkLibraryConfiguration configuration;
+    private CodeGenerator codeGenerator;
 
     private VkFunctionsTranslator() {
     }
@@ -36,18 +35,12 @@ public @Service class VkFunctionsTranslator {
     }
 
     public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkRoot root) {
-        List<String> lines = new List<>();
+        List<String> lines = codeGenerator.generateJavaHeader(configuration);
 
-        lines.addCollectionLast(new List<>(
-            "package " + Configuration.VULKAN_PACKAGE + ";",
-            "",
-            "import " + Configuration.C_PACKAGE + ".*;",
-            "",
-            "public class " + getName() + " {",
-            "    public " + getName() + "() {",
-            "    }",
-            ""
-        ));
+        lines.addLast("public class " + getName() + " {");
+        lines.addLast("    public " + getName() + "() {");
+        lines.addLast("    }");
+        lines.addLast("");
 
         for (VkComponent component : root.getComponents()) {
             if (component instanceof VkFunction) {
@@ -57,23 +50,15 @@ public @Service class VkFunctionsTranslator {
             }
         }
 
-        componentTranslator.removeLastEmptyLine(lines);
+        codeGenerator.removeLastEmptyLine(lines);
 
-        lines.addCollectionLast(new List<>(
-            "}"
-        ));
+        lines.addLast("}");
 
         return lines;
     }
 
     public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkRoot root) {
-        List<String> lines = new List<>();
-
-        lines.addCollectionLast(new List<>(
-            "#include <vulkan/vulkan.h>",
-            "#include \"../c/" + memoryGenerator.getName() + ".h\"",
-            ""
-        ));
+        List<String> lines = codeGenerator.generateNativeHeader(configuration);
 
         for (VkComponent component : root.getComponents()) {
             if (component instanceof VkFunction) {

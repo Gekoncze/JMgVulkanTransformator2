@@ -1,6 +1,4 @@
 add support for platform specific code
-    split library creation into interface with implementing classes
-
     linux
         x11
         xcb

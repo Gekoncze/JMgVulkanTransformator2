@@ -4,9 +4,11 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
+import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkEnum;
 import cz.mg.vulkantransformator.entities.vulkan.VkEnumEntry;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Configuration;
 import cz.mg.vulkantransformator.services.translator.Index;
 
@@ -18,12 +20,16 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
             instance = new VkEnumTranslator();
             instance.componentTranslator = VkComponentTranslator.getInstance();
             instance.enumEntryTranslator = VkEnumEntryTranslator.getInstance();
+            instance.configuration = VkLibraryConfiguration.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
     private VkComponentTranslator componentTranslator;
     private VkEnumEntryTranslator enumEntryTranslator;
+    private VkLibraryConfiguration configuration;
+    private CodeGenerator codeGenerator;
 
     private VkEnumTranslator() {
     }
@@ -62,7 +68,7 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
             );
         }
 
-        componentTranslator.removeLastEmptyLine(lines);
+        codeGenerator.removeLastEmptyLine(lines);
 
         lines.addCollectionLast(
             componentTranslator.getCommonJavaFooter(enumeration)
@@ -79,20 +85,43 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
             componentTranslator.getCommonNativeHeader(enumeration)
         );
 
-        String path = Configuration.VULKAN_FUNCTION + "_" + enumeration.getName() + "_";
-        String name = enumeration.getName();
-        lines.addCollectionLast(new List<>(
-            "JNIEXPORT jint JNICALL Java_" + path + "_get2(JNIEnv* env, jclass clazz, jlong address) {",
-            "    " + name + "* a = (" + name + "*) l2a(address);",
-            "    return *a;",
-            "}",
-            "",
-            "JNIEXPORT void JNICALL Java_" + path + "_set2(JNIEnv* env, jclass clazz, jlong address, jint value) {",
-            "    " + name + "* a = (" + name + "*) l2a(address);",
-            "    *a = value;",
-            "}",
-            ""
-        ));
+        JniFunction getFunction = new JniFunction();
+        getFunction.setOutput("jint");
+        getFunction.setClassName(enumeration.getName());
+        getFunction.setName("_get2");
+        getFunction.setInput(
+            new List<>(
+                "jlong address"
+            )
+        );
+        getFunction.setLines(
+            new List<>(
+                enumeration.getName() + "* a = (" + enumeration.getName() + "*) l2a(address);",
+                "return *a;"
+            )
+        );
+
+        JniFunction setFunction = new JniFunction();
+        setFunction.setOutput("void");
+        setFunction.setClassName(enumeration.getName());
+        setFunction.setName("_set2");
+        setFunction.setInput(
+            new List<>(
+                "jlong address",
+                "jint value"
+            )
+        );
+        setFunction.setLines(
+            new List<>(
+                enumeration.getName() + "* a = (" + enumeration.getName() + "*) l2a(address);",
+                "*a = value;"
+            )
+        );
+
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, getFunction));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, setFunction));
+        lines.addLast("");
 
         for (VkEnumEntry entry : enumeration.getEntries()) {
             lines.addCollectionLast(

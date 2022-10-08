@@ -4,9 +4,10 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
+import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkFlags;
-import cz.mg.vulkantransformator.services.translator.Configuration;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
 
 public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
@@ -16,11 +17,15 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         if (instance == null) {
             instance = new VkFlagsTranslator();
             instance.componentTranslator = VkComponentTranslator.getInstance();
+            instance.configuration = VkLibraryConfiguration.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
     private VkComponentTranslator componentTranslator;
+    private VkLibraryConfiguration configuration;
+    private CodeGenerator codeGenerator;
 
     private VkFlagsTranslator() {
     }
@@ -81,7 +86,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
             ));
         }
 
-        componentTranslator.removeLastEmptyLine(lines);
+        codeGenerator.removeLastEmptyLine(lines);
 
         lines.addCollectionLast(
             componentTranslator.getCommonJavaFooter(flags)
@@ -98,46 +103,125 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
             componentTranslator.getCommonNativeHeader(flags)
         );
 
-        String path = Configuration.VULKAN_FUNCTION + "_" + flags.getName() + "_";
         String name = flags.getName();
-        lines.addCollectionLast(new List<>(
-            "JNIEXPORT jint JNICALL Java_" + path + "_get2(JNIEnv* env, jclass clazz, jlong address) {",
-            "    " + name + "* a = (" + name + "*) l2a(address);",
-            "    return *a;",
-            "}",
-            "",
-            "JNIEXPORT void JNICALL Java_" + path + "_set2(JNIEnv* env, jclass clazz, jlong address, jint value) {",
-            "    " + name + "* a = (" + name + "*) l2a(address);",
-            "    *a = value;",
-            "}",
-            "",
-            "JNIEXPORT void JNICALL Java_" + path + "_add2(JNIEnv* env, jclass clazz, jlong address, jint value) {",
-            "    " + name + "* a = (" + name + "*) l2a(address);",
-            "    *a |= value;",
-            "}",
-            "",
-            "JNIEXPORT void JNICALL Java_" + path + "_remove2(JNIEnv* env, jclass clazz, jlong address, jint value) {",
-            "    " + name + "* a = (" + name + "*) l2a(address);",
-            "    *a &= ~value;",
-            "}",
-            ""
-        ));
+
+        JniFunction get2Function = new JniFunction();
+        get2Function.setOutput("jint");
+        get2Function.setClassName(flags.getName());
+        get2Function.setName("_get2");
+        get2Function.setInput(
+            new List<>(
+                "jlong address"
+            )
+        );
+        get2Function.setLines(
+            new List<>(
+                name + "* a = (" + name + "*) l2a(address);",
+                "return *a;"
+            )
+        );
+
+        JniFunction set2Function = new JniFunction();
+        set2Function.setOutput("void");
+        set2Function.setClassName(flags.getName());
+        set2Function.setName("_set2");
+        set2Function.setInput(
+            new List<>(
+                "jlong address",
+                "jint value"
+            )
+        );
+        set2Function.setLines(
+            new List<>(
+                name + "* a = (" + name + "*) l2a(address);",
+                "*a = value;"
+            )
+        );
+
+        JniFunction add2Function = new JniFunction();
+        add2Function.setOutput("void");
+        add2Function.setClassName(flags.getName());
+        add2Function.setName("_add2");
+        add2Function.setInput(
+            new List<>(
+                "jlong address",
+                "jint value"
+            )
+        );
+        add2Function.setLines(
+            new List<>(
+                name + "* a = (" + name + "*) l2a(address);",
+                "*a |= value;"
+            )
+        );
+
+        JniFunction remove2Function = new JniFunction();
+        remove2Function.setOutput("void");
+        remove2Function.setClassName(flags.getName());
+        remove2Function.setName("_remove2");
+        remove2Function.setInput(
+            new List<>(
+                "jlong address",
+                "jint value"
+            )
+        );
+        remove2Function.setLines(
+            new List<>(
+                name + "* a = (" + name + "*) l2a(address);",
+                "*a &= ~value;"
+            )
+        );
+
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, get2Function));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, set2Function));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, add2Function));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, remove2Function));
+        lines.addLast("");
 
         String flagBitsName = getFlagBitsName(index, flags);
         if (flagBitsName != null) {
-            lines.addCollectionLast(new List<>(
-                "JNIEXPORT void JNICALL Java_" + path + "_add(JNIEnv* env, jclass clazz, jlong address, jlong flagAddress) {",
-                "    " + name + "* a = (" + name + "*) l2a(address);",
-                "    " + flagBitsName + "* b = (" + flagBitsName + "*) l2a(flagAddress);",
-                "    *a |= *b;",
-                "}",
-                "",
-                "JNIEXPORT void JNICALL Java_" + path + "_remove(JNIEnv* env, jclass clazz, jlong address, jlong flagAddress) {",
-                "    " + name + "* a = (" + name + "*) l2a(address);",
-                "    " + flagBitsName + "* b = (" + flagBitsName + "*) l2a(flagAddress);",
-                "    *a &= ~(*b);",
-                "}"
-            ));
+            JniFunction addFunction = new JniFunction();
+            addFunction.setOutput("void");
+            addFunction.setClassName(flags.getName());
+            addFunction.setName("_add");
+            addFunction.setInput(
+                new List<>(
+                    "jlong address",
+                    "jlong flagAddress"
+                )
+            );
+            addFunction.setLines(
+                new List<>(
+                    name + "* a = (" + name + "*) l2a(address);",
+                    flagBitsName + "* b = (" + flagBitsName + "*) l2a(flagAddress);",
+                    "*a |= *b;"
+                )
+            );
+
+            JniFunction removeFunction = new JniFunction();
+            removeFunction.setOutput("void");
+            removeFunction.setClassName(flags.getName());
+            removeFunction.setName("_remove");
+            removeFunction.setInput(
+                new List<>(
+                    "jlong address",
+                    "jlong flagAddress"
+                )
+            );
+            removeFunction.setLines(
+                new List<>(
+                    name + "* a = (" + name + "*) l2a(address);",
+                    flagBitsName + "* b = (" + flagBitsName + "*) l2a(flagAddress);",
+                    "*a &= ~(*b);"
+                )
+            );
+
+            lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, addFunction));
+            lines.addLast("");
+            lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, removeFunction));
         }
 
         lines.addCollectionLast(

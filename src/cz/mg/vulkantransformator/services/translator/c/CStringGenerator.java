@@ -4,8 +4,6 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.Configuration;
-import cz.mg.vulkantransformator.services.translator.c.types.CCharGenerator;
 
 public @Service class CStringGenerator implements CGenerator {
     private static @Optional CStringGenerator instance;
@@ -13,14 +11,12 @@ public @Service class CStringGenerator implements CGenerator {
     public static @Mandatory CStringGenerator getInstance() {
         if (instance == null) {
             instance = new CStringGenerator();
-            instance.pointerGenerator = CPointerGenerator.getInstance();
-            instance.charGenerator = CCharGenerator.getInstance();
+            instance.configuration = CLibraryConfiguration.getInstance();
         }
         return instance;
     }
 
-    private CPointerGenerator pointerGenerator;
-    private CCharGenerator charGenerator;
+    private CLibraryConfiguration configuration;
 
     private CStringGenerator() {
     }
@@ -32,12 +28,11 @@ public @Service class CStringGenerator implements CGenerator {
 
     @Override
     public @Mandatory List<String> generateJava() {
-        String charPointerType = pointerGenerator.getName() + "<" + charGenerator.getName() + ">";
         return new List<>(
-            "package " + Configuration.C_PACKAGE + ";",
+            "package " + configuration.getJavaPackage() + ";",
             "",
             "public class " + getName() + " {",
-            "    public static String get(" + charPointerType + " pointer) {",
+            "    public static String get(CPointer<CChar> pointer) {",
             "        StringBuilder value = new StringBuilder();",
             "        int i = -1;",
             "        while (true) {",
@@ -52,7 +47,7 @@ public @Service class CStringGenerator implements CGenerator {
             "        return value.toString();",
             "    }",
             "",
-            "    public static void set(" + charPointerType + " pointer, String value) {",
+            "    public static void set(CPointer<CChar> pointer, String value) {",
             "        for (int i = 0; i < value.length(); i++) {",
             "            char ch = value.charAt(i);",
             "            if (ch > 0 && ch < 128) {",

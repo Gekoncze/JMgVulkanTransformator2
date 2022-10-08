@@ -56,6 +56,8 @@ public @Service class VulkanTranslator {
             instance.functionsTranslator = VkFunctionsTranslator.getInstance();
             instance.libraryGenerator = VkLibraryGenerator.getInstance();
             instance.makefileGenerator = MakefileGenerator.getInstance();
+            instance.cConfiguration = CLibraryConfiguration.getInstance();
+            instance.vkConfiguration = VkLibraryConfiguration.getInstance();
         }
         return instance;
     }
@@ -66,6 +68,8 @@ public @Service class VulkanTranslator {
     private VkFunctionsTranslator functionsTranslator;
     private VkLibraryGenerator libraryGenerator;
     private MakefileGenerator makefileGenerator;
+    private CLibraryConfiguration cConfiguration;
+    private VkLibraryConfiguration vkConfiguration;
 
     private VulkanTranslator() {
     }
@@ -87,21 +91,21 @@ public @Service class VulkanTranslator {
         for (CGenerator generator : generators) {
             files.addLast(
                 new File(
-                    Path.of(C_DIRECTORY, generator.getName() + ".java"),
+                    Path.of(cConfiguration.getDirectory(), generator.getName() + ".java"),
                     generator.generateJava()
                 )
             );
 
             files.addLast(
                 new File(
-                    Path.of(C_DIRECTORY, generator.getName() + ".c"),
+                    Path.of(cConfiguration.getDirectory(), generator.getName() + ".c"),
                     generator.generateNativeC()
                 )
             );
 
             files.addLast(
                 new File(
-                    Path.of(C_DIRECTORY, generator.getName() + ".h"),
+                    Path.of(cConfiguration.getDirectory(), generator.getName() + ".h"),
                     generator.generateNativeH()
                 )
             );
@@ -125,14 +129,14 @@ public @Service class VulkanTranslator {
             if (translator != null) {
                 files.addLast(
                     new File(
-                        Path.of(VULKAN_DIRECTORY, component.getName() + ".java"),
+                        Path.of(vkConfiguration.getDirectory(), component.getName() + ".java"),
                         translator.translateJava(index, component)
                     )
                 );
 
                 files.addLast(
                     new File(
-                        Path.of(VULKAN_DIRECTORY, component.getName() + ".c"),
+                        Path.of(vkConfiguration.getDirectory(), component.getName() + ".c"),
                         translator.translateNative(index, component)
                     )
                 );
@@ -141,35 +145,35 @@ public @Service class VulkanTranslator {
 
         files.addLast(
             new File(
-                Path.of(VULKAN_DIRECTORY, constantTranslator.getName() + ".java"),
+                Path.of(vkConfiguration.getDirectory(), constantTranslator.getName() + ".java"),
                 constantTranslator.translateJava(index, root)
             )
         );
 
         files.addLast(
             new File(
-                Path.of(VULKAN_DIRECTORY, constantTranslator.getName() + ".c"),
+                Path.of(vkConfiguration.getDirectory(), constantTranslator.getName() + ".c"),
                 constantTranslator.translateNative(index, root)
             )
         );
 
         files.addLast(
             new File(
-                Path.of(VULKAN_DIRECTORY, functionsTranslator.getName() + ".java"),
+                Path.of(vkConfiguration.getDirectory(), functionsTranslator.getName() + ".java"),
                 functionsTranslator.translateJava(index, root)
             )
         );
 
         files.addLast(
             new File(
-                Path.of(VULKAN_DIRECTORY, functionsTranslator.getName() + ".c"),
+                Path.of(vkConfiguration.getDirectory(), functionsTranslator.getName() + ".c"),
                 functionsTranslator.translateNative(index, root)
             )
         );
 
         files.addLast(
             new File(
-                Path.of(VULKAN_DIRECTORY, libraryGenerator.getName() + ".java"),
+                Path.of(vkConfiguration.getDirectory(), libraryGenerator.getName() + ".java"),
                 libraryGenerator.generateJava()
             )
         );
@@ -182,10 +186,10 @@ public @Service class VulkanTranslator {
 
         files.addLast(
             new File(
-                Path.of(C_DIRECTORY, "makefile"),
+                Path.of(cConfiguration.getDirectory(), "makefile"),
                 makefileGenerator.create(
                     cFiles,
-                    C_LIBRARY,
+                    cConfiguration.getLibraryName(),
                     new List<>(JAVA_DIRECTORY, JAVA_DIRECTORY_MD),
                     new List<>()
                 )
@@ -194,10 +198,10 @@ public @Service class VulkanTranslator {
 
         files.addLast(
             new File(
-                Path.of(VULKAN_DIRECTORY, "makefile"),
+                Path.of(vkConfiguration.getDirectory(), "makefile"),
                 makefileGenerator.create(
                     vulkanFiles,
-                    VULKAN_LIBRARY,
+                    vkConfiguration.getLibraryName(),
                     new List<>(JAVA_DIRECTORY, JAVA_DIRECTORY_MD),
                     new List<>()
                 )

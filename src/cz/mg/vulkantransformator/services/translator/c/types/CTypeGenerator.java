@@ -4,8 +4,9 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.Configuration;
-import cz.mg.vulkantransformator.services.translator.c.CMemoryGenerator;
+import cz.mg.vulkantransformator.entities.translator.JniFunction;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CLibraryConfiguration;
 
 public @Service class CTypeGenerator {
     private static @Optional CTypeGenerator instance;
@@ -13,19 +14,21 @@ public @Service class CTypeGenerator {
     public static @Mandatory CTypeGenerator getInstance() {
         if (instance == null) {
             instance = new CTypeGenerator();
-            instance.memoryGenerator = CMemoryGenerator.getInstance();
+            instance.configuration = CLibraryConfiguration.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private CMemoryGenerator memoryGenerator;
+    private CLibraryConfiguration configuration;
+    private CodeGenerator codeGenerator;
 
     private CTypeGenerator() {
     }
 
     public @Mandatory List<String> generateJava(@Mandatory String className, @Mandatory String javaType) {
         return new List<>(
-            "package " + Configuration.C_PACKAGE + ";",
+            "package " + configuration.getJavaPackage() + ";",
             "",
             "public class " + className + " extends CObject {",
             "    public static final long SIZE = _size();",
@@ -60,24 +63,55 @@ public @Service class CTypeGenerator {
         @Mandatory String jniType,
         @Mandatory String nativeType
     ) {
-        String path = Configuration.C_FUNCTION + "_" + className + "_";
-        return new List<>(
-            "#include \"" + memoryGenerator.getName() + ".h\"",
-            "#include <stdint.h>",
-            "",
-            "JNIEXPORT jlong JNICALL Java_" + path + "_size(JNIEnv* env, jclass clazz) {",
-            "    return sizeof(" + nativeType + ");",
-            "}",
-            "",
-            "JNIEXPORT " + jniType + " JNICALL Java_" + path + "_get(JNIEnv* env, jclass clazz, jlong address) {",
-            "    " + nativeType + "* a = (" + nativeType + "*) l2a(address);",
-            "    return *a;",
-            "}",
-            "",
-            "JNIEXPORT void JNICALL Java_" + path + "_set(JNIEnv* env, jclass clazz, jlong address, " + jniType + " value) {",
-            "    " + nativeType + "* a = (" + nativeType + "*) l2a(address);",
-            "    *a = value;",
-            "}"
+        JniFunction sizeFunction = new JniFunction();
+        sizeFunction.setOutput("jlong");
+        sizeFunction.setClassName(className);
+        sizeFunction.setName("_size");
+        sizeFunction.setLines(
+            new List<>(
+                "return sizeof(" + nativeType + ");"
+            )
         );
+
+        JniFunction getFunction = new JniFunction();
+        getFunction.setOutput(jniType);
+        getFunction.setClassName(className);
+        getFunction.setName("_get");
+        getFunction.setInput(
+            new List<>(
+                "jlong address"
+            )
+        );
+        getFunction.setLines(
+            new List<>(
+                nativeType + "* a = (" + nativeType + "*) l2a(address);",
+                "return *a;"
+            )
+        );
+
+        JniFunction setFunction = new JniFunction();
+        setFunction.setOutput("void");
+        setFunction.setClassName(className);
+        setFunction.setName("_set");
+        setFunction.setInput(
+            new List<>(
+                "jlong address",
+                jniType + " value"
+            )
+        );
+        setFunction.setLines(
+            new List<>(
+                nativeType + "* a = (" + nativeType + "*) l2a(address);",
+                "*a = value;"
+            )
+        );
+
+        List<String> lines = codeGenerator.generateNativeHeader(configuration);
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, sizeFunction));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, getFunction));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, setFunction));
+        return lines;
     }
 }

@@ -3,7 +3,7 @@ package cz.mg.vulkantransformator.services.translator.c;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.Configuration;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 
 public class CLibraryGenerator implements CGenerator {
     private static @Optional CLibraryGenerator instance;
@@ -11,9 +11,14 @@ public class CLibraryGenerator implements CGenerator {
     public static @Mandatory CLibraryGenerator getInstance() {
         if (instance == null) {
             instance = new CLibraryGenerator();
+            instance.configuration = CLibraryConfiguration.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
+
+    private CLibraryConfiguration configuration;
+    private CodeGenerator codeGenerator;
 
     private CLibraryGenerator() {
     }
@@ -25,17 +30,7 @@ public class CLibraryGenerator implements CGenerator {
 
     @Override
     public @Mandatory List<String> generateJava() {
-        return new List<>(
-            "package " + Configuration.C_PACKAGE + ";",
-            "",
-            "public class " + getName() + " {",
-            "    public static final String NAME = \"" + Configuration.C_LIBRARY + "\";",
-            "",
-            "    public static void load() {",
-            "        System.loadLibrary(NAME);",
-            "    }",
-            "}"
-        );
+        return codeGenerator.generateJavaLibraryClass(configuration, getName());
     }
 
     @Override

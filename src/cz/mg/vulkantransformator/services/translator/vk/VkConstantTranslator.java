@@ -4,15 +4,12 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
+import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
-import cz.mg.vulkantransformator.services.translator.Configuration;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
-import cz.mg.vulkantransformator.services.translator.c.CMemoryGenerator;
-import cz.mg.vulkantransformator.services.translator.c.CObjectGenerator;
-import cz.mg.vulkantransformator.services.translator.c.CPointerGenerator;
-import cz.mg.vulkantransformator.services.translator.c.types.CCharGenerator;
 
 public @Service class VkConstantTranslator {
     private static @Optional VkConstantTranslator instance;
@@ -20,18 +17,14 @@ public @Service class VkConstantTranslator {
     public static @Mandatory VkConstantTranslator getInstance() {
         if (instance == null) {
             instance = new VkConstantTranslator();
-            instance.objectGenerator = CObjectGenerator.getInstance();
-            instance.memoryGenerator = CMemoryGenerator.getInstance();
-            instance.pointerGenerator = CPointerGenerator.getInstance();
-            instance.charGenerator = CCharGenerator.getInstance();
+            instance.configuration = VkLibraryConfiguration.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private CObjectGenerator objectGenerator;
-    private CMemoryGenerator memoryGenerator;
-    private CPointerGenerator pointerGenerator;
-    private CCharGenerator charGenerator;
+    private VkLibraryConfiguration configuration;
+    private CodeGenerator codeGenerator;
 
     private VkConstantTranslator() {
     }
@@ -41,15 +34,11 @@ public @Service class VkConstantTranslator {
     }
 
     public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkRoot root) {
-        List<String> lines = new List<>();
+        List<String> lines = codeGenerator.generateJavaHeader(configuration);
 
         lines.addCollectionLast(
             new List<>(
-                "package " + Configuration.VULKAN_PACKAGE + ";",
-                "",
-                "import " + Configuration.C_PACKAGE + ".*;",
-                "",
-                "public class " + getName() + " extends " + objectGenerator.getName() + " {",
+                "public class " + getName() + " extends CObject {",
                 "    private " + getName() + "(long address) {",
                 "        super(address);",
                 "    }",
@@ -75,15 +64,13 @@ public @Service class VkConstantTranslator {
                         )
                     );
                 } else if (isString(constant)) {
-                    String charName = charGenerator.getName();
-                    String pointerName = pointerGenerator.getName();
-                    String type = pointerName + "<" + charName + ">";
+                    String type = "CPointer<CChar>";
                     lines.addCollectionLast(
                         new List<>(
-                            "    public static final " + type + " " + constant.getName() + " = new "+ pointerName + "<>(",
+                            "    public static final " + type + " " + constant.getName() + " = new CPointer<>(",
                             "         get_" + constant.getName() + "()" + ",",
-                            "         " + charName + ".SIZE,",
-                            "         " + charName + "::new",
+                            "         CChar.SIZE,",
+                            "         CChar::new",
                             "    );",
                             "",
                             "    private static native long get_" + constant.getName() + "();",
@@ -100,36 +87,42 @@ public @Service class VkConstantTranslator {
     }
 
     public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkRoot root) {
-        List<String> lines = new List<>();
-
-        String path = Configuration.VULKAN_FUNCTION + "_" + getName() + "_";
-        lines.addCollectionLast(
-            new List<>(
-                "#include <vulkan/vulkan.h>",
-                "#include \"../c/" + memoryGenerator.getName() + ".h\"",
-                ""
-            )
-        );
+        List<String> lines = codeGenerator.generateNativeHeader(configuration);
 
         for (VkComponent component : root.getComponents()) {
             if (component instanceof VkConstant) {
                 VkConstant constant = (VkConstant) component;
                 if (isString(constant)) {
-                    lines.addCollectionLast(
-                        new List<>(
-                            "const char* _" + constant.getName() + " = " + constant.getName() + ";",
-                            "",
-                            "JNIEXPORT jlong JNICALL Java_" + path + "get_" + constant.getName() + "(JNIEnv* env, jclass clazz) {",
-                            "    return a2l(&_" + constant.getName() + ");",
-                            "}",
-                            ""
-                        )
-                    );
+                    lines.addLast(generateNativeVariable(constant));
+                    lines.addLast("");
+                    lines.addCollectionLast(generateNativeFunction(constant));
+                    lines.addLast("");
                 }
             }
         }
 
         return lines;
+    }
+
+    private @Mandatory String generateNativeVariable(@Mandatory VkConstant constant) {
+        return "const char* _" + constant.getName() + " = " + constant.getName() + ";";
+    }
+
+    private @Mandatory List<String> generateNativeFunction(@Mandatory VkConstant constant) {
+        return codeGenerator.generateJniFunction(configuration, constantToFunction(constant));
+    }
+
+    private @Mandatory JniFunction constantToFunction(@Mandatory VkConstant constant) {
+        JniFunction function = new JniFunction();
+        function.setOutput("jlong");
+        function.setClassName(getName());
+        function.setName("get_" + constant.getName());
+        function.setLines(
+            new List<>(
+                "return a2l(&_" + constant.getName() + ");"
+            )
+        );
+        return function;
     }
 
     private boolean isInteger(@Mandatory VkConstant constant)

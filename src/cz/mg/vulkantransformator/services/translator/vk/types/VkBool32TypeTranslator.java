@@ -4,10 +4,12 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
+import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkType;
-import cz.mg.vulkantransformator.services.translator.Configuration;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
 
 public @Service class VkBool32TypeTranslator implements VkSpecialTypeTranslator {
     private static @Optional VkBool32TypeTranslator instance;
@@ -15,9 +17,14 @@ public @Service class VkBool32TypeTranslator implements VkSpecialTypeTranslator 
     public static @Mandatory VkBool32TypeTranslator getInstance() {
         if (instance == null) {
             instance = new VkBool32TypeTranslator();
+            instance.configuration = VkLibraryConfiguration.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
+
+    private VkLibraryConfiguration configuration;
+    private CodeGenerator codeGenerator;
 
     private VkBool32TypeTranslator() {
     }
@@ -48,17 +55,44 @@ public @Service class VkBool32TypeTranslator implements VkSpecialTypeTranslator 
 
     @Override
     public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkType type) {
-        String path = Configuration.VULKAN_FUNCTION + "_VkBool32_";
-        return new List<>(
-            "JNIEXPORT jint JNICALL Java_" + path + "_get(JNIEnv* env, jclass clazz, jlong address) {",
-            "    VkBool32* a = (VkBool32*) l2a(address);",
-            "    return *a;",
-            "}",
-            "",
-            "JNIEXPORT void JNICALL Java_" + path + "_set2(JNIEnv* env, jclass clazz, jlong address, jint value) {",
-            "    VkBool32* a = (VkBool32*) l2a(address);",
-            "    *a = value;",
-            "}"
+        JniFunction getFunction = new JniFunction();
+        getFunction.setOutput("jint");
+        getFunction.setClassName(getName());
+        getFunction.setName("_get");
+        getFunction.setInput(
+            new List<>(
+                "jlong address"
+            )
         );
+        getFunction.setLines(
+            new List<>(
+                "VkBool32* a = (VkBool32*) l2a(address);",
+                "return *a;"
+            )
+        );
+
+        JniFunction setFunction = new JniFunction();
+        setFunction.setOutput("void");
+        setFunction.setClassName(getName());
+        setFunction.setName("_set2");
+        setFunction.setInput(
+            new List<>(
+                "jlong address",
+                "jint value"
+            )
+        );
+        setFunction.setLines(
+            new List<>(
+                "VkBool32* a = (VkBool32*) l2a(address);",
+                "*a = value;"
+            )
+        );
+
+
+        List<String> lines = new List<>();
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, getFunction));
+        lines.addLast("");
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, setFunction));
+        return lines;
     }
 }
