@@ -5,11 +5,13 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.filesystem.File;
+import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.entities.vulkan.VkVersion;
 import cz.mg.vulkantransformator.services.filesystem.FileReaderService;
 import cz.mg.vulkantransformator.services.filesystem.FileWriterService;
 import cz.mg.vulkantransformator.services.parser.VulkanParser;
-import cz.mg.vulkantransformator.services.translator.VulkanTranslator;
+import cz.mg.vulkantransformator.services.translator.c.CLibraryCodeGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.VkLibraryCodeGenerator;
 
 import java.nio.file.Path;
 
@@ -24,7 +26,8 @@ public @Service class VulkanTransformator {
             instance.fileReaderService = FileReaderService.getInstance();
             instance.fileWriterService = FileWriterService.getInstance();
             instance.vulkanParser = VulkanParser.getInstance();
-            instance.vulkanTranslator = VulkanTranslator.getInstance();
+            instance.cLibraryCodeGenerator = CLibraryCodeGenerator.getInstance();
+            instance.vkLibraryCodeGenerator = VkLibraryCodeGenerator.getInstance();
         }
         return instance;
     }
@@ -32,7 +35,8 @@ public @Service class VulkanTransformator {
     private FileReaderService fileReaderService;
     private FileWriterService fileWriterService;
     private VulkanParser vulkanParser;
-    private VulkanTranslator vulkanTranslator;
+    private CLibraryCodeGenerator cLibraryCodeGenerator;
+    private VkLibraryCodeGenerator vkLibraryCodeGenerator;
 
     private VulkanTransformator() {
     }
@@ -48,15 +52,33 @@ public @Service class VulkanTransformator {
         File inputFile = new File(inputPath, null);
         fileReaderService.load(inputFile);
 
-        List<File> files = vulkanTranslator.export(
-            vulkanParser.parse(version, inputFile)
-        );
+        VkRoot root = vulkanParser.parse(version, inputFile);
+        List<File> files = translate(root);
 
         for (File file : files) {
             Path outputPath = outputDirectory.resolve(file.getPath());
             file.setPath(outputPath);
             fileWriterService.save(file);
         }
+    }
+
+    private @Mandatory List<File> translate(@Mandatory VkRoot root) {
+        List<File> files = new List<>();
+        files.addCollectionLast(cLibraryCodeGenerator.generateFiles());
+        files.addCollectionLast(vkLibraryCodeGenerator.generateFiles(root));
+        return removeEmptyFiles(files);
+    }
+
+    private @Mandatory List<File> removeEmptyFiles(@Mandatory List<File> files) {
+        List<File> newFiles = new List<>();
+        for (File file : files) {
+            if (file.getLines() != null) {
+                if (file.getLines().count() > 0) {
+                    newFiles.addLast(file);
+                }
+            }
+        }
+        return newFiles;
     }
 
     public static void main(String[] args) {
