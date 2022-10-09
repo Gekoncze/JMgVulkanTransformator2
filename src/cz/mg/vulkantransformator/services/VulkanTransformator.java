@@ -53,32 +53,18 @@ public @Service class VulkanTransformator {
         fileReaderService.load(inputFile);
 
         VkRoot root = vulkanParser.parse(version, inputFile);
-        List<File> files = translate(root);
 
-        for (File file : files) {
-            Path outputPath = outputDirectory.resolve(file.getPath());
-            file.setPath(outputPath);
-            fileWriterService.save(file);
-        }
-    }
-
-    private @Mandatory List<File> translate(@Mandatory VkRoot root) {
         List<File> files = new List<>();
         files.addCollectionLast(cLibraryCodeGenerator.generateFiles());
         files.addCollectionLast(vkLibraryCodeGenerator.generateFiles(root));
-        return removeEmptyFiles(files);
-    }
 
-    private @Mandatory List<File> removeEmptyFiles(@Mandatory List<File> files) {
-        List<File> newFiles = new List<>();
         for (File file : files) {
-            if (file.getLines() != null) {
-                if (file.getLines().count() > 0) {
-                    newFiles.addLast(file);
-                }
+            if (file.getLines().count() > 0) {
+                Path outputPath = outputDirectory.resolve(file.getPath());
+                file.setPath(outputPath);
+                fileWriterService.save(file);
             }
         }
-        return newFiles;
     }
 
     public static void main(String[] args) {
