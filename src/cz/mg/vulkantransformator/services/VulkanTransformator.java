@@ -15,9 +15,9 @@ import cz.mg.vulkantransformator.services.translator.vk.VkLibraryCodeGenerator;
 
 import java.nio.file.Path;
 
-public @Service class VulkanTransformator {
-    private static final @Mandatory String VULKAN_FILE_NAME = "vulkan_core.h";
+import static cz.mg.vulkantransformator.services.Configuration.VULKAN_FILE_NAME;
 
+public @Service class VulkanTransformator {
     private static @Optional VulkanTransformator instance;
 
     public static @Mandatory VulkanTransformator getInstance() {
@@ -48,23 +48,32 @@ public @Service class VulkanTransformator {
     public void transform(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
         VkVersion version = new VkVersion(1, 1);
 
-        Path inputPath = inputDirectory.resolve(VULKAN_FILE_NAME).toAbsolutePath();
-        File inputFile = new File(inputPath, null);
-        fileReaderService.load(inputFile);
-
-        VkRoot root = vulkanParser.parse(version, inputFile);
+        File vulkanFile = read(inputDirectory, VULKAN_FILE_NAME);
+        VkRoot root = vulkanParser.parse(version, vulkanFile);
 
         List<File> files = new List<>();
+
         files.addCollectionLast(cLibraryCodeGenerator.generateFiles());
         files.addCollectionLast(vkLibraryCodeGenerator.generateFiles(root));
 
         for (File file : files) {
             if (file.getLines().count() > 0) {
-                Path outputPath = outputDirectory.resolve(file.getPath());
-                file.setPath(outputPath);
-                fileWriterService.save(file);
+                write(outputDirectory, file);
             }
         }
+    }
+
+    private @Mandatory File read(@Mandatory Path inputDirectory, @Mandatory String name) {
+        Path path = inputDirectory.resolve(name).toAbsolutePath();
+        File file = new File(path, null);
+        fileReaderService.load(file);
+        return file;
+    }
+
+    private void write(@Mandatory Path outputDirectory, @Mandatory File file) {
+        Path outputPath = outputDirectory.resolve(file.getPath());
+        file.setPath(outputPath);
+        fileWriterService.save(file);
     }
 
     public static void main(String[] args) {

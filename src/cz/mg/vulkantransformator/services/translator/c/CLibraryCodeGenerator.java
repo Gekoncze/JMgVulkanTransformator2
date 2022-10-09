@@ -11,8 +11,8 @@ import cz.mg.vulkantransformator.services.translator.c.code.types.*;
 
 import java.nio.file.Path;
 
-import static cz.mg.vulkantransformator.services.translator.Configuration.JAVA_DIRECTORY;
-import static cz.mg.vulkantransformator.services.translator.Configuration.JAVA_DIRECTORY_MD;
+import static cz.mg.vulkantransformator.services.Configuration.JAVA_DIRECTORY;
+import static cz.mg.vulkantransformator.services.Configuration.JAVA_DIRECTORY_MD;
 
 public @Service class CLibraryCodeGenerator {
     private static @Optional CLibraryCodeGenerator instance;

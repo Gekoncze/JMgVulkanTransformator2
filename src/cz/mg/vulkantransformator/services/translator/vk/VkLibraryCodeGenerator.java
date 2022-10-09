@@ -14,8 +14,8 @@ import cz.mg.vulkantransformator.services.translator.vk.code.*;
 
 import java.nio.file.Path;
 
-import static cz.mg.vulkantransformator.services.translator.Configuration.JAVA_DIRECTORY;
-import static cz.mg.vulkantransformator.services.translator.Configuration.JAVA_DIRECTORY_MD;
+import static cz.mg.vulkantransformator.services.Configuration.JAVA_DIRECTORY;
+import static cz.mg.vulkantransformator.services.Configuration.JAVA_DIRECTORY_MD;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public @Service class VkLibraryCodeGenerator {
