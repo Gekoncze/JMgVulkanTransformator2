@@ -1,8 +1,9 @@
-package cz.mg.vulkantransformator.services.translator.vk.android;
+package cz.mg.vulkantransformator.services.translator.vk;
 
 import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
 public @Utility class AndroidLibraryConfiguration implements LibraryConfiguration {
@@ -31,5 +32,20 @@ public @Utility class AndroidLibraryConfiguration implements LibraryConfiguratio
     @Override
     public @Mandatory String getJavaPackage() {
         return "cz.mg.vulkan.android";
+    }
+
+    @Override
+    public @Mandatory List<String> getJavaDependencies() {
+        return new List<>(
+            "import cz.mg.c.*;"
+        );
+    }
+
+    @Override
+    public @Mandatory List<String> getNativeDependencies() {
+        return new List<>(
+            "#include <vulkan/vulkan.h>",
+            "#include \"../../c/CMemory.h\""
+        );
     }
 }
