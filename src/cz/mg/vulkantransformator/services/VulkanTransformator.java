@@ -59,8 +59,8 @@ public @Service class VulkanTransformator {
     }
 
     private void generateVulkanBridge(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
-        File vulkanFile = read(inputDirectory, VULKAN_FILE_NAME);
-        VkRoot root = vulkanParser.parse(VULKAN_VERSION, vulkanFile);
+        File file = read(inputDirectory, VULKAN_FILE_NAME);
+        VkRoot root = vulkanParser.parse(VULKAN_VERSION, file);
         List<File> files = vkLibraryCodeGenerator.generateFiles(root, vkLibraryConfiguration);
         write(outputDirectory, files);
     }

@@ -6,32 +6,32 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
-public @Utility class X11LibraryConfiguration implements LibraryConfiguration {
-    private static @Optional X11LibraryConfiguration instance;
+public @Utility class XlibLibraryConfiguration implements LibraryConfiguration {
+    private static @Optional XlibLibraryConfiguration instance;
 
-    public static @Mandatory X11LibraryConfiguration getInstance() {
+    public static @Mandatory XlibLibraryConfiguration getInstance() {
         if (instance == null) {
-            instance = new X11LibraryConfiguration();
+            instance = new XlibLibraryConfiguration();
         }
         return instance;
     }
 
-    private X11LibraryConfiguration() {
+    private XlibLibraryConfiguration() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "X11";
+        return "Xlib";
     }
 
     @Override
     public @Mandatory String getLibraryName() {
-        return "jmgvulkanx11";
+        return "jmgvulkanxlib";
     }
 
     @Override
     public @Mandatory String getJavaPackage() {
-        return "cz.mg.vulkan.x11";
+        return "cz.mg.vulkan.xlib";
     }
 
     @Override
