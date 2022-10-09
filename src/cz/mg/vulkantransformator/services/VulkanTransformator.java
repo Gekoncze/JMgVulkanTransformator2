@@ -6,7 +6,6 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
-import cz.mg.vulkantransformator.entities.vulkan.VkVersion;
 import cz.mg.vulkantransformator.services.filesystem.FileReaderService;
 import cz.mg.vulkantransformator.services.filesystem.FileWriterService;
 import cz.mg.vulkantransformator.services.parser.VulkanParser;
@@ -17,6 +16,7 @@ import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
 import java.nio.file.Path;
 
 import static cz.mg.vulkantransformator.services.Configuration.VULKAN_FILE_NAME;
+import static cz.mg.vulkantransformator.services.Configuration.VULKAN_VERSION;
 
 public @Service class VulkanTransformator {
     private static @Optional VulkanTransformator instance;
@@ -49,21 +49,20 @@ public @Service class VulkanTransformator {
      * @param outputDirectory destination directory where generated java and c code will be saved
      */
     public void transform(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
-        VkVersion version = new VkVersion(1, 1);
+        generateNativeBridge(outputDirectory);
+        generateVulkanBridge(inputDirectory, outputDirectory);
+    }
 
+    private void generateNativeBridge(@Mandatory Path outputDirectory) {
+        List<File> files = cLibraryCodeGenerator.generateFiles();
+        write(outputDirectory, files);
+    }
+
+    private void generateVulkanBridge(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
         File vulkanFile = read(inputDirectory, VULKAN_FILE_NAME);
-        VkRoot root = vulkanParser.parse(version, vulkanFile);
-
-        List<File> files = new List<>();
-
-        files.addCollectionLast(cLibraryCodeGenerator.generateFiles());
-        files.addCollectionLast(vkLibraryCodeGenerator.generateFiles(root, vkLibraryConfiguration));
-
-        for (File file : files) {
-            if (file.getLines().count() > 0) {
-                write(outputDirectory, file);
-            }
-        }
+        VkRoot root = vulkanParser.parse(VULKAN_VERSION, vulkanFile);
+        List<File> files = vkLibraryCodeGenerator.generateFiles(root, vkLibraryConfiguration);
+        write(outputDirectory, files);
     }
 
     private @Mandatory File read(@Mandatory Path inputDirectory, @Mandatory String name) {
@@ -77,6 +76,14 @@ public @Service class VulkanTransformator {
         Path outputPath = outputDirectory.resolve(file.getPath());
         file.setPath(outputPath);
         fileWriterService.save(file);
+    }
+
+    private void write(@Mandatory Path outputDirectory, @Mandatory List<File> files) {
+        for (File file : files) {
+            if (file.getLines().count() > 0) {
+                write(outputDirectory, file);
+            }
+        }
     }
 
     public static void main(String[] args) {
