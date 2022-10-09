@@ -9,6 +9,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkUnion;
 import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
 
 public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
     private static @Optional VkUnionTranslator instance;
@@ -36,11 +37,15 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
     }
 
     @Override
-    public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkUnion union) {
+    public @Mandatory List<String> translateJava(
+        @Mandatory Index index,
+        @Mandatory VkUnion union,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaHeader(union)
+            componentTranslator.getCommonJavaHeader(union, configuration)
         );
 
         for (VkVariable field : union.getFields()) {
@@ -59,16 +64,20 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
     }
 
     @Override
-    public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkUnion union) {
+    public @Mandatory List<String> translateNative(
+        @Mandatory Index index,
+        @Mandatory VkUnion union,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeHeader(union)
+            componentTranslator.getCommonNativeHeader(union, configuration)
         );
 
         for (VkVariable field : union.getFields()) {
             lines.addCollectionLast(
-                fieldTranslator.translateNative(union, field)
+                fieldTranslator.translateNative(union, field, configuration)
             );
         }
 

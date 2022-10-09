@@ -16,13 +16,11 @@ public @Service class VkDeviceSizeTypeTranslator implements VkSpecialTypeTransla
     public static @Mandatory VkDeviceSizeTypeTranslator getInstance() {
         if (instance == null) {
             instance = new VkDeviceSizeTypeTranslator();
-            instance.configuration = VkLibraryConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkLibraryConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private VkDeviceSizeTypeTranslator() {
@@ -34,7 +32,11 @@ public @Service class VkDeviceSizeTypeTranslator implements VkSpecialTypeTransla
     }
 
     @Override
-    public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkType type) {
+    public @Mandatory List<String> translateJava(
+        @Mandatory Index index,
+        @Mandatory VkType type,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         return new List<>(
             "    public long get() {",
             "        return _get(address);",
@@ -51,7 +53,11 @@ public @Service class VkDeviceSizeTypeTranslator implements VkSpecialTypeTransla
     }
 
     @Override
-    public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkType type) {
+    public @Mandatory List<String> translateNative(
+        @Mandatory Index index,
+        @Mandatory VkType type,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         JniFunction getFunction = new JniFunction();
         getFunction.setOutput("jlong");
         getFunction.setClassName(getName());

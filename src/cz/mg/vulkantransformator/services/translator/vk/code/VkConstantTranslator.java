@@ -18,13 +18,11 @@ public @Service class VkConstantTranslator {
     public static @Mandatory VkConstantTranslator getInstance() {
         if (instance == null) {
             instance = new VkConstantTranslator();
-            instance.configuration = VkLibraryConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkLibraryConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private VkConstantTranslator() {
@@ -34,7 +32,11 @@ public @Service class VkConstantTranslator {
         return "VkConstant";
     }
 
-    public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkRoot root) {
+    public @Mandatory List<String> translateJava(
+        @Mandatory Index index,
+        @Mandatory VkRoot root,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = codeGenerator.generateJavaHeader(configuration);
 
         lines.addCollectionLast(
@@ -87,7 +89,11 @@ public @Service class VkConstantTranslator {
         return lines;
     }
 
-    public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkRoot root) {
+    public @Mandatory List<String> translateNative(
+        @Mandatory Index index,
+        @Mandatory VkRoot root,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = codeGenerator.generateNativeHeader(configuration);
 
         for (VkComponent component : root.getComponents()) {
@@ -96,7 +102,7 @@ public @Service class VkConstantTranslator {
                 if (isString(constant)) {
                     lines.addLast(generateNativeVariable(constant));
                     lines.addLast("");
-                    lines.addCollectionLast(generateNativeFunction(constant));
+                    lines.addCollectionLast(generateNativeFunction(constant, configuration));
                     lines.addLast("");
                 }
             }
@@ -109,7 +115,10 @@ public @Service class VkConstantTranslator {
         return "const char* _" + constant.getName() + " = " + constant.getName() + ";";
     }
 
-    private @Mandatory List<String> generateNativeFunction(@Mandatory VkConstant constant) {
+    private @Mandatory List<String> generateNativeFunction(
+        @Mandatory VkConstant constant,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         return codeGenerator.generateJniFunction(configuration, constantToFunction(constant));
     }
 

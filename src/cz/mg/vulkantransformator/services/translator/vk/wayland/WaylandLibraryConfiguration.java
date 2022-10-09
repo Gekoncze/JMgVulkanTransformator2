@@ -15,7 +15,7 @@ public @Utility class WaylandLibraryConfiguration implements LibraryConfiguratio
         return instance;
     }
 
-    public WaylandLibraryConfiguration() {
+    private WaylandLibraryConfiguration() {
     }
 
     @Override

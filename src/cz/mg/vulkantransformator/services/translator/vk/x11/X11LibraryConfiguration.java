@@ -15,7 +15,7 @@ public @Utility class X11LibraryConfiguration implements LibraryConfiguration {
         return instance;
     }
 
-    public X11LibraryConfiguration() {
+    private X11LibraryConfiguration() {
     }
 
     @Override

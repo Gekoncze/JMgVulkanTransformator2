@@ -16,7 +16,7 @@ public @Utility class CLibraryConfiguration implements LibraryConfiguration {
         return instance;
     }
 
-    public CLibraryConfiguration() {
+    private CLibraryConfiguration() {
     }
 
     @Override

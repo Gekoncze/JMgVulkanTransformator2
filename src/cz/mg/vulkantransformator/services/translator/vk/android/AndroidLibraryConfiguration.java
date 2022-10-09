@@ -15,7 +15,7 @@ public @Utility class AndroidLibraryConfiguration implements LibraryConfiguratio
         return instance;
     }
 
-    public AndroidLibraryConfiguration() {
+    private AndroidLibraryConfiguration() {
     }
 
     @Override

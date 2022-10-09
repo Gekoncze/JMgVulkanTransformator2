@@ -16,7 +16,7 @@ public @Utility class VkLibraryConfiguration implements LibraryConfiguration {
         return instance;
     }
 
-    public VkLibraryConfiguration() {
+    private VkLibraryConfiguration() {
     }
 
     @Override

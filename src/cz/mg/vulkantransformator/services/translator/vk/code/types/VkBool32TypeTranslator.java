@@ -17,13 +17,11 @@ public @Service class VkBool32TypeTranslator implements VkSpecialTypeTranslator 
     public static @Mandatory VkBool32TypeTranslator getInstance() {
         if (instance == null) {
             instance = new VkBool32TypeTranslator();
-            instance.configuration = VkLibraryConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkLibraryConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private VkBool32TypeTranslator() {
@@ -35,7 +33,11 @@ public @Service class VkBool32TypeTranslator implements VkSpecialTypeTranslator 
     }
 
     @Override
-    public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkType type) {
+    public @Mandatory List<String> translateJava(
+        @Mandatory Index index,
+        @Mandatory VkType type,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         String vkTrue = ((VkConstant)index.getComponents().get("VK_TRUE")).getValue();
         String vkFalse = ((VkConstant)index.getComponents().get("VK_FALSE")).getValue();
         return new List<>(
@@ -54,7 +56,11 @@ public @Service class VkBool32TypeTranslator implements VkSpecialTypeTranslator 
     }
 
     @Override
-    public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkType type) {
+    public @Mandatory List<String> translateNative(
+        @Mandatory Index index,
+        @Mandatory VkType type,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         JniFunction getFunction = new JniFunction();
         getFunction.setOutput("jint");
         getFunction.setClassName(getName());

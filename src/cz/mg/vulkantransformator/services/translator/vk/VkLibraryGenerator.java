@@ -11,13 +11,11 @@ public class VkLibraryGenerator {
     public static @Mandatory VkLibraryGenerator getInstance() {
         if (instance == null) {
             instance = new VkLibraryGenerator();
-            instance.configuration = VkLibraryConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkLibraryConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private VkLibraryGenerator() {
@@ -27,7 +25,7 @@ public class VkLibraryGenerator {
         return "VkLibrary";
     }
 
-    public @Mandatory List<String> generateJava() {
+    public @Mandatory List<String> generateJava(@Mandatory VkLibraryConfiguration configuration) {
         return codeGenerator.generateJavaLibraryClass(configuration, getName());
     }
 }

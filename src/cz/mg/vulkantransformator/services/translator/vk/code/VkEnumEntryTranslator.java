@@ -16,13 +16,11 @@ public @Service class VkEnumEntryTranslator {
     public static @Mandatory VkEnumEntryTranslator getInstance() {
         if (instance == null) {
             instance = new VkEnumEntryTranslator();
-            instance.configuration = VkLibraryConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkLibraryConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private VkEnumEntryTranslator() {
@@ -42,7 +40,11 @@ public @Service class VkEnumEntryTranslator {
         );
     }
 
-    public @Mandatory List<String> translateNative(@Mandatory VkEnum enumeration, @Mandatory VkEnumEntry entry) {
+    public @Mandatory List<String> translateNative(
+        @Mandatory VkEnum enumeration,
+        @Mandatory VkEnumEntry entry,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         JniFunction getFunction = new JniFunction();
         getFunction.setOutput("jlong");
         getFunction.setClassName(enumeration.getName());

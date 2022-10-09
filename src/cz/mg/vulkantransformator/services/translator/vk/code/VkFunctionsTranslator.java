@@ -18,14 +18,12 @@ public @Service class VkFunctionsTranslator {
         if (instance == null) {
             instance = new VkFunctionsTranslator();
             instance.functionTranslator = VkFunctionTranslator.getInstance();
-            instance.configuration = VkLibraryConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
     private VkFunctionTranslator functionTranslator;
-    private VkLibraryConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private VkFunctionsTranslator() {
@@ -35,7 +33,11 @@ public @Service class VkFunctionsTranslator {
         return "VkInterface";
     }
 
-    public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkRoot root) {
+    public @Mandatory List<String> translateJava(
+        @Mandatory Index index,
+        @Mandatory VkRoot root,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = codeGenerator.generateJavaHeader(configuration);
 
         lines.addLast("public class " + getName() + " {");
@@ -46,7 +48,7 @@ public @Service class VkFunctionsTranslator {
         for (VkComponent component : root.getComponents()) {
             if (component instanceof VkFunction) {
                 VkFunction function = (VkFunction) component;
-                lines.addCollectionLast(functionTranslator.translateJava(index, function));
+                lines.addCollectionLast(functionTranslator.translateJava(index, function, configuration));
                 lines.addLast("");
             }
         }
@@ -58,13 +60,17 @@ public @Service class VkFunctionsTranslator {
         return lines;
     }
 
-    public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkRoot root) {
+    public @Mandatory List<String> translateNative(
+        @Mandatory Index index,
+        @Mandatory VkRoot root,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = codeGenerator.generateNativeHeader(configuration);
 
         for (VkComponent component : root.getComponents()) {
             if (component instanceof VkFunction) {
                 VkFunction function = (VkFunction) component;
-                lines.addCollectionLast(functionTranslator.translateNative(index, function));
+                lines.addCollectionLast(functionTranslator.translateNative(index, function, configuration));
                 lines.addLast("");
             }
         }

@@ -22,7 +22,6 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
             instance.typenameTranslator = TypenameTranslator.getInstance();
             instance.joiner = StringJoiner.getInstance();
             instance.functionsTranslator = VkFunctionsTranslator.getInstance();
-            instance.configuration = VkLibraryConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
@@ -31,7 +30,6 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     private TypenameTranslator typenameTranslator;
     private StringJoiner joiner;
     private VkFunctionsTranslator functionsTranslator;
-    private VkLibraryConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private VkFunctionTranslator() {
@@ -43,7 +41,11 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     }
 
     @Override
-    public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkFunction function) {
+    public @Mandatory List<String> translateJava(
+        @Mandatory Index index,
+        @Mandatory VkFunction function,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = new List<>();
 
         List<String> parameterList = new List<>();
@@ -78,7 +80,11 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     }
 
     @Override
-    public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkFunction function) {
+    public @Mandatory List<String> translateNative(
+        @Mandatory Index index,
+        @Mandatory VkFunction function,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> parameters = new List<>();
         List<String> variables = new List<>();
         List<String> arguments = new List<>();

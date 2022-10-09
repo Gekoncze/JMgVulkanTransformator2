@@ -20,7 +20,6 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
             instance = new VkEnumTranslator();
             instance.componentTranslator = VkComponentTranslator.getInstance();
             instance.enumEntryTranslator = VkEnumEntryTranslator.getInstance();
-            instance.configuration = VkLibraryConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
@@ -28,7 +27,6 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
 
     private VkComponentTranslator componentTranslator;
     private VkEnumEntryTranslator enumEntryTranslator;
-    private VkLibraryConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private VkEnumTranslator() {
@@ -40,11 +38,15 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
     }
 
     @Override
-    public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkEnum enumeration) {
+    public @Mandatory List<String> translateJava(
+        @Mandatory Index index,
+        @Mandatory VkEnum enumeration,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaHeader(enumeration)
+            componentTranslator.getCommonJavaHeader(enumeration, configuration)
         );
 
         lines.addCollectionLast(new List<>(
@@ -78,11 +80,15 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
     }
 
     @Override
-    public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkEnum enumeration) {
+    public @Mandatory List<String> translateNative(
+        @Mandatory Index index,
+        @Mandatory VkEnum enumeration,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeHeader(enumeration)
+            componentTranslator.getCommonNativeHeader(enumeration, configuration)
         );
 
         JniFunction getFunction = new JniFunction();
@@ -125,7 +131,7 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
 
         for (VkEnumEntry entry : enumeration.getEntries()) {
             lines.addCollectionLast(
-                enumEntryTranslator.translateNative(enumeration, entry)
+                enumEntryTranslator.translateNative(enumeration, entry, configuration)
             );
         }
 

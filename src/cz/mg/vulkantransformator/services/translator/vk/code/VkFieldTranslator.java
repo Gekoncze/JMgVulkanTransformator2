@@ -17,14 +17,12 @@ public @Service class VkFieldTranslator {
         if (instance == null) {
             instance = new VkFieldTranslator();
             instance.typenameTranslator = TypenameTranslator.getInstance();
-            instance.configuration = VkLibraryConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
     private TypenameTranslator typenameTranslator;
-    private VkLibraryConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private VkFieldTranslator() {
@@ -138,7 +136,11 @@ public @Service class VkFieldTranslator {
         );
     }
 
-    public @Mandatory List<String> translateNative(@Mandatory VkComponent component, @Mandatory VkVariable field) {
+    public @Mandatory List<String> translateNative(
+        @Mandatory VkComponent component,
+        @Mandatory VkVariable field,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         JniFunction function = new JniFunction();
         function.setOutput("jlong");
         function.setClassName(component.getName());

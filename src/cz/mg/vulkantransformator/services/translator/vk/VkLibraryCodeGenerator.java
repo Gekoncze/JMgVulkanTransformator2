@@ -24,7 +24,6 @@ public @Service class VkLibraryCodeGenerator {
     public static @Mandatory VkLibraryCodeGenerator getInstance() {
         if (instance == null) {
             instance = new VkLibraryCodeGenerator();
-            instance.configuration = VkLibraryConfiguration.getInstance();
             instance.translators = new List<>(
                 VkStructureTranslator.getInstance(),
                 VkUnionTranslator.getInstance(),
@@ -41,7 +40,6 @@ public @Service class VkLibraryCodeGenerator {
         return instance;
     }
 
-    private VkLibraryConfiguration configuration;
     private List<VkTranslator> translators;
     private VkConstantTranslator constantTranslator;
     private VkFunctionsTranslator functionsTranslator;
@@ -51,7 +49,10 @@ public @Service class VkLibraryCodeGenerator {
     private VkLibraryCodeGenerator() {
     }
 
-    public @Mandatory List<File> generateFiles(@Mandatory VkRoot root) {
+    public @Mandatory List<File> generateFiles(
+        @Mandatory VkRoot root,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         Index index = new Index(root);
 
         List<File> files = new List<>();
@@ -67,14 +68,14 @@ public @Service class VkLibraryCodeGenerator {
                 files.addLast(
                     new File(
                         Path.of(configuration.getDirectory(), component.getName() + ".java"),
-                        translator.translateJava(index, component)
+                        translator.translateJava(index, component, configuration)
                     )
                 );
 
                 files.addLast(
                     new File(
                         Path.of(configuration.getDirectory(), component.getName() + ".c"),
-                        translator.translateNative(index, component)
+                        translator.translateNative(index, component, configuration)
                     )
                 );
             }
@@ -83,35 +84,35 @@ public @Service class VkLibraryCodeGenerator {
         files.addLast(
             new File(
                 Path.of(configuration.getDirectory(), constantTranslator.getName() + ".java"),
-                constantTranslator.translateJava(index, root)
+                constantTranslator.translateJava(index, root, configuration)
             )
         );
 
         files.addLast(
             new File(
                 Path.of(configuration.getDirectory(), constantTranslator.getName() + ".c"),
-                constantTranslator.translateNative(index, root)
+                constantTranslator.translateNative(index, root, configuration)
             )
         );
 
         files.addLast(
             new File(
                 Path.of(configuration.getDirectory(), functionsTranslator.getName() + ".java"),
-                functionsTranslator.translateJava(index, root)
+                functionsTranslator.translateJava(index, root, configuration)
             )
         );
 
         files.addLast(
             new File(
                 Path.of(configuration.getDirectory(), functionsTranslator.getName() + ".c"),
-                functionsTranslator.translateNative(index, root)
+                functionsTranslator.translateNative(index, root, configuration)
             )
         );
 
         files.addLast(
             new File(
                 Path.of(configuration.getDirectory(), libraryGenerator.getName() + ".java"),
-                libraryGenerator.generateJava()
+                libraryGenerator.generateJava(configuration)
             )
         );
 

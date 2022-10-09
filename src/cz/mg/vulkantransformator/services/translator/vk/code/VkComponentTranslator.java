@@ -15,19 +15,20 @@ public @Service class VkComponentTranslator {
     public static @Mandatory VkComponentTranslator getInstance() {
         if (instance == null) {
             instance = new VkComponentTranslator();
-            instance.configuration = VkLibraryConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkLibraryConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private VkComponentTranslator() {
     }
 
-    public @Mandatory List<String> getCommonJavaHeader(@Mandatory VkComponent component) {
+    public @Mandatory List<String> getCommonJavaHeader(
+        @Mandatory VkComponent component,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = codeGenerator.generateJavaHeader(configuration);
 
         lines.addCollectionLast(
@@ -57,7 +58,10 @@ public @Service class VkComponentTranslator {
         return new List<>("}");
     }
 
-    public @Mandatory List<String> getCommonNativeHeader(@Mandatory VkComponent component) {
+    public @Mandatory List<String> getCommonNativeHeader(
+        @Mandatory VkComponent component,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = codeGenerator.generateNativeHeader(configuration);
 
         JniFunction sizeFunction = new JniFunction();

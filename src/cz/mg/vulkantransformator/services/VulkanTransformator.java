@@ -12,6 +12,7 @@ import cz.mg.vulkantransformator.services.filesystem.FileWriterService;
 import cz.mg.vulkantransformator.services.parser.VulkanParser;
 import cz.mg.vulkantransformator.services.translator.c.CLibraryCodeGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.VkLibraryCodeGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
 
 import java.nio.file.Path;
 
@@ -28,6 +29,7 @@ public @Service class VulkanTransformator {
             instance.vulkanParser = VulkanParser.getInstance();
             instance.cLibraryCodeGenerator = CLibraryCodeGenerator.getInstance();
             instance.vkLibraryCodeGenerator = VkLibraryCodeGenerator.getInstance();
+            instance.vkLibraryConfiguration = VkLibraryConfiguration.getInstance();
         }
         return instance;
     }
@@ -37,6 +39,7 @@ public @Service class VulkanTransformator {
     private VulkanParser vulkanParser;
     private CLibraryCodeGenerator cLibraryCodeGenerator;
     private VkLibraryCodeGenerator vkLibraryCodeGenerator;
+    private VkLibraryConfiguration vkLibraryConfiguration;
 
     private VulkanTransformator() {
     }
@@ -54,7 +57,7 @@ public @Service class VulkanTransformator {
         List<File> files = new List<>();
 
         files.addCollectionLast(cLibraryCodeGenerator.generateFiles());
-        files.addCollectionLast(vkLibraryCodeGenerator.generateFiles(root));
+        files.addCollectionLast(vkLibraryCodeGenerator.generateFiles(root, vkLibraryConfiguration));
 
         for (File file : files) {
             if (file.getLines().count() > 0) {

@@ -15,7 +15,7 @@ public @Utility class XcbLibraryConfiguration implements LibraryConfiguration {
         return instance;
     }
 
-    public XcbLibraryConfiguration() {
+    private XcbLibraryConfiguration() {
     }
 
     @Override

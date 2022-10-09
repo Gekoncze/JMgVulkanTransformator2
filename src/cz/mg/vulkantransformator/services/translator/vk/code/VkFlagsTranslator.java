@@ -18,14 +18,12 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         if (instance == null) {
             instance = new VkFlagsTranslator();
             instance.componentTranslator = VkComponentTranslator.getInstance();
-            instance.configuration = VkLibraryConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
     private VkComponentTranslator componentTranslator;
-    private VkLibraryConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private VkFlagsTranslator() {
@@ -37,11 +35,15 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
     }
 
     @Override
-    public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkFlags flags) {
+    public @Mandatory List<String> translateJava(
+        @Mandatory Index index,
+        @Mandatory VkFlags flags,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaHeader(flags)
+            componentTranslator.getCommonJavaHeader(flags, configuration)
         );
 
         lines.addCollectionLast(new List<>(
@@ -97,11 +99,15 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
     }
 
     @Override
-    public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkFlags flags) {
+    public @Mandatory List<String> translateNative(
+        @Mandatory Index index,
+        @Mandatory VkFlags flags,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeHeader(flags)
+            componentTranslator.getCommonNativeHeader(flags, configuration)
         );
 
         String name = flags.getName();

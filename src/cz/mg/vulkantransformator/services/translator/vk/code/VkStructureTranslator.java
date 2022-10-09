@@ -9,6 +9,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 import cz.mg.vulkantransformator.entities.vulkan.VkStructure;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
 
 public @Service class VkStructureTranslator implements VkTranslator<VkStructure> {
     private static @Optional VkStructureTranslator instance;
@@ -36,11 +37,15 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
     }
 
     @Override
-    public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkStructure structure) {
+    public @Mandatory List<String> translateJava(
+        @Mandatory Index index,
+        @Mandatory VkStructure structure,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaHeader(structure)
+            componentTranslator.getCommonJavaHeader(structure, configuration)
         );
 
         for (VkVariable field : structure.getFields()) {
@@ -59,16 +64,20 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
     }
 
     @Override
-    public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkStructure structure) {
+    public @Mandatory List<String> translateNative(
+        @Mandatory Index index,
+        @Mandatory VkStructure structure,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeHeader(structure)
+            componentTranslator.getCommonNativeHeader(structure, configuration)
         );
 
         for (VkVariable field : structure.getFields()) {
             lines.addCollectionLast(
-                fieldTranslator.translateNative(structure, field)
+                fieldTranslator.translateNative(structure, field, configuration)
             );
         }
 

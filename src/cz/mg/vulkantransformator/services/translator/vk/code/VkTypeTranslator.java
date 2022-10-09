@@ -7,6 +7,7 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkType;
 import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.vk.code.types.VkBool32TypeTranslator;
 import cz.mg.vulkantransformator.services.translator.vk.code.types.VkDeviceSizeTypeTranslator;
 import cz.mg.vulkantransformator.services.translator.vk.code.types.VkSpecialTypeTranslator;
@@ -38,17 +39,21 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
     }
 
     @Override
-    public @Mandatory List<String> translateJava(@Mandatory Index index, @Mandatory VkType type) {
+    public @Mandatory List<String> translateJava(
+        @Mandatory Index index,
+        @Mandatory VkType type,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaHeader(type)
+            componentTranslator.getCommonJavaHeader(type, configuration)
         );
 
         for (VkSpecialTypeTranslator specialTypeTranslator : specialTypeTranslators) {
             if (specialTypeTranslator.getName().equals(type.getName())) {
                 lines.addCollectionLast(
-                    specialTypeTranslator.translateJava(index, type)
+                    specialTypeTranslator.translateJava(index, type, configuration)
                 );
             }
         }
@@ -61,17 +66,21 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
     }
 
     @Override
-    public @Mandatory List<String> translateNative(@Mandatory Index index, @Mandatory VkType type) {
+    public @Mandatory List<String> translateNative(
+        @Mandatory Index index,
+        @Mandatory VkType type,
+        @Mandatory VkLibraryConfiguration configuration
+    ) {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeHeader(type)
+            componentTranslator.getCommonNativeHeader(type, configuration)
         );
 
         for (VkSpecialTypeTranslator specialTypeTranslator : specialTypeTranslators) {
             if (specialTypeTranslator.getName().equals(type.getName())) {
                 lines.addCollectionLast(
-                    specialTypeTranslator.translateNative(index, type)
+                    specialTypeTranslator.translateNative(index, type, configuration)
                 );
             }
         }
