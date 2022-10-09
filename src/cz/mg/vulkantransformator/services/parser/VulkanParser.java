@@ -4,7 +4,7 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.filesystem.File;
-import cz.mg.vulkantransformator.entities.preprocessor.Definition;
+import cz.mg.vulkantransformator.entities.parser.preprocessor.Definition;
 import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.entities.vulkan.VkVersion;
@@ -14,9 +14,9 @@ import cz.mg.vulkantransformator.services.parser.segmentation.TokenParser;
 import cz.mg.vulkantransformator.services.parser.preprocessor.Preprocessor;
 import cz.mg.vulkantransformator.services.parser.splicer.Splicer;
 import cz.mg.vulkantransformator.services.parser.vk.*;
-import cz.mg.vulkantransformator.utilities.code.Line;
-import cz.mg.vulkantransformator.utilities.code.Statement;
-import cz.mg.vulkantransformator.utilities.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.Line;
+import cz.mg.vulkantransformator.entities.parser.code.Statement;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
 
 public @Service class VulkanParser {
     private static VulkanParser instance;

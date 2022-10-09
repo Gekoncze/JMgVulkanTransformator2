@@ -10,9 +10,9 @@ import cz.mg.vulkantransformator.services.parser.matcher.PatternMatcher;
 import cz.mg.vulkantransformator.services.parser.other.ParseException;
 import cz.mg.vulkantransformator.services.parser.other.TokenRemover;
 import cz.mg.vulkantransformator.services.parser.segmentation.StatementParser;
-import cz.mg.vulkantransformator.utilities.code.Statement;
-import cz.mg.vulkantransformator.utilities.code.Token;
-import cz.mg.vulkantransformator.utilities.code.TokenType;
+import cz.mg.vulkantransformator.entities.parser.code.Statement;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.TokenType;
 
 /**
  * Example:

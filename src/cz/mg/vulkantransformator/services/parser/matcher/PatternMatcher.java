@@ -3,8 +3,8 @@ package cz.mg.vulkantransformator.services.parser.matcher;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
-import cz.mg.vulkantransformator.utilities.code.Statement;
-import cz.mg.vulkantransformator.utilities.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.Statement;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
 
 public @Service class PatternMatcher {
     private static @Optional PatternMatcher instance;

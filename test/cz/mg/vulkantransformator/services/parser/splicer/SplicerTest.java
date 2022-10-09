@@ -4,9 +4,9 @@ import cz.mg.annotations.classes.Test;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.collections.list.List;
 import cz.mg.test.Assert;
-import cz.mg.vulkantransformator.utilities.code.Line;
-import cz.mg.vulkantransformator.utilities.code.Token;
-import cz.mg.vulkantransformator.utilities.code.TokenType;
+import cz.mg.vulkantransformator.entities.parser.code.Line;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.TokenType;
 
 import java.util.Iterator;
 
@@ -114,7 +114,7 @@ public @Test class SplicerTest {
         List<Token> tokens = new List<>();
 
         for (String stringToken : stringTokens) {
-            tokens.addLast(new Token(new Line(-1, stringToken), 0, stringToken.length(), TokenType.SPECIAL));
+            tokens.addLast(new Token(new Line(-1, stringToken), 0, stringToken.length(), TokenType.SPECIAL, stringToken));
         }
 
         return tokens;

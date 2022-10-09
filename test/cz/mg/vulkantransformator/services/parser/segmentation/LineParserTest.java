@@ -3,7 +3,7 @@ package cz.mg.vulkantransformator.services.parser.segmentation;
 import cz.mg.annotations.classes.Test;
 import cz.mg.collections.list.List;
 import cz.mg.test.Assert;
-import cz.mg.vulkantransformator.utilities.code.Line;
+import cz.mg.vulkantransformator.entities.parser.code.Line;
 
 public @Test class LineParserTest {
     public static void main(String[] args) {

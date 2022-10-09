@@ -6,8 +6,8 @@ import cz.mg.collections.list.List;
 import cz.mg.test.Assert;
 import cz.mg.vulkantransformator.services.parser.other.ParseException;
 import cz.mg.vulkantransformator.services.parser.segmentation.TokenParser;
-import cz.mg.vulkantransformator.utilities.code.Line;
-import cz.mg.vulkantransformator.utilities.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.Line;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
 
 public @Test class ErrorParserTest {
     public static void main(String[] args) {

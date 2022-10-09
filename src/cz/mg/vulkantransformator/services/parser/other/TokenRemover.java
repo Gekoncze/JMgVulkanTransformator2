@@ -4,8 +4,8 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.utilities.code.Token;
-import cz.mg.vulkantransformator.utilities.code.TokenType;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.TokenType;
 
 @SuppressWarnings("UnusedReturnValue")
 public @Service class TokenRemover {

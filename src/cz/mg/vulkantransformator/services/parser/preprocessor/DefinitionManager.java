@@ -6,7 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.collections.list.ListItem;
 import cz.mg.collections.map.Map;
-import cz.mg.vulkantransformator.entities.preprocessor.Definition;
+import cz.mg.vulkantransformator.entities.parser.preprocessor.Definition;
 
 public @Utility class DefinitionManager {
     private final @Mandatory List<Definition> list;

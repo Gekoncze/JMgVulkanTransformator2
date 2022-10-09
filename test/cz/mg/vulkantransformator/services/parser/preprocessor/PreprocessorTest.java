@@ -4,12 +4,12 @@ import cz.mg.annotations.classes.Test;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.collections.list.List;
 import cz.mg.test.Assert;
-import cz.mg.vulkantransformator.entities.preprocessor.Definition;
+import cz.mg.vulkantransformator.entities.parser.preprocessor.Definition;
 import cz.mg.vulkantransformator.services.parser.other.ParseException;
 import cz.mg.vulkantransformator.services.parser.segmentation.TokenParser;
-import cz.mg.vulkantransformator.utilities.code.Line;
-import cz.mg.vulkantransformator.utilities.code.Token;
-import cz.mg.vulkantransformator.utilities.code.TokenType;
+import cz.mg.vulkantransformator.entities.parser.code.Line;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.TokenType;
 
 import java.util.Iterator;
 
@@ -149,7 +149,7 @@ public @Test class PreprocessorTest {
     }
 
     private @Mandatory Token createToken(@Mandatory String text) {
-        return new Token(new Line(-1, text), 0, text.length(), TokenType.SPECIAL);
+        return new Token(new Line(-1, text), 0, text.length(), TokenType.SPECIAL, text);
     }
 
     private @Mandatory Definition createDefinition(@Mandatory String name) {

@@ -5,9 +5,9 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.parser.other.ParseException;
-import cz.mg.vulkantransformator.utilities.code.Token;
-import cz.mg.vulkantransformator.utilities.code.Line;
-import cz.mg.vulkantransformator.utilities.code.TokenType;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.Line;
+import cz.mg.vulkantransformator.entities.parser.code.TokenType;
 
 public @Service class TokenParser {
     private static @Optional TokenParser instance;
@@ -58,24 +58,24 @@ public @Service class TokenParser {
             } else if (singleQuotes) {
                 if (!isBackslash(lch) && isSingleQuote(ch)) {
                     singleQuotes = false;
-                    tokens.addLast(new Token(line, start, i + 1, TokenType.CHARACTER));
+                    tokens.addLast(createToken(line, start, i + 1, TokenType.CHARACTER));
                 }
             } else if (doubleQuotes) {
                 if (!isBackslash(lch) && isDoubleQuote(ch)) {
                     doubleQuotes = false;
-                    tokens.addLast(new Token(line, start, i + 1, TokenType.STRING));
+                    tokens.addLast(createToken(line, start, i + 1, TokenType.STRING));
                 }
             } else if (name) {
                 if (!(isUppercase(ch) || isLowercase(ch) || isNumber(ch) || isUnderscore(ch))) {
                     name = false;
-                    tokens.addLast(new Token(line, start, i, TokenType.NAME));
+                    tokens.addLast(createToken(line, start, i, TokenType.NAME));
                     i--;
                     ch = '\0';
                 }
             } else if (number) {
                 if (!(isNumber(ch) || isDot(ch) || isUppercase(ch) || isLowercase(ch))) {
                     number = false;
-                    tokens.addLast(new Token(line, start, i, TokenType.NUMBER));
+                    tokens.addLast(createToken(line, start, i, TokenType.NUMBER));
                     i--;
                     ch = '\0';
                 }
@@ -101,7 +101,7 @@ public @Service class TokenParser {
                     number = true;
                     start = i;
                 } else {
-                    tokens.addLast(new Token(line, i, i+1, TokenType.SPECIAL));
+                    tokens.addLast(createToken(line, i, i+1, TokenType.SPECIAL));
                 }
             }
 
@@ -109,7 +109,7 @@ public @Service class TokenParser {
         }
 
         if (name || number) {
-            tokens.addLast(new Token(line, start, line.getText().length(), name ? TokenType.NAME : TokenType.NUMBER));
+            tokens.addLast(createToken(line, start, line.getText().length(), name ? TokenType.NAME : TokenType.NUMBER));
         }
 
         if (singleQuotes || doubleQuotes) {
@@ -161,5 +161,12 @@ public @Service class TokenParser {
 
     private boolean isStar(char ch) {
         return ch == '*';
+    }
+
+    private @Mandatory Token createToken(Line line, Integer beginId, Integer endId, TokenType type) {
+        return new Token(
+            line, beginId, endId, type,
+            line.getText().substring(beginId, endId)
+        );
     }
 }

@@ -2,8 +2,8 @@ package cz.mg.vulkantransformator.services.parser.other;
 
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
-import cz.mg.vulkantransformator.utilities.code.Line;
-import cz.mg.vulkantransformator.utilities.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.Line;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
 
 public class ParseException extends RuntimeException {
     private final @Optional Token token;

@@ -3,9 +3,9 @@ package cz.mg.vulkantransformator.services.parser.other;
 import cz.mg.annotations.classes.Test;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.test.Assert;
-import cz.mg.vulkantransformator.utilities.code.Line;
-import cz.mg.vulkantransformator.utilities.code.Token;
-import cz.mg.vulkantransformator.utilities.code.TokenType;
+import cz.mg.vulkantransformator.entities.parser.code.Line;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.TokenType;
 
 public @Test class TokenValidatorTest {
     public static void main(String[] args) {
@@ -67,10 +67,10 @@ public @Test class TokenValidatorTest {
     }
 
     private @Mandatory Token createNameToken(@Mandatory String text) {
-        return new Token(new Line(-1, text), 0, text.length(), TokenType.NAME);
+        return new Token(new Line(-1, text), 0, text.length(), TokenType.NAME, text);
     }
 
     private @Mandatory Token createSpecialToken(@Mandatory String text) {
-        return new Token(new Line(-1, text), 0, text.length(), TokenType.SPECIAL);
+        return new Token(new Line(-1, text), 0, text.length(), TokenType.SPECIAL, text);
     }
 }

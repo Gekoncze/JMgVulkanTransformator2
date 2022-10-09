@@ -5,8 +5,8 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.parser.other.ParseException;
-import cz.mg.vulkantransformator.utilities.code.Statement;
-import cz.mg.vulkantransformator.utilities.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.Statement;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
 
 public @Service class StatementParser {
     private static @Optional StatementParser instance;

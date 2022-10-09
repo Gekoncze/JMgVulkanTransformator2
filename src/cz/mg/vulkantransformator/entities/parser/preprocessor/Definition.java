@@ -1,11 +1,11 @@
-package cz.mg.vulkantransformator.entities.preprocessor;
+package cz.mg.vulkantransformator.entities.parser.preprocessor;
 
 import cz.mg.annotations.classes.Entity;
 import cz.mg.annotations.requirement.Required;
 import cz.mg.annotations.storage.Part;
 import cz.mg.annotations.storage.Value;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.utilities.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
 
 public @Entity class Definition {
     private Token name;

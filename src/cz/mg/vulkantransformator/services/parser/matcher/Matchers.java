@@ -2,7 +2,7 @@ package cz.mg.vulkantransformator.services.parser.matcher;
 
 import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.vulkantransformator.utilities.code.TokenType;
+import cz.mg.vulkantransformator.entities.parser.code.TokenType;
 
 public @Utility class Matchers {
     public static @Mandatory Matcher any() {

@@ -4,11 +4,11 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.entities.preprocessor.Definition;
+import cz.mg.vulkantransformator.entities.parser.preprocessor.Definition;
 import cz.mg.vulkantransformator.services.parser.other.TokenRemover;
-import cz.mg.vulkantransformator.utilities.code.Line;
-import cz.mg.vulkantransformator.utilities.code.Token;
-import cz.mg.vulkantransformator.utilities.code.TokenType;
+import cz.mg.vulkantransformator.entities.parser.code.Line;
+import cz.mg.vulkantransformator.entities.parser.code.Token;
+import cz.mg.vulkantransformator.entities.parser.code.TokenType;
 
 public @Service class TokenPreprocessor {
     private static @Optional TokenPreprocessor instance;
@@ -105,6 +105,6 @@ public @Service class TokenPreprocessor {
 
         // this is a bit hackish, but ok for now
         String text = first.getText() + second.getText();
-        return new Token(new Line(lineId, text), 0, text.length(), first.getType());
+        return new Token(new Line(lineId, text), 0, text.length(), first.getType(), text);
     }
 }
