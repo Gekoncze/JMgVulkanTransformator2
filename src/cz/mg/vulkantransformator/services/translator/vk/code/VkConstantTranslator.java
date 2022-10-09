@@ -10,7 +10,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
-import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
 public @Service class VkConstantTranslator {
     private static @Optional VkConstantTranslator instance;
@@ -35,7 +35,7 @@ public @Service class VkConstantTranslator {
     public @Mandatory List<String> translateJava(
         @Mandatory Index index,
         @Mandatory VkRoot root,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         List<String> lines = codeGenerator.generateJavaHeader(configuration);
 
@@ -92,7 +92,7 @@ public @Service class VkConstantTranslator {
     public @Mandatory List<String> translateNative(
         @Mandatory Index index,
         @Mandatory VkRoot root,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         List<String> lines = codeGenerator.generateNativeHeader(configuration);
 
@@ -117,7 +117,7 @@ public @Service class VkConstantTranslator {
 
     private @Mandatory List<String> generateNativeFunction(
         @Mandatory VkConstant constant,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         return codeGenerator.generateJniFunction(configuration, constantToFunction(constant));
     }

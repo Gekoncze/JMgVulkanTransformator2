@@ -37,7 +37,8 @@ public @Utility class XlibLibraryConfiguration implements LibraryConfiguration {
     @Override
     public @Mandatory List<String> getJavaDependencies() {
         return new List<>(
-            "import cz.mg.c.*;"
+            "import cz.mg.c.*;",
+            "import cz.mg.vulkan.*;"
         );
     }
 

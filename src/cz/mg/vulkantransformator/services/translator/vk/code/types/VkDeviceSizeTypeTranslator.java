@@ -8,7 +8,7 @@ import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkType;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
-import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
 public @Service class VkDeviceSizeTypeTranslator implements VkSpecialTypeTranslator {
     private static @Optional VkDeviceSizeTypeTranslator instance;
@@ -35,7 +35,7 @@ public @Service class VkDeviceSizeTypeTranslator implements VkSpecialTypeTransla
     public @Mandatory List<String> translateJava(
         @Mandatory Index index,
         @Mandatory VkType type,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         return new List<>(
             "    public long get() {",
@@ -56,7 +56,7 @@ public @Service class VkDeviceSizeTypeTranslator implements VkSpecialTypeTransla
     public @Mandatory List<String> translateNative(
         @Mandatory Index index,
         @Mandatory VkType type,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         JniFunction getFunction = new JniFunction();
         getFunction.setOutput("jlong");

@@ -4,6 +4,7 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
+import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
 public class VkLibraryGenerator {
     private static @Optional VkLibraryGenerator instance;
@@ -25,7 +26,7 @@ public class VkLibraryGenerator {
         return "VkLibrary";
     }
 
-    public @Mandatory List<String> generateJava(@Mandatory VkLibraryConfiguration configuration) {
+    public @Mandatory List<String> generateJava(@Mandatory LibraryConfiguration configuration) {
         return codeGenerator.generateJavaLibraryClass(configuration, getName());
     }
 }

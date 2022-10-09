@@ -8,7 +8,7 @@ import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkEnum;
 import cz.mg.vulkantransformator.entities.vulkan.VkEnumEntry;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
 public @Service class VkEnumEntryTranslator {
     private static @Optional VkEnumEntryTranslator instance;
@@ -43,7 +43,7 @@ public @Service class VkEnumEntryTranslator {
     public @Mandatory List<String> translateNative(
         @Mandatory VkEnum enumeration,
         @Mandatory VkEnumEntry entry,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         JniFunction getFunction = new JniFunction();
         getFunction.setOutput("jlong");

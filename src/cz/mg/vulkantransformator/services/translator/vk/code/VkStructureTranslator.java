@@ -9,7 +9,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 import cz.mg.vulkantransformator.entities.vulkan.VkStructure;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
-import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
 public @Service class VkStructureTranslator implements VkTranslator<VkStructure> {
     private static @Optional VkStructureTranslator instance;
@@ -40,7 +40,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
     public @Mandatory List<String> translateJava(
         @Mandatory Index index,
         @Mandatory VkStructure structure,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         List<String> lines = new List<>();
 
@@ -67,7 +67,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
     public @Mandatory List<String> translateNative(
         @Mandatory Index index,
         @Mandatory VkStructure structure,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         List<String> lines = new List<>();
 

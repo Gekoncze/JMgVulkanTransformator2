@@ -12,11 +12,11 @@ import cz.mg.vulkantransformator.services.parser.VulkanParser;
 import cz.mg.vulkantransformator.services.translator.c.CLibraryCodeGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.VkLibraryCodeGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.vk.XlibLibraryConfiguration;
 
 import java.nio.file.Path;
 
-import static cz.mg.vulkantransformator.services.Configuration.VULKAN_FILE_NAME;
-import static cz.mg.vulkantransformator.services.Configuration.VULKAN_VERSION;
+import static cz.mg.vulkantransformator.services.Configuration.*;
 
 public @Service class VulkanTransformator {
     private static @Optional VulkanTransformator instance;
@@ -30,6 +30,7 @@ public @Service class VulkanTransformator {
             instance.cLibraryCodeGenerator = CLibraryCodeGenerator.getInstance();
             instance.vkLibraryCodeGenerator = VkLibraryCodeGenerator.getInstance();
             instance.vkLibraryConfiguration = VkLibraryConfiguration.getInstance();
+            instance.xlibLibraryConfiguration = XlibLibraryConfiguration.getInstance();
         }
         return instance;
     }
@@ -40,6 +41,7 @@ public @Service class VulkanTransformator {
     private CLibraryCodeGenerator cLibraryCodeGenerator;
     private VkLibraryCodeGenerator vkLibraryCodeGenerator;
     private VkLibraryConfiguration vkLibraryConfiguration;
+    private XlibLibraryConfiguration xlibLibraryConfiguration;
 
     private VulkanTransformator() {
     }
@@ -51,6 +53,7 @@ public @Service class VulkanTransformator {
     public void transform(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
         generateNativeBridge(outputDirectory);
         generateVulkanBridge(inputDirectory, outputDirectory);
+        generateVulkanXlibBridge(inputDirectory, outputDirectory);
     }
 
     private void generateNativeBridge(@Mandatory Path outputDirectory) {
@@ -62,6 +65,13 @@ public @Service class VulkanTransformator {
         File file = read(inputDirectory, VULKAN_FILE_NAME);
         VkRoot root = vulkanParser.parse(VULKAN_VERSION, file);
         List<File> files = vkLibraryCodeGenerator.generateFiles(root, vkLibraryConfiguration);
+        write(outputDirectory, files);
+    }
+
+    private void generateVulkanXlibBridge(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
+        File file = read(inputDirectory, VULKAN_XLIB_FILE_NAME);
+        VkRoot root = vulkanParser.parse(VULKAN_VERSION, file);
+        List<File> files = vkLibraryCodeGenerator.generateFiles(root, xlibLibraryConfiguration);
         write(outputDirectory, files);
     }
 

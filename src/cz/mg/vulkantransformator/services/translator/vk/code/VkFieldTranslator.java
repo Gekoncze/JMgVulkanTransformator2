@@ -8,7 +8,7 @@ import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
 public @Service class VkFieldTranslator {
     private static @Optional VkFieldTranslator instance;
@@ -139,7 +139,7 @@ public @Service class VkFieldTranslator {
     public @Mandatory List<String> translateNative(
         @Mandatory VkComponent component,
         @Mandatory VkVariable field,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         JniFunction function = new JniFunction();
         function.setOutput("jlong");

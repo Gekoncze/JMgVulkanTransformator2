@@ -7,7 +7,7 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
 public @Service class VkComponentTranslator {
     private static @Optional VkComponentTranslator instance;
@@ -27,7 +27,7 @@ public @Service class VkComponentTranslator {
 
     public @Mandatory List<String> getCommonJavaHeader(
         @Mandatory VkComponent component,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         List<String> lines = codeGenerator.generateJavaHeader(configuration);
 
@@ -60,7 +60,7 @@ public @Service class VkComponentTranslator {
 
     public @Mandatory List<String> getCommonNativeHeader(
         @Mandatory VkComponent component,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         List<String> lines = codeGenerator.generateNativeHeader(configuration);
 

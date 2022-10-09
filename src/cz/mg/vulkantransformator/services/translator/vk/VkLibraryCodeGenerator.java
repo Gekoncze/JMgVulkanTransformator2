@@ -9,6 +9,7 @@ import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.MakefileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.code.*;
 
@@ -51,7 +52,7 @@ public @Service class VkLibraryCodeGenerator {
 
     public @Mandatory List<File> generateFiles(
         @Mandatory VkRoot root,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         Index index = new Index(root);
 

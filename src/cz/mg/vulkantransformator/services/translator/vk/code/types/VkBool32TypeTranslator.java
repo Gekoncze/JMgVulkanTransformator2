@@ -9,7 +9,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkType;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
-import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
 public @Service class VkBool32TypeTranslator implements VkSpecialTypeTranslator {
     private static @Optional VkBool32TypeTranslator instance;
@@ -36,7 +36,7 @@ public @Service class VkBool32TypeTranslator implements VkSpecialTypeTranslator 
     public @Mandatory List<String> translateJava(
         @Mandatory Index index,
         @Mandatory VkType type,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         String vkTrue = ((VkConstant)index.getComponents().get("VK_TRUE")).getValue();
         String vkFalse = ((VkConstant)index.getComponents().get("VK_FALSE")).getValue();
@@ -59,7 +59,7 @@ public @Service class VkBool32TypeTranslator implements VkSpecialTypeTranslator 
     public @Mandatory List<String> translateNative(
         @Mandatory Index index,
         @Mandatory VkType type,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         JniFunction getFunction = new JniFunction();
         getFunction.setOutput("jint");

@@ -10,7 +10,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkEnum;
 import cz.mg.vulkantransformator.entities.vulkan.VkEnumEntry;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
-import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
 public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
     private static @Optional VkEnumTranslator instance;
@@ -41,7 +41,7 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
     public @Mandatory List<String> translateJava(
         @Mandatory Index index,
         @Mandatory VkEnum enumeration,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         List<String> lines = new List<>();
 
@@ -83,7 +83,7 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
     public @Mandatory List<String> translateNative(
         @Mandatory Index index,
         @Mandatory VkEnum enumeration,
-        @Mandatory VkLibraryConfiguration configuration
+        @Mandatory LibraryConfiguration configuration
     ) {
         List<String> lines = new List<>();
 
