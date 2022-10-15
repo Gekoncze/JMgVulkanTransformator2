@@ -51,7 +51,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
 
         for (VkVariable field : structure.getFields()) {
             lines.addCollectionLast(
-                fieldTranslator.translateJava(structure, field)
+                fieldTranslator.translateJava(structure, field, configuration)
             );
         }
 
@@ -73,7 +73,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonNativeHeader(structure.getName(), configuration)
+            objectCodeGenerator.getCommonNativeHeader(structure.getName(), structure.getName(), configuration)
         );
 
         for (VkVariable field : structure.getFields()) {

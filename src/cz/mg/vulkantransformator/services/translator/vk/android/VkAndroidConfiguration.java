@@ -5,6 +5,9 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.TypenameMap;
+import cz.mg.vulkantransformator.services.translator.c.CTypenameMap;
+import cz.mg.vulkantransformator.services.translator.vk.VkTypenameMap;
 
 public @Utility class VkAndroidConfiguration implements LibraryConfiguration {
     private static @Optional VkAndroidConfiguration instance;
@@ -12,9 +15,14 @@ public @Utility class VkAndroidConfiguration implements LibraryConfiguration {
     public static @Mandatory VkAndroidConfiguration getInstance() {
         if (instance == null) {
             instance = new VkAndroidConfiguration();
+            instance.cTypenameMap = CTypenameMap.getInstance();
+            instance.vkTypenameMap = VkTypenameMap.getInstance();
         }
         return instance;
     }
+
+    private CTypenameMap cTypenameMap;
+    private VkTypenameMap vkTypenameMap;
 
     private VkAndroidConfiguration() {
     }
@@ -54,6 +62,14 @@ public @Utility class VkAndroidConfiguration implements LibraryConfiguration {
             "#include <native_window.h>",
             "#include <hardware_buffer_jni.h>",
             "#include \"../../c/CMemory.h\""
+        );
+    }
+
+    @Override
+    public @Mandatory List<TypenameMap> getTypenameMaps() {
+        return new List<>(
+            cTypenameMap,
+            vkTypenameMap
         );
     }
 }

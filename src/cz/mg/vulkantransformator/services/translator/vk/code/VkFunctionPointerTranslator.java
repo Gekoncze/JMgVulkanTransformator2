@@ -64,7 +64,7 @@ public @Service class VkFunctionPointerTranslator implements VkTranslator<VkFunc
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonNativeHeader(pointer.getName(), configuration)
+            objectCodeGenerator.getCommonNativeHeader(pointer.getName(), pointer.getName(), configuration)
         );
 
         lines.addCollectionLast(

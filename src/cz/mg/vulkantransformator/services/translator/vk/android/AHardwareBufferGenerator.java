@@ -39,7 +39,7 @@ public @Service class AHardwareBufferGenerator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        List<String> lines = objectCodeGenerator.getCommonNativeHeader(getName(), configuration);
+        List<String> lines = objectCodeGenerator.getCommonNativeHeader(getName(), getName(), configuration);
         lines.addCollectionLast(objectCodeGenerator.getCommonNativeFooter());
         return lines;
     }

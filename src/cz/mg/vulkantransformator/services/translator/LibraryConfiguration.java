@@ -21,4 +21,8 @@ public @Utility interface LibraryConfiguration {
     default @Mandatory List<String> getNativeDependencies() {
         return new List<>();
     }
+
+    default @Mandatory List<TypenameMap> getTypenameMaps() {
+        return new List<>();
+    }
 }

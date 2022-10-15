@@ -75,7 +75,7 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonNativeHeader(type.getName(), configuration)
+            objectCodeGenerator.getCommonNativeHeader(type.getName(), type.getName(), configuration)
         );
 
         for (VkSpecialTypeTranslator specialTypeTranslator : specialTypeTranslators) {

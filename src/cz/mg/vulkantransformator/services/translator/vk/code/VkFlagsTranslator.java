@@ -108,7 +108,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonNativeHeader(flags.getName(), configuration)
+            objectCodeGenerator.getCommonNativeHeader(flags.getName(), flags.getName(), configuration)
         );
 
         String name = flags.getName();

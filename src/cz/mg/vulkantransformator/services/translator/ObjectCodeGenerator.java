@@ -57,6 +57,7 @@ public @Service class ObjectCodeGenerator {
 
     public @Mandatory List<String> getCommonNativeHeader(
         @Mandatory String name,
+        @Mandatory String nativeName,
         @Mandatory LibraryConfiguration configuration
     ) {
         List<String> lines = codeGenerator.generateNativeHeader(configuration);
@@ -67,7 +68,7 @@ public @Service class ObjectCodeGenerator {
         sizeFunction.setName("_size");
         sizeFunction.setLines(
             new List<>(
-                "return sizeof(" + name + ");"
+                "return sizeof(" + nativeName + ");"
             )
         );
 
@@ -83,7 +84,7 @@ public @Service class ObjectCodeGenerator {
         );
         setFunction.setLines(
             new List<>(
-                "memcpy(l2a(destination), l2a(source), sizeof(" + name + "));"
+                "memcpy(l2a(destination), l2a(source), sizeof(" + nativeName + "));"
             )
         );
 

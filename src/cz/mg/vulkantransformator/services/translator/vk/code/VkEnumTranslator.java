@@ -89,7 +89,7 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonNativeHeader(enumeration.getName(), configuration)
+            objectCodeGenerator.getCommonNativeHeader(enumeration.getName(), enumeration.getName(), configuration)
         );
 
         JniFunction getFunction = new JniFunction();

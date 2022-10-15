@@ -5,6 +5,9 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.TypenameMap;
+import cz.mg.vulkantransformator.services.translator.c.CTypenameMap;
+import cz.mg.vulkantransformator.services.translator.vk.VkTypenameMap;
 
 public @Utility class VkWaylandConfiguration implements LibraryConfiguration {
     private static @Optional VkWaylandConfiguration instance;
@@ -12,9 +15,16 @@ public @Utility class VkWaylandConfiguration implements LibraryConfiguration {
     public static @Mandatory VkWaylandConfiguration getInstance() {
         if (instance == null) {
             instance = new VkWaylandConfiguration();
+            instance.cTypenameMap = CTypenameMap.getInstance();
+            instance.vkTypenameMap = VkTypenameMap.getInstance();
+            instance.waylandTypenameMap = WaylandTypenameMap.getInstance();
         }
         return instance;
     }
+
+    private CTypenameMap cTypenameMap;
+    private VkTypenameMap vkTypenameMap;
+    private WaylandTypenameMap waylandTypenameMap;
 
     private VkWaylandConfiguration() {
     }
@@ -53,6 +63,15 @@ public @Utility class VkWaylandConfiguration implements LibraryConfiguration {
             "#include <vulkan/vulkan.h>",
             "#include <wayland-client.h>",
             "#include \"../../c/CMemory.h\""
+        );
+    }
+
+    @Override
+    public @Mandatory List<TypenameMap> getTypenameMaps() {
+        return new List<>(
+            cTypenameMap,
+            vkTypenameMap,
+            waylandTypenameMap
         );
     }
 }

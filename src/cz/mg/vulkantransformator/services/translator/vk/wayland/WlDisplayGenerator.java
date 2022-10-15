@@ -27,7 +27,7 @@ public @Service class WlDisplayGenerator implements VkGenerator {
 
     @Override
     public @Mandatory String getName() {
-        return "wl_display";
+        return "WlDisplay";
     }
 
     @Override
@@ -39,7 +39,7 @@ public @Service class WlDisplayGenerator implements VkGenerator {
 
     @Override
     public @Mandatory List<String> generateNativeC() {
-        List<String> lines = objectCodeGenerator.getCommonNativeHeader(getName(), configuration);
+        List<String> lines = objectCodeGenerator.getCommonNativeHeader(getName(), "wl_display", configuration);
         lines.addCollectionLast(objectCodeGenerator.getCommonNativeFooter());
         return lines;
     }

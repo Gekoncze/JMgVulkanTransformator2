@@ -5,6 +5,8 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.TypenameMap;
+import cz.mg.vulkantransformator.services.translator.c.CTypenameMap;
 
 public @Utility class XcbLibraryConfiguration implements LibraryConfiguration {
     private static @Optional XcbLibraryConfiguration instance;
@@ -12,9 +14,14 @@ public @Utility class XcbLibraryConfiguration implements LibraryConfiguration {
     public static @Mandatory XcbLibraryConfiguration getInstance() {
         if (instance == null) {
             instance = new XcbLibraryConfiguration();
+            instance.cTypenameMap = CTypenameMap.getInstance();
+            instance.vkTypenameMap = VkTypenameMap.getInstance();
         }
         return instance;
     }
+
+    private CTypenameMap cTypenameMap;
+    private VkTypenameMap vkTypenameMap;
 
     private XcbLibraryConfiguration() {
     }
@@ -52,6 +59,14 @@ public @Utility class XcbLibraryConfiguration implements LibraryConfiguration {
         return new List<>(
             "#include <vulkan/vulkan.h>",
             "#include \"../../c/CMemory.h\""
+        );
+    }
+
+    @Override
+    public @Mandatory List<TypenameMap> getTypenameMaps() {
+        return new List<>(
+            cTypenameMap,
+            vkTypenameMap
         );
     }
 }

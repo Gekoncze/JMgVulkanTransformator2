@@ -12,6 +12,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.TypenameTranslator;
 
 public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     private static @Optional VkFunctionTranslator instance;
@@ -53,13 +54,13 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
         List<String> nativeParameterList = new List<>();
 
         for (VkVariable parameter : function.getInput()) {
-            parameterList.addLast(getType(parameter) + " " + parameter.getName());
+            parameterList.addLast(getType(parameter, configuration) + " " + parameter.getName());
             argumentList.addLast(parameter.getName() + ".getAddress()");
             nativeParameterList.addLast("long " + parameter.getName());
         }
 
         if (!isVoid(function.getOutput())) {
-            parameterList.addLast(getType(function.getOutput()) + " output");
+            parameterList.addLast(getType(function.getOutput(), configuration) + " output");
             argumentList.addLast("output.getAddress()");
             nativeParameterList.addLast("long output");
         }
@@ -121,8 +122,8 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
         return codeGenerator.generateJniFunction(configuration, jniFunction);
     }
 
-    private @Mandatory String getType(@Mandatory VkVariable variable) {
-        String typename = typenameTranslator.translate(variable.getTypename());
+    private @Mandatory String getType(@Mandatory VkVariable variable, @Mandatory LibraryConfiguration configuration) {
+        String typename = typenameTranslator.translate(variable.getTypename(), configuration);
 
         if (variable.getPointers() == 0 && variable.getArray() == 0) {
             return typename;
