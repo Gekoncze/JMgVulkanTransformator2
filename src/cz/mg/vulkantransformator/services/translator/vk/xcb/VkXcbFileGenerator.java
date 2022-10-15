@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.vk.wayland;
+package cz.mg.vulkantransformator.services.translator.vk.xcb;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
@@ -9,30 +9,31 @@ import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.EmptyObjectFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.VkLibraryCodeGenerator;
 
-public @Service class VkWaylandFileGenerator {
-    private static @Optional VkWaylandFileGenerator instance;
+public @Service class VkXcbFileGenerator {
+    private static @Optional VkXcbFileGenerator instance;
 
-    public static @Mandatory VkWaylandFileGenerator getInstance() {
+    public static @Mandatory VkXcbFileGenerator getInstance() {
         if (instance == null) {
-            instance = new VkWaylandFileGenerator();
-            instance.configuration = VkWaylandConfiguration.getInstance();
+            instance = new VkXcbFileGenerator();
+            instance.configuration = VkXcbConfiguration.getInstance();
             instance.vkLibraryCodeGenerator = VkLibraryCodeGenerator.getInstance();
             instance.emptyObjectFileGenerator = EmptyObjectFileGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkWaylandConfiguration configuration;
+    private VkXcbConfiguration configuration;
     private VkLibraryCodeGenerator vkLibraryCodeGenerator;
     private EmptyObjectFileGenerator emptyObjectFileGenerator;
 
-    private VkWaylandFileGenerator() {
+    private VkXcbFileGenerator() {
     }
 
     public @Mandatory List<File> generateFiles(@Mandatory VkRoot root) {
         List<File> files = vkLibraryCodeGenerator.generateFiles(root, configuration);
-        files.addCollectionLast(emptyObjectFileGenerator.generateFiles("WlDisplay", "wl_display", configuration));
-        files.addCollectionLast(emptyObjectFileGenerator.generateFiles("WlSurface", "wl_surface", configuration));
+        files.addCollectionLast(emptyObjectFileGenerator.generateFiles("XcbConnection", "xcb_connection_t", configuration));
+        files.addCollectionLast(emptyObjectFileGenerator.generateFiles("XcbVisualId", "xcb_visualid_t", configuration));
+        files.addCollectionLast(emptyObjectFileGenerator.generateFiles("XcbWindow", "xcb_window_t", configuration));
         return files;
     }
 }
