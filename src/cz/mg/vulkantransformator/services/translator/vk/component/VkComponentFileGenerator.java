@@ -8,15 +8,13 @@ import cz.mg.collections.map.Map;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
+import cz.mg.vulkantransformator.services.translator.JavaConfiguration;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.vk.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.MakefileGenerator;
 
 import java.nio.file.Path;
-
-import static cz.mg.vulkantransformator.services.Configuration.JAVA_DIRECTORY;
-import static cz.mg.vulkantransformator.services.Configuration.JAVA_DIRECTORY_MD;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public @Service class VkComponentFileGenerator {
@@ -37,6 +35,7 @@ public @Service class VkComponentFileGenerator {
             instance.functionsTranslator = VkFunctionsTranslator.getInstance();
             instance.makefileGenerator = MakefileGenerator.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
+            instance.javaConfiguration = JavaConfiguration.getInstance();
         }
         return instance;
     }
@@ -46,6 +45,7 @@ public @Service class VkComponentFileGenerator {
     private VkFunctionsTranslator functionsTranslator;
     private MakefileGenerator makefileGenerator;
     private CodeGenerator codeGenerator;
+    private JavaConfiguration javaConfiguration;
 
     private VkComponentFileGenerator() {
     }
@@ -123,7 +123,10 @@ public @Service class VkComponentFileGenerator {
                 makefileGenerator.create(
                     files,
                     configuration.getLibraryName(),
-                    new List<>(JAVA_DIRECTORY, JAVA_DIRECTORY_MD),
+                    new List<>(
+                        javaConfiguration.getJavaDirectory(),
+                        javaConfiguration.getJavaDirectoryMd()
+                    ),
                     new List<>()
                 )
             )

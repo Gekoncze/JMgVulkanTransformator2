@@ -9,7 +9,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkEnum;
 import cz.mg.vulkantransformator.entities.vulkan.VkEnumEntry;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.vk.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.ObjectCodeGenerator;
 

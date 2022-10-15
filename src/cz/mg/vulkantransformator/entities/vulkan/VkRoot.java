@@ -6,23 +6,9 @@ import cz.mg.annotations.storage.Part;
 import cz.mg.collections.list.List;
 
 public @Entity class VkRoot {
-    private VkVersion version;
     private List<VkComponent> components = new List<>();
 
     public VkRoot() {
-    }
-
-    public VkRoot(VkVersion version) {
-        this.version = version;
-    }
-
-    @Required @Part
-    public VkVersion getVersion() {
-        return version;
-    }
-
-    public void setVersion(VkVersion version) {
-        this.version = version;
     }
 
     @Required @Part

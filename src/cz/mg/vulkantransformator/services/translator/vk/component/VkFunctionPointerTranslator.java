@@ -7,7 +7,7 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkFunctionPointer;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.vk.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.ObjectCodeGenerator;
 

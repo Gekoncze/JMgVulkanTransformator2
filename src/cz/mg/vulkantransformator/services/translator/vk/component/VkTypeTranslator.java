@@ -6,7 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkType;
-import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.vk.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.ObjectCodeGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.component.types.VkBool32TypeTranslator;

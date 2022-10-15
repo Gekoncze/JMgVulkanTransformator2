@@ -9,17 +9,15 @@ import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.filesystem.FileReaderService;
 import cz.mg.vulkantransformator.services.filesystem.FileWriterService;
 import cz.mg.vulkantransformator.services.parser.VulkanParser;
-import cz.mg.vulkantransformator.services.translator.c.CLibraryFileGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.core.VkCoreFileGenerator;
+import cz.mg.vulkantransformator.services.translator.c.CFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.VkFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.android.VkAndroidFileGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.core.VkCoreFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.wayland.VkWaylandFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.xcb.VkXcbFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.xlib.VkXlibFileGenerator;
 
 import java.nio.file.Path;
-
-import static cz.mg.vulkantransformator.services.Configuration.*;
 
 public @Service class VulkanTransformator {
     private static @Optional VulkanTransformator instance;
@@ -30,7 +28,7 @@ public @Service class VulkanTransformator {
             instance.fileReaderService = FileReaderService.getInstance();
             instance.fileWriterService = FileWriterService.getInstance();
             instance.vulkanParser = VulkanParser.getInstance();
-            instance.cLibraryFileGenerator = CLibraryFileGenerator.getInstance();
+            instance.cFileGenerator = CFileGenerator.getInstance();
             instance.vkLibraryFileGenerators = new List<>(
                 VkCoreFileGenerator.getInstance(),
                 VkXlibFileGenerator.getInstance(),
@@ -45,7 +43,7 @@ public @Service class VulkanTransformator {
     private FileReaderService fileReaderService;
     private FileWriterService fileWriterService;
     private VulkanParser vulkanParser;
-    private CLibraryFileGenerator cLibraryFileGenerator;
+    private CFileGenerator cFileGenerator;
     private List<VkFileGenerator> vkLibraryFileGenerators;
 
     private VulkanTransformator() {
@@ -63,7 +61,7 @@ public @Service class VulkanTransformator {
     }
 
     private void generateNativeBridge(@Mandatory Path outputDirectory) {
-        write(outputDirectory, cLibraryFileGenerator.generateFiles());
+        write(outputDirectory, cFileGenerator.generateFiles());
     }
 
     private void generateVulkanBridge(
@@ -72,7 +70,7 @@ public @Service class VulkanTransformator {
         @Mandatory VkFileGenerator generator
     ) {
         File file = read(inputDirectory, generator.getSourceFileName());
-        VkRoot root = vulkanParser.parse(VULKAN_VERSION, file);
+        VkRoot root = vulkanParser.parse(file);
         List<File> files = generator.generateFiles(root);
         write(outputDirectory, files);
     }

@@ -5,21 +5,19 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.filesystem.File;
+import cz.mg.vulkantransformator.services.translator.JavaConfiguration;
 import cz.mg.vulkantransformator.services.translator.MakefileGenerator;
 import cz.mg.vulkantransformator.services.translator.c.code.*;
 import cz.mg.vulkantransformator.services.translator.c.code.types.*;
 
 import java.nio.file.Path;
 
-import static cz.mg.vulkantransformator.services.Configuration.JAVA_DIRECTORY;
-import static cz.mg.vulkantransformator.services.Configuration.JAVA_DIRECTORY_MD;
+public @Service class CFileGenerator {
+    private static @Optional CFileGenerator instance;
 
-public @Service class CLibraryFileGenerator {
-    private static @Optional CLibraryFileGenerator instance;
-
-    public static @Mandatory CLibraryFileGenerator getInstance() {
+    public static @Mandatory CFileGenerator getInstance() {
         if (instance == null) {
-            instance = new CLibraryFileGenerator();
+            instance = new CFileGenerator();
             instance.configuration = CConfiguration.getInstance();
             instance.generators = new List<>(
                 CMemoryGenerator.getInstance(),
@@ -44,6 +42,7 @@ public @Service class CLibraryFileGenerator {
                 CValidatorGenerator.getInstance()
             );
             instance.makefileGenerator = MakefileGenerator.getInstance();
+            instance.javaConfiguration = JavaConfiguration.getInstance();
         }
         return instance;
     }
@@ -51,8 +50,9 @@ public @Service class CLibraryFileGenerator {
     private CConfiguration configuration;
     private List<CGenerator> generators;
     private MakefileGenerator makefileGenerator;
+    private JavaConfiguration javaConfiguration;
 
-    private CLibraryFileGenerator() {
+    private CFileGenerator() {
     }
 
     public @Mandatory List<File> generateFiles() {
@@ -87,7 +87,10 @@ public @Service class CLibraryFileGenerator {
                 makefileGenerator.create(
                     files,
                     configuration.getLibraryName(),
-                    new List<>(JAVA_DIRECTORY, JAVA_DIRECTORY_MD),
+                    new List<>(
+                        javaConfiguration.getJavaDirectory(),
+                        javaConfiguration.getJavaDirectoryMd()
+                    ),
                     new List<>()
                 )
             )

@@ -25,7 +25,7 @@ public @Test class VulkanParserManualTest {
         VulkanParser parser = VulkanParser.getInstance();
         File file = new File(PATH, null);
         reader.load(file);
-        VkRoot root = parser.parse(new VkVersion(1, 0), file);
+        VkRoot root = parser.parse(file);
 
         for (VkComponent component : root.getComponents()) {
             System.out.println("Found " + component.getClass().getSimpleName() + " " + component.getName() + ".");

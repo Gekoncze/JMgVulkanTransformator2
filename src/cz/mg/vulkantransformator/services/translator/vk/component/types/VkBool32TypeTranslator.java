@@ -8,7 +8,7 @@ import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkType;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.vk.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
 public @Service class VkBool32TypeTranslator implements VkSpecialTypeTranslator {

@@ -9,7 +9,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.Index;
+import cz.mg.vulkantransformator.services.translator.vk.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
 public @Service class VkConstantsTranslator {

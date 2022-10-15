@@ -7,7 +7,6 @@ import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.parser.preprocessor.Definition;
 import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
-import cz.mg.vulkantransformator.entities.vulkan.VkVersion;
 import cz.mg.vulkantransformator.services.parser.segmentation.LineParser;
 import cz.mg.vulkantransformator.services.parser.segmentation.StatementParser;
 import cz.mg.vulkantransformator.services.parser.segmentation.TokenParser;
@@ -53,21 +52,20 @@ public @Service class VulkanParser {
     private VulkanParser() {
     }
 
-    public @Mandatory VkRoot parse(@Mandatory VkVersion version, @Mandatory File file) {
+    public @Mandatory VkRoot parse(@Mandatory File file) {
         List<Definition> definitions = new List<>();
         List<Line> lines = lineParser.parse(file.getLines());
         List<List<Token>> linesTokens = tokenParser.parse(lines);
         List<List<Token>> joinedLinesTokens = splicer.splice(linesTokens);
         List<Token> tokens = preprocessor.preprocess(joinedLinesTokens, definitions);
         List<Statement> statements = statementParser.parse(tokens);
-        VkRoot root = parseStatements(version, statements);
+        VkRoot root = parseStatements(statements);
         addDefinitions(root, definitions);
         return root;
     }
 
-    private @Mandatory VkRoot parseStatements(@Mandatory VkVersion version, @Mandatory List<Statement> statements) {
-        VkRoot root = new VkRoot(version);
-        root.setVersion(version);
+    private @Mandatory VkRoot parseStatements(@Mandatory List<Statement> statements) {
+        VkRoot root = new VkRoot();
 
         for (Statement statement : statements) {
             for (VkParser parser : parsers) {
