@@ -14,6 +14,7 @@ import cz.mg.vulkantransformator.services.translator.vk.VkFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.android.VkAndroidFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.core.VkCoreFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.ios.VkIosFileGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.macos.VkMacosFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.wayland.VkWaylandFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.xcb.VkXcbFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.xlib.VkXlibFileGenerator;
@@ -36,7 +37,8 @@ public @Service class VulkanTransformator {
                 VkXcbFileGenerator.getInstance(),
                 VkWaylandFileGenerator.getInstance(),
                 VkAndroidFileGenerator.getInstance(),
-                VkIosFileGenerator.getInstance()
+                VkIosFileGenerator.getInstance(),
+                VkMacosFileGenerator.getInstance()
             );
         }
         return instance;
