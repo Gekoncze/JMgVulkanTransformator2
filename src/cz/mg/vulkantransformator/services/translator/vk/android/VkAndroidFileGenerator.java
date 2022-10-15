@@ -9,13 +9,13 @@ import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.vk.VkFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.VkLibraryCodeGenerator;
 
-public @Service class VkAndroidLibraryCodeGenerator {
-    private static @Optional VkAndroidLibraryCodeGenerator instance;
+public @Service class VkAndroidFileGenerator {
+    private static @Optional VkAndroidFileGenerator instance;
 
-    public static @Mandatory VkAndroidLibraryCodeGenerator getInstance() {
+    public static @Mandatory VkAndroidFileGenerator getInstance() {
         if (instance == null) {
-            instance = new VkAndroidLibraryCodeGenerator();
-            instance.configuration = VkAndroidLibraryConfiguration.getInstance();
+            instance = new VkAndroidFileGenerator();
+            instance.configuration = VkAndroidConfiguration.getInstance();
             instance.vkLibraryCodeGenerator = VkLibraryCodeGenerator.getInstance();
             instance.vkFileGenerator = VkFileGenerator.getInstance();
             instance.aNativeWindowGenerator = ANativeWindowGenerator.getInstance();
@@ -24,13 +24,13 @@ public @Service class VkAndroidLibraryCodeGenerator {
         return instance;
     }
 
-    private VkAndroidLibraryConfiguration configuration;
+    private VkAndroidConfiguration configuration;
     private VkLibraryCodeGenerator vkLibraryCodeGenerator;
     private VkFileGenerator vkFileGenerator;
     private ANativeWindowGenerator aNativeWindowGenerator;
     private AHardwareBufferGenerator aHardwareBufferGenerator;
 
-    private VkAndroidLibraryCodeGenerator() {
+    private VkAndroidFileGenerator() {
     }
 
     public @Mandatory List<File> generateFiles(@Mandatory VkRoot root) {

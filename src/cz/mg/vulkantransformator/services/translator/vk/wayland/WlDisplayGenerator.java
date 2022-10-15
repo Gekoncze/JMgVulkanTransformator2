@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.vk.android;
+package cz.mg.vulkantransformator.services.translator.vk.wayland;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
@@ -7,27 +7,27 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.ObjectCodeGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.VkGenerator;
 
-public @Service class AHardwareBufferGenerator implements VkGenerator {
-    private static @Optional AHardwareBufferGenerator instance;
+public @Service class WlDisplayGenerator implements VkGenerator {
+    private static @Optional WlDisplayGenerator instance;
 
-    public static @Mandatory AHardwareBufferGenerator getInstance() {
+    public static @Mandatory WlDisplayGenerator getInstance() {
         if (instance == null) {
-            instance = new AHardwareBufferGenerator();
+            instance = new WlDisplayGenerator();
             instance.objectCodeGenerator = ObjectCodeGenerator.getInstance();
-            instance.configuration = VkAndroidConfiguration.getInstance();
+            instance.configuration = VkWaylandConfiguration.getInstance();
         }
         return instance;
     }
 
-    private VkAndroidConfiguration configuration;
+    private VkWaylandConfiguration configuration;
     private ObjectCodeGenerator objectCodeGenerator;
 
-    private AHardwareBufferGenerator() {
+    private WlDisplayGenerator() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "AHardwareBuffer";
+        return "wl_display";
     }
 
     @Override

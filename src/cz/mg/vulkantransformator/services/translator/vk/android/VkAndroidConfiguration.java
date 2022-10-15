@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.vk;
+package cz.mg.vulkantransformator.services.translator.vk.android;
 
 import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;
@@ -6,37 +6,37 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
-public @Utility class WaylandLibraryConfiguration implements LibraryConfiguration {
-    private static @Optional WaylandLibraryConfiguration instance;
+public @Utility class VkAndroidConfiguration implements LibraryConfiguration {
+    private static @Optional VkAndroidConfiguration instance;
 
-    public static @Mandatory WaylandLibraryConfiguration getInstance() {
+    public static @Mandatory VkAndroidConfiguration getInstance() {
         if (instance == null) {
-            instance = new WaylandLibraryConfiguration();
+            instance = new VkAndroidConfiguration();
         }
         return instance;
     }
 
-    private WaylandLibraryConfiguration() {
+    private VkAndroidConfiguration() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "Wayland";
+        return "Android";
     }
 
     @Override
     public @Mandatory String getLibraryName() {
-        return "jmgvulkanwayland";
+        return "jmgvulkanandroid";
     }
 
     @Override
     public @Mandatory String getJavaPackage() {
-        return "cz.mg.vulkan.wayland";
+        return "cz.mg.vulkan.android";
     }
 
     @Override
     public @Mandatory String getSubModulePrefix() {
-        return "Wayland";
+        return "Android";
     }
 
     @Override
@@ -51,6 +51,8 @@ public @Utility class WaylandLibraryConfiguration implements LibraryConfiguratio
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
             "#include <vulkan/vulkan.h>",
+            "#include <native_window.h>",
+            "#include <hardware_buffer_jni.h>",
             "#include \"../../c/CMemory.h\""
         );
     }

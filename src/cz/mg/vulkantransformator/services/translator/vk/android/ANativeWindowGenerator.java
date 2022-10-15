@@ -14,12 +14,12 @@ public @Service class ANativeWindowGenerator implements VkGenerator {
         if (instance == null) {
             instance = new ANativeWindowGenerator();
             instance.objectCodeGenerator = ObjectCodeGenerator.getInstance();
-            instance.configuration = VkAndroidLibraryConfiguration.getInstance();
+            instance.configuration = VkAndroidConfiguration.getInstance();
         }
         return instance;
     }
 
-    private VkAndroidLibraryConfiguration configuration;
+    private VkAndroidConfiguration configuration;
     private ObjectCodeGenerator objectCodeGenerator;
 
     private ANativeWindowGenerator() {

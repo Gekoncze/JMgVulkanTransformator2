@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.vk.android;
+package cz.mg.vulkantransformator.services.translator.vk.wayland;
 
 import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;
@@ -6,37 +6,37 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
-public @Utility class VkAndroidLibraryConfiguration implements LibraryConfiguration {
-    private static @Optional VkAndroidLibraryConfiguration instance;
+public @Utility class VkWaylandConfiguration implements LibraryConfiguration {
+    private static @Optional VkWaylandConfiguration instance;
 
-    public static @Mandatory VkAndroidLibraryConfiguration getInstance() {
+    public static @Mandatory VkWaylandConfiguration getInstance() {
         if (instance == null) {
-            instance = new VkAndroidLibraryConfiguration();
+            instance = new VkWaylandConfiguration();
         }
         return instance;
     }
 
-    private VkAndroidLibraryConfiguration() {
+    private VkWaylandConfiguration() {
     }
 
     @Override
     public @Mandatory String getName() {
-        return "Android";
+        return "Wayland";
     }
 
     @Override
     public @Mandatory String getLibraryName() {
-        return "jmgvulkanandroid";
+        return "jmgvulkanwayland";
     }
 
     @Override
     public @Mandatory String getJavaPackage() {
-        return "cz.mg.vulkan.android";
+        return "cz.mg.vulkan.wayland";
     }
 
     @Override
     public @Mandatory String getSubModulePrefix() {
-        return "Android";
+        return "Wayland";
     }
 
     @Override
@@ -51,8 +51,7 @@ public @Utility class VkAndroidLibraryConfiguration implements LibraryConfigurat
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
             "#include <vulkan/vulkan.h>",
-            "#include <native_window.h>",
-            "#include <hardware_buffer_jni.h>",
+            "#include <wayland-client.h>",
             "#include \"../../c/CMemory.h\""
         );
     }
