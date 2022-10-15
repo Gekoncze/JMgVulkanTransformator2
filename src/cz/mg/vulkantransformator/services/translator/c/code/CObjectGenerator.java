@@ -4,7 +4,7 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.c.CLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.c.CConfiguration;
 
 public @Service class CObjectGenerator implements CGenerator {
     private static @Optional CObjectGenerator instance;
@@ -12,12 +12,12 @@ public @Service class CObjectGenerator implements CGenerator {
     public static @Mandatory CObjectGenerator getInstance() {
         if (instance == null) {
             instance = new CObjectGenerator();
-            instance.configuration = CLibraryConfiguration.getInstance();
+            instance.configuration = CConfiguration.getInstance();
         }
         return instance;
     }
 
-    private CLibraryConfiguration configuration;
+    private CConfiguration configuration;
 
     private CObjectGenerator() {
     }

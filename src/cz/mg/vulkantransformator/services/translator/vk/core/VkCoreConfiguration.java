@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.vk;
+package cz.mg.vulkantransformator.services.translator.vk.core;
 
 import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;
@@ -8,22 +8,22 @@ import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.TypenameMap;
 import cz.mg.vulkantransformator.services.translator.c.CTypenameMap;
 
-public @Utility class VkLibraryConfiguration implements LibraryConfiguration {
-    private static @Optional VkLibraryConfiguration instance;
+public @Utility class VkCoreConfiguration implements LibraryConfiguration {
+    private static @Optional VkCoreConfiguration instance;
 
-    public static @Mandatory VkLibraryConfiguration getInstance() {
+    public static @Mandatory VkCoreConfiguration getInstance() {
         if (instance == null) {
-            instance = new VkLibraryConfiguration();
+            instance = new VkCoreConfiguration();
             instance.cTypenameMap = CTypenameMap.getInstance();
-            instance.vkTypenameMap = VkTypenameMap.getInstance();
+            instance.vkCoreTypenameMap = VkCoreTypenameMap.getInstance();
         }
         return instance;
     }
 
     private CTypenameMap cTypenameMap;
-    private VkTypenameMap vkTypenameMap;
+    private VkCoreTypenameMap vkCoreTypenameMap;
 
-    private VkLibraryConfiguration() {
+    private VkCoreConfiguration() {
     }
 
     @Override
@@ -42,8 +42,8 @@ public @Utility class VkLibraryConfiguration implements LibraryConfiguration {
     }
 
     @Override
-    public @Mandatory String getSubModulePrefix() {
-        return "";
+    public @Mandatory String getSourceFileName() {
+        return "vulkan_core.h";
     }
 
     @Override
@@ -65,7 +65,7 @@ public @Utility class VkLibraryConfiguration implements LibraryConfiguration {
     public @Mandatory List<TypenameMap> getTypenameMaps() {
         return new List<>(
             cTypenameMap,
-            vkTypenameMap
+            vkCoreTypenameMap
         );
     }
 }

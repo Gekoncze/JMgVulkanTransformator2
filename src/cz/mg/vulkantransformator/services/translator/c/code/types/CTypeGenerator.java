@@ -6,7 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.c.CLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.c.CConfiguration;
 
 public @Service class CTypeGenerator {
     private static @Optional CTypeGenerator instance;
@@ -14,13 +14,13 @@ public @Service class CTypeGenerator {
     public static @Mandatory CTypeGenerator getInstance() {
         if (instance == null) {
             instance = new CTypeGenerator();
-            instance.configuration = CLibraryConfiguration.getInstance();
+            instance.configuration = CConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private CLibraryConfiguration configuration;
+    private CConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private CTypeGenerator() {

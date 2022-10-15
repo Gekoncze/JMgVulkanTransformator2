@@ -9,9 +9,9 @@ import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.filesystem.FileReaderService;
 import cz.mg.vulkantransformator.services.filesystem.FileWriterService;
 import cz.mg.vulkantransformator.services.parser.VulkanParser;
-import cz.mg.vulkantransformator.services.translator.c.CLibraryCodeGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.VkLibraryCodeGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.VkLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.c.CLibraryFileGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.core.VkCoreFileGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.VkFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.android.VkAndroidFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.wayland.VkWaylandFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.xcb.VkXcbFileGenerator;
@@ -30,13 +30,14 @@ public @Service class VulkanTransformator {
             instance.fileReaderService = FileReaderService.getInstance();
             instance.fileWriterService = FileWriterService.getInstance();
             instance.vulkanParser = VulkanParser.getInstance();
-            instance.cLibraryCodeGenerator = CLibraryCodeGenerator.getInstance();
-            instance.vkLibraryCodeGenerator = VkLibraryCodeGenerator.getInstance();
-            instance.vkLibraryConfiguration = VkLibraryConfiguration.getInstance();
-            instance.vkXlibFileGenerator = VkXlibFileGenerator.getInstance();
-            instance.vkXcbFileGenerator = VkXcbFileGenerator.getInstance();
-            instance.vkWaylandFileGenerator = VkWaylandFileGenerator.getInstance();
-            instance.vkAndroidFileGenerator = VkAndroidFileGenerator.getInstance();
+            instance.cLibraryFileGenerator = CLibraryFileGenerator.getInstance();
+            instance.vkLibraryFileGenerators = new List<>(
+                VkCoreFileGenerator.getInstance(),
+                VkXlibFileGenerator.getInstance(),
+                VkXcbFileGenerator.getInstance(),
+                VkWaylandFileGenerator.getInstance(),
+                VkAndroidFileGenerator.getInstance()
+            );
         }
         return instance;
     }
@@ -44,13 +45,8 @@ public @Service class VulkanTransformator {
     private FileReaderService fileReaderService;
     private FileWriterService fileWriterService;
     private VulkanParser vulkanParser;
-    private CLibraryCodeGenerator cLibraryCodeGenerator;
-    private VkLibraryCodeGenerator vkLibraryCodeGenerator;
-    private VkLibraryConfiguration vkLibraryConfiguration;
-    private VkXlibFileGenerator vkXlibFileGenerator;
-    private VkXcbFileGenerator vkXcbFileGenerator;
-    private VkWaylandFileGenerator vkWaylandFileGenerator;
-    private VkAndroidFileGenerator vkAndroidFileGenerator;
+    private CLibraryFileGenerator cLibraryFileGenerator;
+    private List<VkFileGenerator> vkLibraryFileGenerators;
 
     private VulkanTransformator() {
     }
@@ -61,50 +57,23 @@ public @Service class VulkanTransformator {
      */
     public void transform(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
         generateNativeBridge(outputDirectory);
-        generateVulkanBridge(inputDirectory, outputDirectory);
-        generateVulkanXlibBridge(inputDirectory, outputDirectory);
-        generateVulkanXcbBridge(inputDirectory, outputDirectory);
-        generateVulkanWaylandBridge(inputDirectory, outputDirectory);
-        generateVulkanAndroidBridge(inputDirectory, outputDirectory);
+        for (VkFileGenerator generator : vkLibraryFileGenerators) {
+            generateVulkanBridge(inputDirectory, outputDirectory, generator);
+        }
     }
 
     private void generateNativeBridge(@Mandatory Path outputDirectory) {
-        List<File> files = cLibraryCodeGenerator.generateFiles();
-        write(outputDirectory, files);
+        write(outputDirectory, cLibraryFileGenerator.generateFiles());
     }
 
-    private void generateVulkanBridge(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
-        File file = read(inputDirectory, VULKAN_FILE_NAME);
+    private void generateVulkanBridge(
+        @Mandatory Path inputDirectory,
+        @Mandatory Path outputDirectory,
+        @Mandatory VkFileGenerator generator
+    ) {
+        File file = read(inputDirectory, generator.getSourceFileName());
         VkRoot root = vulkanParser.parse(VULKAN_VERSION, file);
-        List<File> files = vkLibraryCodeGenerator.generateFiles(root, vkLibraryConfiguration);
-        write(outputDirectory, files);
-    }
-
-    private void generateVulkanXlibBridge(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
-        File file = read(inputDirectory, VULKAN_XLIB_FILE_NAME);
-        VkRoot root = vulkanParser.parse(VULKAN_VERSION, file);
-        List<File> files = vkXlibFileGenerator.generateFiles(root);
-        write(outputDirectory, files);
-    }
-
-    private void generateVulkanXcbBridge(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
-        File file = read(inputDirectory, VULKAN_XCB_FILE_NAME);
-        VkRoot root = vulkanParser.parse(VULKAN_VERSION, file);
-        List<File> files = vkXcbFileGenerator.generateFiles(root);
-        write(outputDirectory, files);
-    }
-
-    private void generateVulkanWaylandBridge(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
-        File file = read(inputDirectory, VULKAN_WAYLAND_FILE_NAME);
-        VkRoot root = vulkanParser.parse(VULKAN_VERSION, file);
-        List<File> files = vkWaylandFileGenerator.generateFiles(root);
-        write(outputDirectory, files);
-    }
-
-    private void generateVulkanAndroidBridge(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
-        File file = read(inputDirectory, VULKAN_ANDROID_FILE_NAME);
-        VkRoot root = vulkanParser.parse(VULKAN_VERSION, file);
-        List<File> files = vkAndroidFileGenerator.generateFiles(root);
+        List<File> files = generator.generateFiles(root);
         write(outputDirectory, files);
     }
 

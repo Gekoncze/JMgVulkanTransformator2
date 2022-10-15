@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.vk;
+package cz.mg.vulkantransformator.services.translator.vk.core;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
@@ -8,12 +8,12 @@ import cz.mg.collections.map.Map;
 import cz.mg.collections.pair.Pair;
 import cz.mg.vulkantransformator.services.translator.TypenameMap;
 
-public @Service class VkTypenameMap implements TypenameMap {
-    private static @Optional VkTypenameMap instance;
+public @Service class VkCoreTypenameMap implements TypenameMap {
+    private static @Optional VkCoreTypenameMap instance;
 
-    public static @Mandatory VkTypenameMap getInstance() {
+    public static @Mandatory VkCoreTypenameMap getInstance() {
         if (instance == null) {
-            instance = new VkTypenameMap();
+            instance = new VkCoreTypenameMap();
         }
         return instance;
     }
@@ -24,7 +24,7 @@ public @Service class VkTypenameMap implements TypenameMap {
 
     private static final Map<String, String> MAP = new Map<>(LIST.count() * 2, LIST);
 
-    private VkTypenameMap() {
+    private VkCoreTypenameMap() {
     }
 
     @Override

@@ -5,7 +5,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.c.CLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.c.CConfiguration;
 
 public class CValidatorGenerator implements CGenerator {
     private static @Optional CValidatorGenerator instance;
@@ -13,13 +13,13 @@ public class CValidatorGenerator implements CGenerator {
     public static @Mandatory CValidatorGenerator getInstance() {
         if (instance == null) {
             instance = new CValidatorGenerator();
-            instance.configuration = CLibraryConfiguration.getInstance();
+            instance.configuration = CConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private CLibraryConfiguration configuration;
+    private CConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private CValidatorGenerator() {

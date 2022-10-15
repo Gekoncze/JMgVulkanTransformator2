@@ -4,7 +4,7 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.c.CLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.c.CConfiguration;
 
 public @Service class CStringGenerator implements CGenerator {
     private static @Optional CStringGenerator instance;
@@ -12,12 +12,12 @@ public @Service class CStringGenerator implements CGenerator {
     public static @Mandatory CStringGenerator getInstance() {
         if (instance == null) {
             instance = new CStringGenerator();
-            instance.configuration = CLibraryConfiguration.getInstance();
+            instance.configuration = CConfiguration.getInstance();
         }
         return instance;
     }
 
-    private CLibraryConfiguration configuration;
+    private CConfiguration configuration;
 
     private CStringGenerator() {
     }

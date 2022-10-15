@@ -7,7 +7,7 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.TypenameMap;
 import cz.mg.vulkantransformator.services.translator.c.CTypenameMap;
-import cz.mg.vulkantransformator.services.translator.vk.VkTypenameMap;
+import cz.mg.vulkantransformator.services.translator.vk.core.VkCoreTypenameMap;
 
 public @Utility class VkXcbConfiguration implements LibraryConfiguration {
     private static @Optional VkXcbConfiguration instance;
@@ -16,14 +16,14 @@ public @Utility class VkXcbConfiguration implements LibraryConfiguration {
         if (instance == null) {
             instance = new VkXcbConfiguration();
             instance.cTypenameMap = CTypenameMap.getInstance();
-            instance.vkTypenameMap = VkTypenameMap.getInstance();
+            instance.vkCoreTypenameMap = VkCoreTypenameMap.getInstance();
             instance.xcbTypenameMap = XcbTypenameMap.getInstance();
         }
         return instance;
     }
 
     private CTypenameMap cTypenameMap;
-    private VkTypenameMap vkTypenameMap;
+    private VkCoreTypenameMap vkCoreTypenameMap;
     private XcbTypenameMap xcbTypenameMap;
 
     private VkXcbConfiguration() {
@@ -50,6 +50,11 @@ public @Utility class VkXcbConfiguration implements LibraryConfiguration {
     }
 
     @Override
+    public @Mandatory String getSourceFileName() {
+        return "vulkan_xcb.h";
+    }
+
+    @Override
     public @Mandatory List<String> getJavaDependencies() {
         return new List<>(
             "import cz.mg.c.*;",
@@ -70,7 +75,7 @@ public @Utility class VkXcbConfiguration implements LibraryConfiguration {
     public @Mandatory List<TypenameMap> getTypenameMaps() {
         return new List<>(
             cTypenameMap,
-            vkTypenameMap,
+            vkCoreTypenameMap,
             xcbTypenameMap
         );
     }

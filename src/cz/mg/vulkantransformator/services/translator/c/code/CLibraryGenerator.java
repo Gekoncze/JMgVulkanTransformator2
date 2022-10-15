@@ -4,7 +4,7 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.c.CLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.c.CConfiguration;
 
 public class CLibraryGenerator implements CGenerator {
     private static @Optional CLibraryGenerator instance;
@@ -12,13 +12,13 @@ public class CLibraryGenerator implements CGenerator {
     public static @Mandatory CLibraryGenerator getInstance() {
         if (instance == null) {
             instance = new CLibraryGenerator();
-            instance.configuration = CLibraryConfiguration.getInstance();
+            instance.configuration = CConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private CLibraryConfiguration configuration;
+    private CConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private CLibraryGenerator() {

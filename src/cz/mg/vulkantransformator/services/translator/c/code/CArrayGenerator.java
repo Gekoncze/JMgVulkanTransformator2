@@ -4,7 +4,7 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.services.translator.c.CLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.c.CConfiguration;
 
 public @Service class CArrayGenerator implements CGenerator {
     private static @Optional CArrayGenerator instance;
@@ -14,14 +14,14 @@ public @Service class CArrayGenerator implements CGenerator {
             instance = new CArrayGenerator();
             instance.factoryGenerator = CFactoryGenerator.getInstance();
             instance.objectGenerator = CObjectGenerator.getInstance();
-            instance.configuration = CLibraryConfiguration.getInstance();
+            instance.configuration = CConfiguration.getInstance();
         }
         return instance;
     }
 
     private CFactoryGenerator factoryGenerator;
     private CObjectGenerator objectGenerator;
-    private CLibraryConfiguration configuration;
+    private CConfiguration configuration;
 
     private CArrayGenerator() {
     }

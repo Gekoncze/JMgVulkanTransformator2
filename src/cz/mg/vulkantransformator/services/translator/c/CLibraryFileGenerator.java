@@ -14,13 +14,13 @@ import java.nio.file.Path;
 import static cz.mg.vulkantransformator.services.Configuration.JAVA_DIRECTORY;
 import static cz.mg.vulkantransformator.services.Configuration.JAVA_DIRECTORY_MD;
 
-public @Service class CLibraryCodeGenerator {
-    private static @Optional CLibraryCodeGenerator instance;
+public @Service class CLibraryFileGenerator {
+    private static @Optional CLibraryFileGenerator instance;
 
-    public static @Mandatory CLibraryCodeGenerator getInstance() {
+    public static @Mandatory CLibraryFileGenerator getInstance() {
         if (instance == null) {
-            instance = new CLibraryCodeGenerator();
-            instance.configuration = CLibraryConfiguration.getInstance();
+            instance = new CLibraryFileGenerator();
+            instance.configuration = CConfiguration.getInstance();
             instance.generators = new List<>(
                 CMemoryGenerator.getInstance(),
                 CPointerGenerator.getInstance(),
@@ -48,11 +48,11 @@ public @Service class CLibraryCodeGenerator {
         return instance;
     }
 
-    private CLibraryConfiguration configuration;
+    private CConfiguration configuration;
     private List<CGenerator> generators;
     private MakefileGenerator makefileGenerator;
 
-    private CLibraryCodeGenerator() {
+    private CLibraryFileGenerator() {
     }
 
     public @Mandatory List<File> generateFiles() {

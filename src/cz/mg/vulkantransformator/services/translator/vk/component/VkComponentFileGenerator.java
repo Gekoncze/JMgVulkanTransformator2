@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.vk;
+package cz.mg.vulkantransformator.services.translator.vk.component;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
@@ -8,10 +8,10 @@ import cz.mg.collections.map.Map;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
+import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.MakefileGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.code.*;
 
 import java.nio.file.Path;
 
@@ -19,12 +19,12 @@ import static cz.mg.vulkantransformator.services.Configuration.JAVA_DIRECTORY;
 import static cz.mg.vulkantransformator.services.Configuration.JAVA_DIRECTORY_MD;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
-public @Service class VkLibraryCodeGenerator {
-    private static @Optional VkLibraryCodeGenerator instance;
+public @Service class VkComponentFileGenerator {
+    private static @Optional VkComponentFileGenerator instance;
 
-    public static @Mandatory VkLibraryCodeGenerator getInstance() {
+    public static @Mandatory VkComponentFileGenerator getInstance() {
         if (instance == null) {
-            instance = new VkLibraryCodeGenerator();
+            instance = new VkComponentFileGenerator();
             instance.translators = new List<>(
                 VkStructureTranslator.getInstance(),
                 VkUnionTranslator.getInstance(),
@@ -35,8 +35,8 @@ public @Service class VkLibraryCodeGenerator {
             );
             instance.constantTranslator = VkConstantsTranslator.getInstance();
             instance.functionsTranslator = VkFunctionsTranslator.getInstance();
-            instance.libraryGenerator = VkLibraryGenerator.getInstance();
             instance.makefileGenerator = MakefileGenerator.getInstance();
+            instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
@@ -44,10 +44,10 @@ public @Service class VkLibraryCodeGenerator {
     private List<VkTranslator> translators;
     private VkConstantsTranslator constantTranslator;
     private VkFunctionsTranslator functionsTranslator;
-    private VkLibraryGenerator libraryGenerator;
     private MakefileGenerator makefileGenerator;
+    private CodeGenerator codeGenerator;
 
-    private VkLibraryCodeGenerator() {
+    private VkComponentFileGenerator() {
     }
 
     public @Mandatory List<File> generateFiles(
@@ -112,8 +112,8 @@ public @Service class VkLibraryCodeGenerator {
 
         files.addLast(
             new File(
-                Path.of(configuration.getDirectory(), libraryGenerator.getName(configuration) + ".java"),
-                libraryGenerator.generateJava(configuration)
+                Path.of(configuration.getDirectory(), getLibraryName(configuration) + ".java"),
+                codeGenerator.generateJavaLibraryClass(configuration, getLibraryName(configuration))
             )
         );
 
@@ -130,5 +130,9 @@ public @Service class VkLibraryCodeGenerator {
         );
 
         return files;
+    }
+
+    public @Mandatory String getLibraryName(@Mandatory LibraryConfiguration configuration) {
+        return "Vk" + configuration.getSubModulePrefix() + "Library";
     }
 }

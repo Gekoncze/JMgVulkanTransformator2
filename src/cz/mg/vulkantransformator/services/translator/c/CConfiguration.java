@@ -7,12 +7,12 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.TypenameMap;
 
-public @Utility class CLibraryConfiguration implements LibraryConfiguration {
-    private static @Optional CLibraryConfiguration instance;
+public @Utility class CConfiguration implements LibraryConfiguration {
+    private static @Optional CConfiguration instance;
 
-    public static @Mandatory CLibraryConfiguration getInstance() {
+    public static @Mandatory CConfiguration getInstance() {
         if (instance == null) {
-            instance = new CLibraryConfiguration();
+            instance = new CConfiguration();
             instance.cTypenameMap = CTypenameMap.getInstance();
         }
         return instance;
@@ -20,7 +20,7 @@ public @Utility class CLibraryConfiguration implements LibraryConfiguration {
 
     private CTypenameMap cTypenameMap;
 
-    private CLibraryConfiguration() {
+    private CConfiguration() {
     }
 
     @Override
@@ -36,11 +36,6 @@ public @Utility class CLibraryConfiguration implements LibraryConfiguration {
     @Override
     public @Mandatory String getJavaPackage() {
         return "cz.mg.c";
-    }
-
-    @Override
-    public @Mandatory String getSubModulePrefix() {
-        return "";
     }
 
     @Override

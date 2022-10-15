@@ -6,7 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.c.CLibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.c.CConfiguration;
 
 public @Service class CPointerGenerator implements CGenerator {
     private static @Optional CPointerGenerator instance;
@@ -15,14 +15,14 @@ public @Service class CPointerGenerator implements CGenerator {
         if (instance == null) {
             instance = new CPointerGenerator();
             instance.factoryGenerator = CFactoryGenerator.getInstance();
-            instance.configuration = CLibraryConfiguration.getInstance();
+            instance.configuration = CConfiguration.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
     private CFactoryGenerator factoryGenerator;
-    private CLibraryConfiguration configuration;
+    private CConfiguration configuration;
     private CodeGenerator codeGenerator;
 
     private CPointerGenerator() {

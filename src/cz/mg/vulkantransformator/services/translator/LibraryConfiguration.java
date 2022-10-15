@@ -8,7 +8,14 @@ public @Utility interface LibraryConfiguration {
     @Mandatory String getName();
     @Mandatory String getLibraryName();
     @Mandatory String getJavaPackage();
-    @Mandatory String getSubModulePrefix();
+
+    default @Mandatory String getSubModulePrefix() {
+        return "";
+    }
+
+    default @Mandatory String getSourceFileName() {
+        throw new UnsupportedOperationException();
+    }
 
     default @Mandatory String getDirectory() {
         return getJavaPackage().replace(".", "/");

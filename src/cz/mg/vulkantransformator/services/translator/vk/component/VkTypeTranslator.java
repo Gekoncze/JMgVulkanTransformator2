@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.vk.code;
+package cz.mg.vulkantransformator.services.translator.vk.component;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
@@ -9,9 +9,9 @@ import cz.mg.vulkantransformator.entities.vulkan.VkType;
 import cz.mg.vulkantransformator.services.translator.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.ObjectCodeGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.code.types.VkBool32TypeTranslator;
-import cz.mg.vulkantransformator.services.translator.vk.code.types.VkDeviceSizeTypeTranslator;
-import cz.mg.vulkantransformator.services.translator.vk.code.types.VkSpecialTypeTranslator;
+import cz.mg.vulkantransformator.services.translator.vk.component.types.VkBool32TypeTranslator;
+import cz.mg.vulkantransformator.services.translator.vk.component.types.VkDeviceSizeTypeTranslator;
+import cz.mg.vulkantransformator.services.translator.vk.component.types.VkSpecialTypeTranslator;
 
 public @Service class VkTypeTranslator implements VkTranslator<VkType> {
     private static @Optional VkTypeTranslator instance;

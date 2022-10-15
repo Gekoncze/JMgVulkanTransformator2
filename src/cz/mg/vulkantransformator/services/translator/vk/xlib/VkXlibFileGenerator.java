@@ -7,30 +7,37 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.EmptyObjectFileGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.VkLibraryCodeGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.component.VkComponentFileGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.VkFileGenerator;
 
-public @Service class VkXlibFileGenerator {
+public @Service class VkXlibFileGenerator implements VkFileGenerator {
     private static @Optional VkXlibFileGenerator instance;
 
     public static @Mandatory VkXlibFileGenerator getInstance() {
         if (instance == null) {
             instance = new VkXlibFileGenerator();
             instance.configuration = VkXlibConfiguration.getInstance();
-            instance.vkLibraryCodeGenerator = VkLibraryCodeGenerator.getInstance();
+            instance.vkComponentFileGenerator = VkComponentFileGenerator.getInstance();
             instance.emptyObjectFileGenerator = EmptyObjectFileGenerator.getInstance();
         }
         return instance;
     }
 
     private VkXlibConfiguration configuration;
-    private VkLibraryCodeGenerator vkLibraryCodeGenerator;
+    private VkComponentFileGenerator vkComponentFileGenerator;
     private EmptyObjectFileGenerator emptyObjectFileGenerator;
 
     private VkXlibFileGenerator() {
     }
 
+    @Override
+    public @Mandatory String getSourceFileName() {
+        return configuration.getSourceFileName();
+    }
+
+    @Override
     public @Mandatory List<File> generateFiles(@Mandatory VkRoot root) {
-        List<File> files = vkLibraryCodeGenerator.generateFiles(root, configuration);
+        List<File> files = vkComponentFileGenerator.generateFiles(root, configuration);
         files.addCollectionLast(emptyObjectFileGenerator.generateFiles("Display", "Display", configuration));
         files.addCollectionLast(emptyObjectFileGenerator.generateFiles("Window", "Window", configuration));
         files.addCollectionLast(emptyObjectFileGenerator.generateFiles("VisualID", "VisualID", configuration));
