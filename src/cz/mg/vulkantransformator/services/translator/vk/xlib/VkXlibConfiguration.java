@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.vk;
+package cz.mg.vulkantransformator.services.translator.vk.xlib;
 
 import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;
@@ -7,13 +7,14 @@ import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.TypenameMap;
 import cz.mg.vulkantransformator.services.translator.c.CTypenameMap;
+import cz.mg.vulkantransformator.services.translator.vk.VkTypenameMap;
 
-public @Utility class XlibLibraryConfiguration implements LibraryConfiguration {
-    private static @Optional XlibLibraryConfiguration instance;
+public @Utility class VkXlibConfiguration implements LibraryConfiguration {
+    private static @Optional VkXlibConfiguration instance;
 
-    public static @Mandatory XlibLibraryConfiguration getInstance() {
+    public static @Mandatory VkXlibConfiguration getInstance() {
         if (instance == null) {
-            instance = new XlibLibraryConfiguration();
+            instance = new VkXlibConfiguration();
             instance.cTypenameMap = CTypenameMap.getInstance();
             instance.vkTypenameMap = VkTypenameMap.getInstance();
         }
@@ -23,7 +24,7 @@ public @Utility class XlibLibraryConfiguration implements LibraryConfiguration {
     private CTypenameMap cTypenameMap;
     private VkTypenameMap vkTypenameMap;
 
-    private XlibLibraryConfiguration() {
+    private VkXlibConfiguration() {
     }
 
     @Override
@@ -58,6 +59,7 @@ public @Utility class XlibLibraryConfiguration implements LibraryConfiguration {
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
             "#include <vulkan/vulkan.h>",
+            "#include <X11/Xlib.h>",
             "#include \"../../c/CMemory.h\""
         );
     }

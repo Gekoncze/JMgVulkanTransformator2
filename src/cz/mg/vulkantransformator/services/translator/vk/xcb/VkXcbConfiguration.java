@@ -61,6 +61,7 @@ public @Utility class VkXcbConfiguration implements LibraryConfiguration {
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
             "#include <vulkan/vulkan.h>",
+            "#include <xcb/xcb.h>",
             "#include \"../../c/CMemory.h\""
         );
     }
