@@ -1,3 +1,0 @@
-add support for platform specific code
-    add jni bridge + add platform library support code
-        windows
