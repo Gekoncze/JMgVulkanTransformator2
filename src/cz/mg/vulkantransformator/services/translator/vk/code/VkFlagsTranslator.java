@@ -10,6 +10,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkFlags;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.ObjectCodeGenerator;
 
 public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
     private static @Optional VkFlagsTranslator instance;
@@ -17,13 +18,13 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
     public static @Mandatory VkFlagsTranslator getInstance() {
         if (instance == null) {
             instance = new VkFlagsTranslator();
-            instance.componentTranslator = VkComponentTranslator.getInstance();
+            instance.objectCodeGenerator = ObjectCodeGenerator.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkComponentTranslator componentTranslator;
+    private ObjectCodeGenerator objectCodeGenerator;
     private CodeGenerator codeGenerator;
 
     private VkFlagsTranslator() {
@@ -43,7 +44,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaHeader(flags, configuration)
+            objectCodeGenerator.getCommonJavaHeader(flags.getName(), configuration)
         );
 
         lines.addCollectionLast(new List<>(
@@ -92,7 +93,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         codeGenerator.removeLastEmptyLine(lines);
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaFooter(flags)
+            objectCodeGenerator.getCommonJavaFooter()
         );
 
         return lines;
@@ -107,7 +108,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeHeader(flags, configuration)
+            objectCodeGenerator.getCommonNativeHeader(flags.getName(), configuration)
         );
 
         String name = flags.getName();
@@ -232,7 +233,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         }
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeFooter(flags)
+            objectCodeGenerator.getCommonNativeFooter()
         );
 
         return lines;

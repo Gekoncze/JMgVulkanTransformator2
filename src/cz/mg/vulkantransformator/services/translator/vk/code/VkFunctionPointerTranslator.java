@@ -9,6 +9,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkFunctionPointer;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.ObjectCodeGenerator;
 
 public @Service class VkFunctionPointerTranslator implements VkTranslator<VkFunctionPointer> {
     private static @Optional VkFunctionPointerTranslator instance;
@@ -16,13 +17,13 @@ public @Service class VkFunctionPointerTranslator implements VkTranslator<VkFunc
     public static @Mandatory VkFunctionPointerTranslator getInstance() {
         if (instance == null) {
             instance = new VkFunctionPointerTranslator();
-            instance.componentTranslator = VkComponentTranslator.getInstance();
+            instance.objectCodeGenerator = ObjectCodeGenerator.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkComponentTranslator componentTranslator;
+    private ObjectCodeGenerator objectCodeGenerator;
     private CodeGenerator codeGenerator;
 
     private VkFunctionPointerTranslator() {
@@ -42,13 +43,13 @@ public @Service class VkFunctionPointerTranslator implements VkTranslator<VkFunc
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaHeader(pointer, configuration)
+            objectCodeGenerator.getCommonJavaHeader(pointer.getName(), configuration)
         );
 
         codeGenerator.removeLastEmptyLine(lines);
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaFooter(pointer)
+            objectCodeGenerator.getCommonJavaFooter()
         );
 
         return lines;
@@ -63,11 +64,11 @@ public @Service class VkFunctionPointerTranslator implements VkTranslator<VkFunc
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeHeader(pointer, configuration)
+            objectCodeGenerator.getCommonNativeHeader(pointer.getName(), configuration)
         );
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeFooter(pointer)
+            objectCodeGenerator.getCommonNativeFooter()
         );
 
         return lines;

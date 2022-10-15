@@ -10,6 +10,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.ObjectCodeGenerator;
 
 public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
     private static @Optional VkUnionTranslator instance;
@@ -17,15 +18,15 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
     public static @Mandatory VkUnionTranslator getInstance() {
         if (instance == null) {
             instance = new VkUnionTranslator();
-            instance.componentTranslator = VkComponentTranslator.getInstance();
             instance.fieldTranslator = VkFieldTranslator.getInstance();
+            instance.objectCodeGenerator = ObjectCodeGenerator.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private VkComponentTranslator componentTranslator;
     private VkFieldTranslator fieldTranslator;
+    private ObjectCodeGenerator objectCodeGenerator;
     private CodeGenerator codeGenerator;
 
     private VkUnionTranslator() {
@@ -45,7 +46,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaHeader(union, configuration)
+            objectCodeGenerator.getCommonJavaHeader(union.getName(), configuration)
         );
 
         for (VkVariable field : union.getFields()) {
@@ -57,7 +58,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
         codeGenerator.removeLastEmptyLine(lines);
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaFooter(union)
+            objectCodeGenerator.getCommonJavaFooter()
         );
 
         return lines;
@@ -72,7 +73,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeHeader(union, configuration)
+            objectCodeGenerator.getCommonNativeHeader(union.getName(), configuration)
         );
 
         for (VkVariable field : union.getFields()) {
@@ -82,7 +83,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
         }
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeFooter(union)
+            objectCodeGenerator.getCommonNativeFooter()
         );
 
         return lines;

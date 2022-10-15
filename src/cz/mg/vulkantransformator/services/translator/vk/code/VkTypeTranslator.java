@@ -8,6 +8,7 @@ import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkType;
 import cz.mg.vulkantransformator.services.translator.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.ObjectCodeGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.code.types.VkBool32TypeTranslator;
 import cz.mg.vulkantransformator.services.translator.vk.code.types.VkDeviceSizeTypeTranslator;
 import cz.mg.vulkantransformator.services.translator.vk.code.types.VkSpecialTypeTranslator;
@@ -18,7 +19,7 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
     public static @Mandatory VkTypeTranslator getInstance() {
         if (instance == null) {
             instance = new VkTypeTranslator();
-            instance.componentTranslator = VkComponentTranslator.getInstance();
+            instance.objectCodeGenerator = ObjectCodeGenerator.getInstance();
             instance.specialTypeTranslators = new List<>(
                 VkBool32TypeTranslator.getInstance(),
                 VkDeviceSizeTypeTranslator.getInstance()
@@ -27,7 +28,7 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
         return instance;
     }
 
-    private VkComponentTranslator componentTranslator;
+    private ObjectCodeGenerator objectCodeGenerator;
     private List<VkSpecialTypeTranslator> specialTypeTranslators;
 
     private VkTypeTranslator() {
@@ -47,7 +48,7 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaHeader(type, configuration)
+            objectCodeGenerator.getCommonJavaHeader(type.getName(), configuration)
         );
 
         for (VkSpecialTypeTranslator specialTypeTranslator : specialTypeTranslators) {
@@ -59,7 +60,7 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
         }
 
         lines.addCollectionLast(
-            componentTranslator.getCommonJavaFooter(type)
+            objectCodeGenerator.getCommonJavaFooter()
         );
 
         return lines;
@@ -74,7 +75,7 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeHeader(type, configuration)
+            objectCodeGenerator.getCommonNativeHeader(type.getName(), configuration)
         );
 
         for (VkSpecialTypeTranslator specialTypeTranslator : specialTypeTranslators) {
@@ -86,7 +87,7 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
         }
 
         lines.addCollectionLast(
-            componentTranslator.getCommonNativeFooter(type)
+            objectCodeGenerator.getCommonNativeFooter()
         );
 
         return lines;

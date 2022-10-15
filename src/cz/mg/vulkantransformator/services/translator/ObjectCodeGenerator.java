@@ -1,20 +1,17 @@
-package cz.mg.vulkantransformator.services.translator.vk.code;
+package cz.mg.vulkantransformator.services.translator;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.translator.JniFunction;
-import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
-import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
-public @Service class VkComponentTranslator {
-    private static @Optional VkComponentTranslator instance;
+public @Service class ObjectCodeGenerator {
+    private static @Optional ObjectCodeGenerator instance;
 
-    public static @Mandatory VkComponentTranslator getInstance() {
+    public static @Mandatory ObjectCodeGenerator getInstance() {
         if (instance == null) {
-            instance = new VkComponentTranslator();
+            instance = new ObjectCodeGenerator();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
@@ -22,27 +19,27 @@ public @Service class VkComponentTranslator {
 
     private CodeGenerator codeGenerator;
 
-    private VkComponentTranslator() {
+    private ObjectCodeGenerator() {
     }
 
     public @Mandatory List<String> getCommonJavaHeader(
-        @Mandatory VkComponent component,
+        @Mandatory String name,
         @Mandatory LibraryConfiguration configuration
     ) {
         List<String> lines = codeGenerator.generateJavaHeader(configuration);
 
         lines.addCollectionLast(
             new List<>(
-                "public class " + component.getName() + " extends CObject {",
+                "public class " + name + " extends CObject {",
                 "    public static final long SIZE = _size();",
                 "",
-                "    public " + component.getName() + "(long address) {",
+                "    public " + name + "(long address) {",
                 "        super(address);",
                 "    }",
                 "",
                 "    private static native long _size();",
                 "",
-                "    public void set(" + component.getName() + " object) {",
+                "    public void set(" + name + " object) {",
                 "        _set(object.address, address);",
                 "    }",
                 "",
@@ -54,29 +51,29 @@ public @Service class VkComponentTranslator {
         return lines;
     }
 
-    public @Mandatory List<String> getCommonJavaFooter(@Mandatory VkComponent component) {
+    public @Mandatory List<String> getCommonJavaFooter() {
         return new List<>("}");
     }
 
     public @Mandatory List<String> getCommonNativeHeader(
-        @Mandatory VkComponent component,
+        @Mandatory String name,
         @Mandatory LibraryConfiguration configuration
     ) {
         List<String> lines = codeGenerator.generateNativeHeader(configuration);
 
         JniFunction sizeFunction = new JniFunction();
         sizeFunction.setOutput("jlong");
-        sizeFunction.setClassName(component.getName());
+        sizeFunction.setClassName(name);
         sizeFunction.setName("_size");
         sizeFunction.setLines(
             new List<>(
-                "return sizeof(" + component.getName() + ");"
+                "return sizeof(" + name + ");"
             )
         );
 
         JniFunction setFunction = new JniFunction();
         setFunction.setOutput("void");
-        setFunction.setClassName(component.getName());
+        setFunction.setClassName(name);
         setFunction.setName("_set");
         setFunction.setInput(
             new List<>(
@@ -86,7 +83,7 @@ public @Service class VkComponentTranslator {
         );
         setFunction.setLines(
             new List<>(
-                "memcpy(l2a(destination), l2a(source), sizeof(" + component.getName() + "));"
+                "memcpy(l2a(destination), l2a(source), sizeof(" + name + "));"
             )
         );
 
@@ -98,7 +95,7 @@ public @Service class VkComponentTranslator {
         return lines;
     }
 
-    public @Mandatory List<String> getCommonNativeFooter(@Mandatory VkComponent component) {
+    public @Mandatory List<String> getCommonNativeFooter() {
         return new List<>();
     }
 }
