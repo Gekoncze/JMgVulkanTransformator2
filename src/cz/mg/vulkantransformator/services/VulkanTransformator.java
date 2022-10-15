@@ -11,6 +11,7 @@ import cz.mg.vulkantransformator.services.filesystem.FileWriterService;
 import cz.mg.vulkantransformator.services.parser.VulkanParser;
 import cz.mg.vulkantransformator.services.translator.c.CLibraryCodeGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.*;
+import cz.mg.vulkantransformator.services.translator.vk.android.VkAndroidLibraryCodeGenerator;
 
 import java.nio.file.Path;
 
@@ -31,7 +32,7 @@ public @Service class VulkanTransformator {
             instance.xlibLibraryConfiguration = XlibLibraryConfiguration.getInstance();
             instance.xcbLibraryConfiguration = XcbLibraryConfiguration.getInstance();
             instance.waylandLibraryConfiguration = WaylandLibraryConfiguration.getInstance();
-            instance.androidLibraryConfiguration = AndroidLibraryConfiguration.getInstance();
+            instance.vkAndroidLibraryCodeGenerator = VkAndroidLibraryCodeGenerator.getInstance();
         }
         return instance;
     }
@@ -45,7 +46,7 @@ public @Service class VulkanTransformator {
     private XlibLibraryConfiguration xlibLibraryConfiguration;
     private XcbLibraryConfiguration xcbLibraryConfiguration;
     private WaylandLibraryConfiguration waylandLibraryConfiguration;
-    private AndroidLibraryConfiguration androidLibraryConfiguration;
+    private VkAndroidLibraryCodeGenerator vkAndroidLibraryCodeGenerator;
 
     private VulkanTransformator() {
     }
@@ -99,7 +100,7 @@ public @Service class VulkanTransformator {
     private void generateVulkanAndroidBridge(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
         File file = read(inputDirectory, VULKAN_ANDROID_FILE_NAME);
         VkRoot root = vulkanParser.parse(VULKAN_VERSION, file);
-        List<File> files = vkLibraryCodeGenerator.generateFiles(root, androidLibraryConfiguration);
+        List<File> files = vkAndroidLibraryCodeGenerator.generateFiles(root);
         write(outputDirectory, files);
     }
 

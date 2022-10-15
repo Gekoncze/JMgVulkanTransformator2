@@ -1,6 +1,6 @@
 add support for platform specific code
     add platform library support code
-        x11, xcb, wayland, android
+        x11, xcb, wayland
 
     add jni bridge + add platform library support code
         windows, macos, ios

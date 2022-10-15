@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.translator.vk;
+package cz.mg.vulkantransformator.services.translator.vk.android;
 
 import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;
@@ -6,17 +6,17 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
-public @Utility class AndroidLibraryConfiguration implements LibraryConfiguration {
-    private static @Optional AndroidLibraryConfiguration instance;
+public @Utility class VkAndroidLibraryConfiguration implements LibraryConfiguration {
+    private static @Optional VkAndroidLibraryConfiguration instance;
 
-    public static @Mandatory AndroidLibraryConfiguration getInstance() {
+    public static @Mandatory VkAndroidLibraryConfiguration getInstance() {
         if (instance == null) {
-            instance = new AndroidLibraryConfiguration();
+            instance = new VkAndroidLibraryConfiguration();
         }
         return instance;
     }
 
-    private AndroidLibraryConfiguration() {
+    private VkAndroidLibraryConfiguration() {
     }
 
     @Override
@@ -51,6 +51,8 @@ public @Utility class AndroidLibraryConfiguration implements LibraryConfiguratio
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
             "#include <vulkan/vulkan.h>",
+            "#include <native_window.h>",
+            "#include <hardware_buffer_jni.h>",
             "#include \"../../c/CMemory.h\""
         );
     }
