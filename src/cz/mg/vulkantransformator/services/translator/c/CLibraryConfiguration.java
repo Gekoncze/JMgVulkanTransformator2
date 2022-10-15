@@ -35,6 +35,11 @@ public @Utility class CLibraryConfiguration implements LibraryConfiguration {
     }
 
     @Override
+    public @Mandatory String getSubModulePrefix() {
+        return "";
+    }
+
+    @Override
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
             "#include \"CMemory.h\"",

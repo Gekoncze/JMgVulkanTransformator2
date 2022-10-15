@@ -12,12 +12,12 @@ import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 
-public @Service class VkConstantTranslator {
-    private static @Optional VkConstantTranslator instance;
+public @Service class VkConstantsTranslator {
+    private static @Optional VkConstantsTranslator instance;
 
-    public static @Mandatory VkConstantTranslator getInstance() {
+    public static @Mandatory VkConstantsTranslator getInstance() {
         if (instance == null) {
-            instance = new VkConstantTranslator();
+            instance = new VkConstantsTranslator();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
@@ -25,11 +25,11 @@ public @Service class VkConstantTranslator {
 
     private CodeGenerator codeGenerator;
 
-    private VkConstantTranslator() {
+    private VkConstantsTranslator() {
     }
 
-    public String getName() {
-        return "VkConstant";
+    public String getName(@Mandatory LibraryConfiguration configuration) {
+        return "Vk" + configuration.getSubModulePrefix() + "Constants";
     }
 
     public @Mandatory List<String> translateJava(
@@ -41,8 +41,8 @@ public @Service class VkConstantTranslator {
 
         lines.addCollectionLast(
             new List<>(
-                "public class " + getName() + " extends CObject {",
-                "    private " + getName() + "(long address) {",
+                "public class " + getName(configuration) + " extends CObject {",
+                "    private " + getName(configuration) + "(long address) {",
                 "        super(address);",
                 "    }",
                 ""
@@ -100,7 +100,7 @@ public @Service class VkConstantTranslator {
             if (component instanceof VkConstant) {
                 VkConstant constant = (VkConstant) component;
                 if (isString(constant)) {
-                    lines.addLast(generateNativeVariable(constant));
+                    lines.addLast(generateNativeVariable(constant, configuration));
                     lines.addLast("");
                     lines.addCollectionLast(generateNativeFunction(constant, configuration));
                     lines.addLast("");
@@ -111,7 +111,10 @@ public @Service class VkConstantTranslator {
         return lines;
     }
 
-    private @Mandatory String generateNativeVariable(@Mandatory VkConstant constant) {
+    private @Mandatory String generateNativeVariable(
+        @Mandatory VkConstant constant,
+        @Mandatory LibraryConfiguration configuration
+    ) {
         return "const char* _" + constant.getName() + " = " + constant.getName() + ";";
     }
 
@@ -119,13 +122,16 @@ public @Service class VkConstantTranslator {
         @Mandatory VkConstant constant,
         @Mandatory LibraryConfiguration configuration
     ) {
-        return codeGenerator.generateJniFunction(configuration, constantToFunction(constant));
+        return codeGenerator.generateJniFunction(configuration, constantToFunction(constant, configuration));
     }
 
-    private @Mandatory JniFunction constantToFunction(@Mandatory VkConstant constant) {
+    private @Mandatory JniFunction constantToFunction(
+        @Mandatory VkConstant constant,
+        @Mandatory LibraryConfiguration configuration
+    ) {
         JniFunction function = new JniFunction();
         function.setOutput("jlong");
-        function.setClassName(getName());
+        function.setClassName(getName(configuration));
         function.setName("get_" + constant.getName());
         function.setLines(
             new List<>(

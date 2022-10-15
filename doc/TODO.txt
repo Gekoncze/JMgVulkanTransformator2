@@ -1,6 +1,4 @@
 add support for platform specific code
-    decide if interface, constant and library classes should have platform specific prefix
-
     add platform library support code
         x11, xcb, wayland, android
 

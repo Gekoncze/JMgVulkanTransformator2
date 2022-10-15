@@ -35,6 +35,11 @@ public @Utility class AndroidLibraryConfiguration implements LibraryConfiguratio
     }
 
     @Override
+    public @Mandatory String getSubModulePrefix() {
+        return "Android";
+    }
+
+    @Override
     public @Mandatory List<String> getJavaDependencies() {
         return new List<>(
             "import cz.mg.c.*;",

@@ -102,7 +102,7 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
 
         JniFunction jniFunction = new JniFunction();
         jniFunction.setOutput("void");
-        jniFunction.setClassName(functionsTranslator.getName());
+        jniFunction.setClassName(functionsTranslator.getName(configuration));
         jniFunction.setName(function.getName());
         jniFunction.setInput(parameters);
 

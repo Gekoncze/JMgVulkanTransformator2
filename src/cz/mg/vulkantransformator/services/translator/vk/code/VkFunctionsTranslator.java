@@ -29,8 +29,8 @@ public @Service class VkFunctionsTranslator {
     private VkFunctionsTranslator() {
     }
 
-    public @Mandatory String getName() {
-        return "VkInterface";
+    public @Mandatory String getName(@Mandatory LibraryConfiguration configuration) {
+        return "Vk" + configuration.getSubModulePrefix() + "Interface";
     }
 
     public @Mandatory List<String> translateJava(
@@ -40,8 +40,8 @@ public @Service class VkFunctionsTranslator {
     ) {
         List<String> lines = codeGenerator.generateJavaHeader(configuration);
 
-        lines.addLast("public class " + getName() + " {");
-        lines.addLast("    public " + getName() + "() {");
+        lines.addLast("public class " + getName(configuration) + " {");
+        lines.addLast("    public " + getName(configuration) + "() {");
         lines.addLast("    }");
         lines.addLast("");
 

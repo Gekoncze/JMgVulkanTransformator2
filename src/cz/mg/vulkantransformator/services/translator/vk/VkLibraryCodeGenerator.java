@@ -33,7 +33,7 @@ public @Service class VkLibraryCodeGenerator {
                 VkFlagsTranslator.getInstance(),
                 VkFunctionPointerTranslator.getInstance()
             );
-            instance.constantTranslator = VkConstantTranslator.getInstance();
+            instance.constantTranslator = VkConstantsTranslator.getInstance();
             instance.functionsTranslator = VkFunctionsTranslator.getInstance();
             instance.libraryGenerator = VkLibraryGenerator.getInstance();
             instance.makefileGenerator = MakefileGenerator.getInstance();
@@ -42,7 +42,7 @@ public @Service class VkLibraryCodeGenerator {
     }
 
     private List<VkTranslator> translators;
-    private VkConstantTranslator constantTranslator;
+    private VkConstantsTranslator constantTranslator;
     private VkFunctionsTranslator functionsTranslator;
     private VkLibraryGenerator libraryGenerator;
     private MakefileGenerator makefileGenerator;
@@ -84,35 +84,35 @@ public @Service class VkLibraryCodeGenerator {
 
         files.addLast(
             new File(
-                Path.of(configuration.getDirectory(), constantTranslator.getName() + ".java"),
+                Path.of(configuration.getDirectory(), constantTranslator.getName(configuration) + ".java"),
                 constantTranslator.translateJava(index, root, configuration)
             )
         );
 
         files.addLast(
             new File(
-                Path.of(configuration.getDirectory(), constantTranslator.getName() + ".c"),
+                Path.of(configuration.getDirectory(), constantTranslator.getName(configuration) + ".c"),
                 constantTranslator.translateNative(index, root, configuration)
             )
         );
 
         files.addLast(
             new File(
-                Path.of(configuration.getDirectory(), functionsTranslator.getName() + ".java"),
+                Path.of(configuration.getDirectory(), functionsTranslator.getName(configuration) + ".java"),
                 functionsTranslator.translateJava(index, root, configuration)
             )
         );
 
         files.addLast(
             new File(
-                Path.of(configuration.getDirectory(), functionsTranslator.getName() + ".c"),
+                Path.of(configuration.getDirectory(), functionsTranslator.getName(configuration) + ".c"),
                 functionsTranslator.translateNative(index, root, configuration)
             )
         );
 
         files.addLast(
             new File(
-                Path.of(configuration.getDirectory(), libraryGenerator.getName() + ".java"),
+                Path.of(configuration.getDirectory(), libraryGenerator.getName(configuration) + ".java"),
                 libraryGenerator.generateJava(configuration)
             )
         );

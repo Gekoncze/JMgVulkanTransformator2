@@ -35,6 +35,11 @@ public @Utility class WaylandLibraryConfiguration implements LibraryConfiguratio
     }
 
     @Override
+    public @Mandatory String getSubModulePrefix() {
+        return "Wayland";
+    }
+
+    @Override
     public @Mandatory List<String> getJavaDependencies() {
         return new List<>(
             "import cz.mg.c.*;",

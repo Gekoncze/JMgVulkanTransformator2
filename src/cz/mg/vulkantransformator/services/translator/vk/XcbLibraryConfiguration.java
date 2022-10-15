@@ -35,6 +35,11 @@ public @Utility class XcbLibraryConfiguration implements LibraryConfiguration {
     }
 
     @Override
+    public @Mandatory String getSubModulePrefix() {
+        return "Xcb";
+    }
+
+    @Override
     public @Mandatory List<String> getJavaDependencies() {
         return new List<>(
             "import cz.mg.c.*;",

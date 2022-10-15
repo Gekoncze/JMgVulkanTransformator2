@@ -35,6 +35,11 @@ public @Utility class VkLibraryConfiguration implements LibraryConfiguration {
     }
 
     @Override
+    public @Mandatory String getSubModulePrefix() {
+        return "";
+    }
+
+    @Override
     public @Mandatory List<String> getJavaDependencies() {
         return new List<>(
             "import cz.mg.c.*;"

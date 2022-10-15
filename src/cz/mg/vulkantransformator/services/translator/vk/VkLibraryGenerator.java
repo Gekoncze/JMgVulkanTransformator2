@@ -22,11 +22,11 @@ public class VkLibraryGenerator {
     private VkLibraryGenerator() {
     }
 
-    public @Mandatory String getName() {
-        return "VkLibrary";
+    public @Mandatory String getName(@Mandatory LibraryConfiguration configuration) {
+        return "Vk" + configuration.getSubModulePrefix() + "Library";
     }
 
     public @Mandatory List<String> generateJava(@Mandatory LibraryConfiguration configuration) {
-        return codeGenerator.generateJavaLibraryClass(configuration, getName());
+        return codeGenerator.generateJavaLibraryClass(configuration, getName(configuration));
     }
 }
