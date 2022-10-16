@@ -1,0 +1,6 @@
+fix "symbol lookup error: libjmgvulkan.so: undefined symbol: a2l"
+    possibly missing link flag in makefile
+
+check if function calls in VkInterface can be simplified somehow
+    maybe only one parameter should be passes
+        which would contain all the required parameters
