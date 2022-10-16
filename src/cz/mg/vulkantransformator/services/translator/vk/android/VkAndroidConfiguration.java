@@ -63,6 +63,7 @@ public @Utility class VkAndroidConfiguration implements LibraryConfiguration {
     @Override
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
+            "#define VK_USE_PLATFORM_ANDROID_KHR",
             "#include <vulkan/vulkan.h>",
             "#include <native_window.h>",
             "#include <hardware_buffer_jni.h>",

@@ -63,6 +63,7 @@ public @Utility class VkWindowsConfiguration implements LibraryConfiguration {
     @Override
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
+            "VK_USE_PLATFORM_WIN32_KHR",
             "#include <vulkan/vulkan.h>",
             "#include \"../../c/CMemory.h\""
         );

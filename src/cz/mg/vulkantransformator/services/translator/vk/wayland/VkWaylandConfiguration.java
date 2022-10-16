@@ -65,6 +65,7 @@ public @Utility class VkWaylandConfiguration implements LibraryConfiguration {
     @Override
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
+            "#define VK_USE_PLATFORM_WAYLAND_KHR",
             "#include <vulkan/vulkan.h>",
             "#include <wayland-client.h>",
             "#include \"../../c/CMemory.h\""

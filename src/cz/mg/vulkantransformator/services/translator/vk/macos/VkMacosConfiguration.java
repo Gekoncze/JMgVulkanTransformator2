@@ -63,6 +63,7 @@ public @Utility class VkMacosConfiguration implements LibraryConfiguration {
     @Override
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
+            "#define VK_USE_PLATFORM_MACOS_MVK",
             "#include <vulkan/vulkan.h>",
             "#include \"../../c/CMemory.h\""
         );
