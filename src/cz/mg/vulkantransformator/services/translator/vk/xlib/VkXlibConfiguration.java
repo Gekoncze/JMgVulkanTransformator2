@@ -63,6 +63,7 @@ public @Utility class VkXlibConfiguration implements LibraryConfiguration {
     @Override
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
+            "#define VK_USE_PLATFORM_XLIB_KHR",
             "#include <vulkan/vulkan.h>",
             "#include <X11/Xlib.h>",
             "#include \"../../c/CMemory.h\""

@@ -46,9 +46,11 @@ public @Service class MakefileGenerator {
         StringBuilder sources = new StringBuilder();
         for (File file : files) {
             if (file.getPath().toString().endsWith(".c")) {
-                String fileName = file.getPath().getFileName().toString();
-                sources.append(fileName);
-                sources.append(" ");
+                if (!file.getLines().isEmpty()) {
+                    String fileName = file.getPath().getFileName().toString();
+                    sources.append(fileName);
+                    sources.append(" ");
+                }
             }
         }
         return sources.toString();
@@ -59,9 +61,11 @@ public @Service class MakefileGenerator {
         StringBuilder objects = new StringBuilder();
         for (File file : files) {
             if (file.getPath().toString().endsWith(".c")) {
-                String fileName = file.getPath().getFileName().toString().replace(".c", ".o");
-                objects.append(fileName);
-                objects.append(" ");
+                if (!file.getLines().isEmpty()) {
+                    String fileName = file.getPath().getFileName().toString().replace(".c", ".o");
+                    objects.append(fileName);
+                    objects.append(" ");
+                }
             }
         }
         return objects.toString();
