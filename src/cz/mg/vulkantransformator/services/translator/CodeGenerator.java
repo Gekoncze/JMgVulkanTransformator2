@@ -67,7 +67,11 @@ public @Service class CodeGenerator {
         @Mandatory LibraryConfiguration configuration,
         @Mandatory JniFunction function
     ) {
-        return "Java_" + configuration.getJavaPackage().replace(".", "_") + "_" + function.getClassName() + "_" + function.getName();
+        boolean startsWithUnderscore = function.getName().startsWith("_");
+        String folder = configuration.getJavaPackage().replace(".", "_");
+        String clazz = function.getClassName();
+        String name = startsWithUnderscore ? function.getName().replaceFirst("_", "_1") : function.getName();
+        return "Java_" + folder + "_" + clazz + "_" + name;
     }
 
     private @Mandatory String generateJniFunctionParameters(@Mandatory JniFunction function) {
