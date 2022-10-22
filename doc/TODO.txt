@@ -1,3 +1,0 @@
-check if function calls in VkInterface can be simplified somehow
-    maybe only one parameter should be passed
-        which would contain all the required parameters

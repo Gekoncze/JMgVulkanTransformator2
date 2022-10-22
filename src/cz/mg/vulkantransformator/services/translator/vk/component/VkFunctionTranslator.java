@@ -4,6 +4,8 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
+import cz.mg.collections.services.StringJoiner;
+import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
@@ -23,6 +25,7 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
             instance.fieldTranslator = VkFieldTranslator.getInstance();
             instance.objectCodeGenerator = ObjectCodeGenerator.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
+            instance.stringJoiner = StringJoiner.getInstance();
         }
         return instance;
     }
@@ -30,6 +33,7 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     private VkFieldTranslator fieldTranslator;
     private ObjectCodeGenerator objectCodeGenerator;
     private CodeGenerator codeGenerator;
+    private StringJoiner stringJoiner;
 
     private VkFunctionTranslator() {
     }
@@ -111,6 +115,21 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
             )
         );
 
+        JniFunction callFunction = new JniFunction();
+        callFunction.setStatic(true);
+        callFunction.setClassName(getJavaName(function));
+        callFunction.setOutput("void");
+        callFunction.setName("_call");
+        callFunction.setInput(new List<>("jlong address"));
+        callFunction.setLines(
+            new List<>(
+                getJavaName(function) + "* pc = l2a(address);",
+                generateCallPrefix(function) + function.getName() + "(" + generateCallArguments(function) + ");"
+            )
+        );
+
+        lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, callFunction));
+
         for (VkVariable field : function.getInput()) {
             lines.addCollectionLast(
                 fieldTranslator.translateNative(getJavaName(function), field, configuration)
@@ -128,6 +147,22 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
         );
 
         return lines;
+    }
+
+    private @Mandatory String generateCallArguments(@Mandatory VkFunction function) {
+        List<String> arguments = new List<>();
+        for (VkVariable argument : function.getInput()) {
+            arguments.addLast("pc->" + argument.getName());
+        }
+        return stringJoiner.join(arguments, ", ");
+    }
+
+    private @Mandatory String generateCallPrefix(@Mandatory VkFunction function) {
+        if (!isVoid(function.getOutput())) {
+            return "pc->" + OUTPUT_NAME + " = ";
+        } else {
+            return "";
+        }
     }
 
     @Override
