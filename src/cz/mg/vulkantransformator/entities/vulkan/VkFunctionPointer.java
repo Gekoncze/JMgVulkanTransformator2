@@ -1,7 +1,6 @@
 package cz.mg.vulkantransformator.entities.vulkan;
 
 import cz.mg.annotations.classes.Entity;
-import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.annotations.requirement.Required;
 import cz.mg.annotations.storage.Part;
@@ -34,7 +33,7 @@ public @Entity class VkFunctionPointer implements VkComponent {
         this.output = output;
     }
 
-    @Mandatory @Part
+    @Required @Part
     public List<VkVariable> getInput() {
         return input;
     }

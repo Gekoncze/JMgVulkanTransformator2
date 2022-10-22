@@ -30,7 +30,7 @@ public @Service class VkFieldTranslator {
     }
 
     public @Mandatory List<String> translateJava(
-        @Mandatory VkComponent component,
+        @Mandatory String componentName,
         @Mandatory VkVariable field,
         @Mandatory LibraryConfiguration configuration
     ) {
@@ -39,46 +39,45 @@ public @Service class VkFieldTranslator {
         List<String> lines = new List<>();
         lines.addLast("    private static final long " + offsetFieldName + " = " + offsetMethodName + "();");
         lines.addLast("");
-        lines.addCollectionLast(translateJavaGetter(component, field, configuration));
+        lines.addCollectionLast(translateJavaGetter(componentName, field, configuration));
         lines.addLast("");
         lines.addLast("    private static native long " + offsetMethodName + "();");
         return lines;
     }
 
     private @Mandatory List<String> translateJavaGetter(
-        @Mandatory VkComponent component,
+        @Mandatory String componentName,
         @Mandatory VkVariable field,
         @Mandatory LibraryConfiguration configuration
     ) {
         if (field.getArray() > 0 && field.getPointers() > 0) {
             throw new UnsupportedOperationException(
-                "Unsupported pointer and array options for '" + getFullName(component, field) + "': "
+                "Unsupported pointer and array options for '" + getFullName(componentName, field) + "': "
                     + field.getPointers() + ", " + field.getArray() + "."
             );
         }
 
         if (field.getTypename().equals("void") && field.getPointers() < 1) {
             throw new IllegalArgumentException(
-                "Invalid void field for '" + getFullName(component, field) + "'."
+                "Invalid void field for '" + getFullName(componentName, field) + "'."
             );
         }
 
         if (field.getPointers() == 0 && field.getArray() == 0) {
-            return translateJavaGetterValue(component, field, configuration);
+            return translateJavaGetterValue(field, configuration);
         } else if (field.getPointers() > 0) {
-            return translateJavaGetterPointer(component, field, configuration);
+            return translateJavaGetterPointer(componentName, field, configuration);
         } else if (field.getArray() > 0) {
-            return translateJavaGetterArray(component, field, configuration);
+            return translateJavaGetterArray(field, configuration);
         } else {
             throw new UnsupportedOperationException(
-                "Unsupported pointer and array options for '" + getFullName(component, field) + "': "
+                "Unsupported pointer and array options for '" + getFullName(componentName, field) + "': "
                     + field.getPointers() + ", " + field.getArray() + "."
             );
         }
     }
 
     private @Mandatory List<String> translateJavaGetterValue(
-        @Mandatory VkComponent component,
         @Mandatory VkVariable field,
         @Mandatory LibraryConfiguration configuration
     ) {
@@ -93,16 +92,16 @@ public @Service class VkFieldTranslator {
     }
 
     private @Mandatory List<String> translateJavaGetterPointer(
-        @Mandatory VkComponent component,
+        @Mandatory String componentName,
         @Mandatory VkVariable field,
         @Mandatory LibraryConfiguration configuration
     ) {
         if (field.getPointers() == 1) {
-            return translateJavaGetterPointer1D(component, field, configuration);
+            return translateJavaGetterPointer1D(field, configuration);
         } else if (field.getPointers() == 2) {
-            return translateJavaGetterPointer2D(component, field, configuration);
+            return translateJavaGetterPointer2D(field, configuration);
         } else {
-            String target = component.getName() + "." + field.getName();
+            String target = componentName + "." + field.getName();
             throw new UnsupportedOperationException(
                 "Unsupported pointer count for '" + target + "': " + field.getPointers() + "."
             );
@@ -110,7 +109,6 @@ public @Service class VkFieldTranslator {
     }
 
     private @Mandatory List<String> translateJavaGetterPointer1D(
-        @Mandatory VkComponent component,
         @Mandatory VkVariable field,
         @Mandatory LibraryConfiguration configuration
     ) {
@@ -127,7 +125,6 @@ public @Service class VkFieldTranslator {
     }
 
     private @Mandatory List<String> translateJavaGetterPointer2D(
-        @Mandatory VkComponent component,
         @Mandatory VkVariable field,
         @Mandatory LibraryConfiguration configuration
     ) {
@@ -148,7 +145,6 @@ public @Service class VkFieldTranslator {
     }
 
     private @Mandatory List<String> translateJavaGetterArray(
-        @Mandatory VkComponent component,
         @Mandatory VkVariable field,
         @Mandatory LibraryConfiguration configuration
     ) {
@@ -166,17 +162,17 @@ public @Service class VkFieldTranslator {
     }
 
     public @Mandatory List<String> translateNative(
-        @Mandatory VkComponent component,
+        @Mandatory String componentName,
         @Mandatory VkVariable field,
         @Mandatory LibraryConfiguration configuration
     ) {
         JniFunction function = new JniFunction();
         function.setOutput("jlong");
-        function.setClassName(component.getName());
+        function.setClassName(componentName);
         function.setName(getOffsetMethodName(field));
         function.setLines(
             new List<>(
-                component.getName() + " component;",
+                componentName + " component;",
                 "jlong address = a2l(&component);",
                 "jlong fieldAddress = a2l(&(component." + field.getName() + "));",
                 "return fieldAddress - address;"
@@ -189,8 +185,8 @@ public @Service class VkFieldTranslator {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 
-    private @Mandatory String getFullName(@Mandatory VkComponent component, @Mandatory VkVariable field) {
-        return component.getName() + "." + field.getName();
+    private @Mandatory String getFullName(@Mandatory String componentName, @Mandatory VkVariable field) {
+        return componentName + "." + field.getName();
     }
 
     private @Mandatory String getMethodName(@Mandatory VkVariable field) {

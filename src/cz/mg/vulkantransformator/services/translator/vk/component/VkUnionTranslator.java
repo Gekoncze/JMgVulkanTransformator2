@@ -51,7 +51,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
 
         for (VkVariable field : union.getFields()) {
             lines.addCollectionLast(
-                fieldTranslator.translateJava(union, field, configuration)
+                fieldTranslator.translateJava(union.getName(), field, configuration)
             );
         }
 
@@ -78,7 +78,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
 
         for (VkVariable field : union.getFields()) {
             lines.addCollectionLast(
-                fieldTranslator.translateNative(union, field, configuration)
+                fieldTranslator.translateNative(union.getName(), field, configuration)
             );
         }
 

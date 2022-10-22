@@ -4,15 +4,13 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.collections.services.StringJoiner;
-import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
-import cz.mg.vulkantransformator.services.translator.TypenameTranslator;
+import cz.mg.vulkantransformator.services.translator.ObjectCodeGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.Index;
 
 public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     private static @Optional VkFunctionTranslator instance;
@@ -20,17 +18,15 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     public static @Mandatory VkFunctionTranslator getInstance() {
         if (instance == null) {
             instance = new VkFunctionTranslator();
-            instance.typenameTranslator = TypenameTranslator.getInstance();
-            instance.joiner = StringJoiner.getInstance();
-            instance.functionsTranslator = VkFunctionsTranslator.getInstance();
+            instance.fieldTranslator = VkFieldTranslator.getInstance();
+            instance.objectCodeGenerator = ObjectCodeGenerator.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
         }
         return instance;
     }
 
-    private TypenameTranslator typenameTranslator;
-    private StringJoiner joiner;
-    private VkFunctionsTranslator functionsTranslator;
+    private VkFieldTranslator fieldTranslator;
+    private ObjectCodeGenerator objectCodeGenerator;
     private CodeGenerator codeGenerator;
 
     private VkFunctionTranslator() {
@@ -42,6 +38,11 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     }
 
     @Override
+    public @Mandatory String getJavaName(@Mandatory VkFunction function) {
+        return function.getName().replaceFirst("vk", "Vkf");
+    }
+
+    @Override
     public @Mandatory List<String> translateJava(
         @Mandatory Index index,
         @Mandatory VkFunction function,
@@ -49,33 +50,31 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     ) {
         List<String> lines = new List<>();
 
-        List<String> parameterList = new List<>();
-        List<String> argumentList = new List<>();
-        List<String> nativeParameterList = new List<>();
+        lines.addCollectionLast(
+            objectCodeGenerator.getCommonJavaHeader(getJavaName(function), configuration)
+        );
 
-        for (VkVariable parameter : function.getInput()) {
-            parameterList.addLast(getType(parameter, configuration) + " " + parameter.getName());
-            argumentList.addLast(parameter.getName() + ".getAddress()");
-            nativeParameterList.addLast("long " + parameter.getName());
+        for (VkVariable field : function.getInput()) {
+            lines.addCollectionLast(
+                fieldTranslator.translateJava(getJavaName(function), field, configuration)
+            );
         }
 
         if (!isVoid(function.getOutput())) {
-            parameterList.addLast(getType(function.getOutput(), configuration) + " output");
-            argumentList.addLast("output.getAddress()");
-            nativeParameterList.addLast("long output");
+            lines.addCollectionLast(
+                fieldTranslator.translateJava(
+                    getJavaName(function),
+                    convertOutput(function.getOutput()),
+                    configuration
+                )
+            );
         }
 
-        String parameters = joiner.join(parameterList, ", ");
-        String arguments = joiner.join(argumentList, ", ");
-        String nativeParameters = joiner.join(nativeParameterList, ", ");
+        codeGenerator.removeLastEmptyLine(lines);
 
-        lines.addCollectionLast(new List<>(
-            "    public void " + function.getName() + "(" + parameters + ") {",
-            "        _" + function.getName() + "(" + arguments + ");",
-            "    }",
-            "",
-            "    private static native void _" + function.getName() + "(" + nativeParameters + ");"
-        ));
+        lines.addCollectionLast(
+            objectCodeGenerator.getCommonJavaFooter()
+        );
 
         return lines;
     }
@@ -86,95 +85,41 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
         @Mandatory VkFunction function,
         @Mandatory LibraryConfiguration configuration
     ) {
-        List<String> parameters = new List<>();
-        List<String> variables = new List<>();
-        List<String> arguments = new List<>();
+        List<String> lines = new List<>();
 
-        for (VkVariable parameter : function.getInput()) {
-            parameters.addLast("jlong " + parameter.getName());
-            variables.addLast("    " + getTypeC(parameter) + "* _" + parameter.getName() + " = l2a(" + parameter.getName() + ");");
-            arguments.addLast("*_" + parameter.getName());
+        lines.addCollectionLast(
+            objectCodeGenerator.getCommonNativeHeader(getJavaName(function), getJavaName(function), configuration)
+        );
+
+        for (VkVariable field : function.getInput()) {
+            lines.addCollectionLast(
+                fieldTranslator.translateNative(getJavaName(function), field, configuration)
+            );
         }
 
         if (!isVoid(function.getOutput())) {
-            parameters.addLast("jlong output");
-            variables.addLast("    " + getTypeC(function.getOutput()) + "* _output = l2a(output);");
-        }
-
-        JniFunction jniFunction = new JniFunction();
-        jniFunction.setOutput("void");
-        jniFunction.setClassName(functionsTranslator.getName(configuration));
-        jniFunction.setName(function.getName());
-        jniFunction.setInput(parameters);
-
-        List<String> lines = new List<>();
-
-        lines.addCollectionLast(variables);
-
-        String expressionPrefix = isVoid(function.getOutput()) ? "" : "*_output = ";
-        String argumentsLine = joiner.join(arguments, ", ");
-        lines.addCollectionLast(new List<>(
-            "    " + expressionPrefix + function.getName() + "(" + argumentsLine + ");"
-        ));
-
-        jniFunction.setLines(lines);
-
-        return codeGenerator.generateJniFunction(configuration, jniFunction);
-    }
-
-    private @Mandatory String getType(@Mandatory VkVariable variable, @Mandatory LibraryConfiguration configuration) {
-        String typename = typenameTranslator.translate(variable.getTypename(), configuration);
-
-        if (variable.getPointers() == 0 && variable.getArray() == 0) {
-            return typename;
-        } else if (variable.getPointers() > 0 && variable.getArray() > 0) {
-            throw new UnsupportedOperationException(
-                "Unsupported combination of pointers and array for variable " + variable.getName() + "."
-            );
-        } else if (variable.getPointers() < 0 || variable.getArray() < 0) {
-            throw new IllegalArgumentException(
-                "Wrong value of pointers or array for variable " + variable.getName() + "."
-            );
-        } else if (variable.getPointers() == 1) {
-            return "CPointer<" + typename + ">";
-        } else if (variable.getPointers() == 2) {
-            return "CPointer<CPointer<" + typename + ">>";
-        } else if (variable.getArray() > 0) {
-            return "CArray<" + typename + ">";
-        } else {
-            throw new UnsupportedOperationException(
-                "Unsupported pointers or array for variable " + variable.getName() + "."
+            lines.addCollectionLast(
+                fieldTranslator.translateNative(getJavaName(function), convertOutput(function.getOutput()), configuration)
             );
         }
-    }
 
-    private @Mandatory String getTypeC(@Mandatory VkVariable variable) {
-        String typename = variable.getTypename();
+        lines.addCollectionLast(
+            objectCodeGenerator.getCommonNativeFooter()
+        );
 
-        if (variable.getPointers() == 0 && variable.getArray() == 0) {
-            return typename;
-        } else if (variable.getPointers() > 0 && variable.getArray() > 0) {
-            throw new UnsupportedOperationException(
-                "Unsupported combination of pointers and array for variable " + variable.getName() + "."
-            );
-        } else if (variable.getPointers() < 0 || variable.getArray() < 0) {
-            throw new IllegalArgumentException(
-                "Wrong value of pointers or array for variable " + variable.getName() + "."
-            );
-        } else if (variable.getPointers() == 1) {
-            return typename + "*";
-        } else if (variable.getPointers() == 2) {
-            return typename + "**";
-        } else if (variable.getArray() > 0) {
-            return typename + "*";
-        } else {
-            throw new UnsupportedOperationException(
-                "Unsupported pointers or array for variable " + variable.getName() + "."
-            );
-        }
+        return lines;
     }
 
     private boolean isVoid(@Mandatory VkVariable variable) {
-        return variable.getTypename().equals("void") && variable.getPointers() == 0;
+        return variable.getTypename().equals("void");
+    }
+
+    private @Mandatory VkVariable convertOutput(@Mandatory VkVariable output) {
+        return new VkVariable(
+            output.getTypename(),
+            output.getPointers(),
+            "result",
+            output.getArray()
+        );
     }
 }

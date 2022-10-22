@@ -10,6 +10,10 @@ import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 public @Service interface VkTranslator<C extends VkComponent> {
     @Mandatory Class<? extends VkComponent> targetClass();
 
+    default @Mandatory String getJavaName(@Mandatory C component) {
+        return component.getName();
+    }
+
     @Mandatory List<String> translateJava(
         @Mandatory Index index,
         @Mandatory C component,
