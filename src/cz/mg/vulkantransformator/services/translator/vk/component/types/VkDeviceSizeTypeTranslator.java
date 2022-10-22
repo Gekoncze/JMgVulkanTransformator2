@@ -59,6 +59,7 @@ public @Service class VkDeviceSizeTypeTranslator implements VkSpecialTypeTransla
         @Mandatory LibraryConfiguration configuration
     ) {
         JniFunction getFunction = new JniFunction();
+        getFunction.setStatic(true);
         getFunction.setOutput("jlong");
         getFunction.setClassName(getName());
         getFunction.setName("_get");
@@ -75,6 +76,7 @@ public @Service class VkDeviceSizeTypeTranslator implements VkSpecialTypeTransla
         );
 
         JniFunction setFunction = new JniFunction();
+        setFunction.setStatic(true);
         setFunction.setOutput("void");
         setFunction.setClassName(getName());
         setFunction.setName("_set2");

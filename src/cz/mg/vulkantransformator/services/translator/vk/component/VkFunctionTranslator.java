@@ -56,6 +56,17 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
             objectCodeGenerator.getCommonJavaHeading(getJavaName(function), configuration)
         );
 
+        lines.addCollectionLast(
+            new List<>(
+                "    public void call() {",
+                "        _call(address);",
+                "    }",
+                "",
+                "    private static native void _call(long address);",
+                ""
+            )
+        );
+
         for (VkVariable field : function.getInput()) {
             lines.addCollectionLast(
                 fieldTranslator.translateJava(getJavaName(function), field, configuration)

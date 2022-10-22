@@ -167,6 +167,7 @@ public @Service class VkFieldTranslator {
         @Mandatory LibraryConfiguration configuration
     ) {
         JniFunction function = new JniFunction();
+        function.setStatic(true);
         function.setOutput("jlong");
         function.setClassName(componentName);
         function.setName(getOffsetMethodName(field));

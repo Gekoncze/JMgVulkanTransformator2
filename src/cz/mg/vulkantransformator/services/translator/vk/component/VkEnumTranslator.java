@@ -93,6 +93,7 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
         );
 
         JniFunction getFunction = new JniFunction();
+        getFunction.setStatic(true);
         getFunction.setOutput("jint");
         getFunction.setClassName(enumeration.getName());
         getFunction.setName("_get2");
@@ -109,6 +110,7 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
         );
 
         JniFunction setFunction = new JniFunction();
+        setFunction.setStatic(true);
         setFunction.setOutput("void");
         setFunction.setClassName(enumeration.getName());
         setFunction.setName("_set2");

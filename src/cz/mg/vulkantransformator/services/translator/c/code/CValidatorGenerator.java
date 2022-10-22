@@ -62,6 +62,7 @@ public class CValidatorGenerator implements CGenerator {
         );
 
         JniFunction function = new JniFunction();
+        function.setStatic(true);
         function.setOutput("jint");
         function.setClassName(getName());
         function.setName("_validate");

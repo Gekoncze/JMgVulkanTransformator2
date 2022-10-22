@@ -64,6 +64,7 @@ public @Service class CTypeGenerator {
         @Mandatory String nativeType
     ) {
         JniFunction sizeFunction = new JniFunction();
+        sizeFunction.setStatic(true);
         sizeFunction.setOutput("jlong");
         sizeFunction.setClassName(className);
         sizeFunction.setName("_size");
@@ -74,6 +75,7 @@ public @Service class CTypeGenerator {
         );
 
         JniFunction getFunction = new JniFunction();
+        getFunction.setStatic(true);
         getFunction.setOutput(jniType);
         getFunction.setClassName(className);
         getFunction.setName("_get");
@@ -90,6 +92,7 @@ public @Service class CTypeGenerator {
         );
 
         JniFunction setFunction = new JniFunction();
+        setFunction.setStatic(true);
         setFunction.setOutput("void");
         setFunction.setClassName(className);
         setFunction.setName("_set");

@@ -108,6 +108,7 @@ public @Service class CMemoryGenerator implements CGenerator {
         );
 
         JniFunction nullFunction = new JniFunction();
+        nullFunction.setStatic(true);
         nullFunction.setOutput("jlong");
         nullFunction.setClassName(getName());
         nullFunction.setName("getNull");
@@ -118,6 +119,7 @@ public @Service class CMemoryGenerator implements CGenerator {
         );
 
         JniFunction allocateFunction = new JniFunction();
+        allocateFunction.setStatic(true);
         allocateFunction.setOutput("jlong");
         allocateFunction.setClassName(getName());
         allocateFunction.setName("allocate");
@@ -133,6 +135,7 @@ public @Service class CMemoryGenerator implements CGenerator {
         );
 
         JniFunction freeFunction = new JniFunction();
+        freeFunction.setStatic(true);
         freeFunction.setOutput("void");
         freeFunction.setClassName(getName());
         freeFunction.setName("free");

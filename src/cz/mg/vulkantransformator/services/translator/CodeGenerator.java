@@ -82,7 +82,8 @@ public @Service class CodeGenerator {
     }
 
     private @Mandatory String generateJniFunctionParameters(@Mandatory JniFunction function) {
-        List<String> inputParameters = new List<>("JNIEnv* env", "jclass clazz");
+        String secondParameter = function.isStatic() ? "jclass clazz" : "jobject object";
+        List<String> inputParameters = new List<>("JNIEnv* env", secondParameter);
         inputParameters.addCollectionLast(function.getInput());
         return stringJoiner.join(inputParameters, ", ");
     }

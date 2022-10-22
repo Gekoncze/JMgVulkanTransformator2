@@ -46,6 +46,7 @@ public @Service class VkEnumEntryTranslator {
         @Mandatory LibraryConfiguration configuration
     ) {
         JniFunction getFunction = new JniFunction();
+        getFunction.setStatic(true);
         getFunction.setOutput("jlong");
         getFunction.setClassName(enumeration.getName());
         getFunction.setName("get_" + entry.getName());

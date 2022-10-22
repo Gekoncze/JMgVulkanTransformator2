@@ -64,6 +64,7 @@ public @Service class ObjectCodeGenerator {
         List<String> lines = codeGenerator.generateNativeHeading(configuration, additionalDependency);
 
         JniFunction sizeFunction = new JniFunction();
+        sizeFunction.setStatic(true);
         sizeFunction.setOutput("jlong");
         sizeFunction.setClassName(name);
         sizeFunction.setName("_size");
@@ -74,6 +75,7 @@ public @Service class ObjectCodeGenerator {
         );
 
         JniFunction setFunction = new JniFunction();
+        setFunction.setStatic(true);
         setFunction.setOutput("void");
         setFunction.setClassName(name);
         setFunction.setName("_set");

@@ -97,6 +97,7 @@ public @Service class CPointerGenerator implements CGenerator {
     @Override
     public @Mandatory List<String> generateNative() {
         JniFunction sizeFunction = new JniFunction();
+        sizeFunction.setStatic(true);
         sizeFunction.setOutput("jlong");
         sizeFunction.setClassName(getName());
         sizeFunction.setName("_size");
@@ -107,6 +108,7 @@ public @Service class CPointerGenerator implements CGenerator {
         );
 
         JniFunction getFunction = new JniFunction();
+        getFunction.setStatic(true);
         getFunction.setOutput("jlong");
         getFunction.setClassName(getName());
         getFunction.setName("_get");
@@ -123,6 +125,7 @@ public @Service class CPointerGenerator implements CGenerator {
         );
 
         JniFunction setFunction = new JniFunction();
+        setFunction.setStatic(true);
         setFunction.setOutput("void");
         setFunction.setClassName(getName());
         setFunction.setName("_set");
@@ -140,6 +143,7 @@ public @Service class CPointerGenerator implements CGenerator {
         );
 
         JniFunction offsetFunction = new JniFunction();
+        offsetFunction.setStatic(true);
         offsetFunction.setOutput("jlong");
         offsetFunction.setClassName(getName());
         offsetFunction.setName("offset");

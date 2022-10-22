@@ -114,6 +114,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         String name = flags.getName();
 
         JniFunction get2Function = new JniFunction();
+        get2Function.setStatic(true);
         get2Function.setOutput("jint");
         get2Function.setClassName(flags.getName());
         get2Function.setName("_get2");
@@ -130,6 +131,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         );
 
         JniFunction set2Function = new JniFunction();
+        set2Function.setStatic(true);
         set2Function.setOutput("void");
         set2Function.setClassName(flags.getName());
         set2Function.setName("_set2");
@@ -147,6 +149,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         );
 
         JniFunction add2Function = new JniFunction();
+        add2Function.setStatic(true);
         add2Function.setOutput("void");
         add2Function.setClassName(flags.getName());
         add2Function.setName("_add2");
@@ -164,6 +167,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         );
 
         JniFunction remove2Function = new JniFunction();
+        remove2Function.setStatic(true);
         remove2Function.setOutput("void");
         remove2Function.setClassName(flags.getName());
         remove2Function.setName("_remove2");
@@ -192,6 +196,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         String flagBitsName = getFlagBitsName(index, flags);
         if (flagBitsName != null) {
             JniFunction addFunction = new JniFunction();
+            addFunction.setStatic(true);
             addFunction.setOutput("void");
             addFunction.setClassName(flags.getName());
             addFunction.setName("_add");
@@ -210,6 +215,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
             );
 
             JniFunction removeFunction = new JniFunction();
+            removeFunction.setStatic(true);
             removeFunction.setOutput("void");
             removeFunction.setClassName(flags.getName());
             removeFunction.setName("_remove");

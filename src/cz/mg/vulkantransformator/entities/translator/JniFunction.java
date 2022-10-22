@@ -5,6 +5,7 @@ import cz.mg.annotations.requirement.Required;
 import cz.mg.collections.list.List;
 
 public @Entity class JniFunction {
+    private Boolean sstatic;
     private String output;
     private String className;
     private String name;
@@ -12,6 +13,15 @@ public @Entity class JniFunction {
     private List<String> lines = new List<>();
 
     public JniFunction() {
+    }
+
+    @Required
+    public Boolean isStatic() {
+        return sstatic;
+    }
+
+    public void setStatic(Boolean value) {
+        this.sstatic = value;
     }
 
     @Required

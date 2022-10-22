@@ -130,6 +130,7 @@ public @Service class VkConstantsTranslator {
         @Mandatory LibraryConfiguration configuration
     ) {
         JniFunction function = new JniFunction();
+        function.setStatic(true);
         function.setOutput("jlong");
         function.setClassName(getName(configuration));
         function.setName("get_" + constant.getName());

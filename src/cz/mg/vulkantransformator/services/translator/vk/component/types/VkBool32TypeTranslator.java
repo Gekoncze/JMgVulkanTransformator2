@@ -62,6 +62,7 @@ public @Service class VkBool32TypeTranslator implements VkSpecialTypeTranslator 
         @Mandatory LibraryConfiguration configuration
     ) {
         JniFunction getFunction = new JniFunction();
+        getFunction.setStatic(true);
         getFunction.setOutput("jint");
         getFunction.setClassName(getName());
         getFunction.setName("_get");
@@ -78,6 +79,7 @@ public @Service class VkBool32TypeTranslator implements VkSpecialTypeTranslator 
         );
 
         JniFunction setFunction = new JniFunction();
+        setFunction.setStatic(true);
         setFunction.setOutput("void");
         setFunction.setClassName(getName());
         setFunction.setName("_set2");
