@@ -44,7 +44,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonJavaHeader(flags.getName(), configuration)
+            objectCodeGenerator.getCommonJavaHeading(flags.getName(), configuration)
         );
 
         lines.addCollectionLast(new List<>(
@@ -108,7 +108,7 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonNativeHeader(flags.getName(), flags.getName(), configuration)
+            objectCodeGenerator.getCommonNativeHeading(flags.getName(), flags.getName(), null, configuration)
         );
 
         String name = flags.getName();
@@ -244,5 +244,14 @@ public @Service class VkFlagsTranslator implements VkTranslator<VkFlags> {
         String targetName = flags.getName().replace("Flags", "FlagBits");
         Object target = index.getComponents().getOptional(targetName);
         return target != null ? targetName : null;
+    }
+
+    @Override
+    public @Mandatory List<String> translateNativeHeader(
+        @Mandatory Index index,
+        @Mandatory VkFlags component,
+        @Mandatory LibraryConfiguration configuration
+    ) {
+        return new List<>();
     }
 }

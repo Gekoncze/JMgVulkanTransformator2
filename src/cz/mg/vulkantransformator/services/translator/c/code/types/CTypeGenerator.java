@@ -106,7 +106,7 @@ public @Service class CTypeGenerator {
             )
         );
 
-        List<String> lines = codeGenerator.generateNativeHeader(configuration);
+        List<String> lines = codeGenerator.generateNativeHeading(configuration, null);
         lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, sizeFunction));
         lines.addLast("");
         lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, getFunction));

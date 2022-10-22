@@ -33,12 +33,12 @@ public @Service class CUInt64Generator implements CGenerator {
     }
 
     @Override
-    public @Mandatory List<String> generateNativeC() {
+    public @Mandatory List<String> generateNative() {
         return typeGenerator.generateNative(getName(), "jlong", "uint64_t");
     }
 
     @Override
-    public @Mandatory List<String> generateNativeH() {
+    public @Mandatory List<String> generateNativeHeader() {
         return new List<>();
     }
 }

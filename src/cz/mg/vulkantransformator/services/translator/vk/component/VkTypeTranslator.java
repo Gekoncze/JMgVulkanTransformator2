@@ -48,7 +48,7 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonJavaHeader(type.getName(), configuration)
+            objectCodeGenerator.getCommonJavaHeading(type.getName(), configuration)
         );
 
         for (VkSpecialTypeTranslator specialTypeTranslator : specialTypeTranslators) {
@@ -75,7 +75,7 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonNativeHeader(type.getName(), type.getName(), configuration)
+            objectCodeGenerator.getCommonNativeHeading(type.getName(), type.getName(), null, configuration)
         );
 
         for (VkSpecialTypeTranslator specialTypeTranslator : specialTypeTranslators) {
@@ -91,5 +91,14 @@ public @Service class VkTypeTranslator implements VkTranslator<VkType> {
         );
 
         return lines;
+    }
+
+    @Override
+    public @Mandatory List<String> translateNativeHeader(
+        @Mandatory Index index,
+        @Mandatory VkType component,
+        @Mandatory LibraryConfiguration configuration
+    ) {
+        return new List<>();
     }
 }

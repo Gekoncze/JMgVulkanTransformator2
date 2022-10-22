@@ -33,12 +33,12 @@ public @Service class CInt32Generator implements CGenerator {
     }
 
     @Override
-    public @Mandatory List<String> generateNativeC() {
+    public @Mandatory List<String> generateNative() {
         return typeGenerator.generateNative(getName(), "jint", "int32_t");
     }
 
     @Override
-    public @Mandatory List<String> generateNativeH() {
+    public @Mandatory List<String> generateNativeHeader() {
         return new List<>();
     }
 }

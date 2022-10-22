@@ -37,7 +37,7 @@ public @Service class VkConstantsTranslator {
         @Mandatory VkRoot root,
         @Mandatory LibraryConfiguration configuration
     ) {
-        List<String> lines = codeGenerator.generateJavaHeader(configuration);
+        List<String> lines = codeGenerator.generateJavaHeading(configuration);
 
         lines.addCollectionLast(
             new List<>(
@@ -94,7 +94,7 @@ public @Service class VkConstantsTranslator {
         @Mandatory VkRoot root,
         @Mandatory LibraryConfiguration configuration
     ) {
-        List<String> lines = codeGenerator.generateNativeHeader(configuration);
+        List<String> lines = codeGenerator.generateNativeHeading(configuration, null);
 
         for (VkComponent component : root.getComponents()) {
             if (component instanceof VkConstant) {

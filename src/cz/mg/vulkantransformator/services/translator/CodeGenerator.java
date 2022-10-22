@@ -23,7 +23,7 @@ public @Service class CodeGenerator {
     private CodeGenerator() {
     }
 
-    public @Mandatory List<String> generateJavaHeader(@Mandatory LibraryConfiguration configuration) {
+    public @Mandatory List<String> generateJavaHeading(@Mandatory LibraryConfiguration configuration) {
         List<String> lines = new List<>();
 
         lines.addLast("package " + configuration.getJavaPackage() + ";");
@@ -37,11 +37,19 @@ public @Service class CodeGenerator {
         return lines;
     }
 
-    public @Mandatory List<String> generateNativeHeader(@Mandatory LibraryConfiguration configuration) {
+    public @Mandatory List<String> generateNativeHeading(
+        @Mandatory LibraryConfiguration configuration,
+        @Optional String additionalDependency
+    ) {
         List<String> lines = new List<>();
 
         if (!configuration.getNativeDependencies().isEmpty()) {
             lines.addCollectionLast(configuration.getNativeDependencies());
+
+            if (additionalDependency != null) {
+                lines.addLast(additionalDependency);
+            }
+
             lines.addLast("");
         }
 
@@ -83,7 +91,7 @@ public @Service class CodeGenerator {
         @Mandatory LibraryConfiguration configuration,
         @Mandatory String name
     ) {
-        List<String> lines = generateJavaHeader(configuration);
+        List<String> lines = generateJavaHeading(configuration);
 
         lines.addCollectionLast(
             new List<>(
@@ -106,5 +114,28 @@ public @Service class CodeGenerator {
                 lines.removeLast();
             }
         }
+    }
+
+    public @Mandatory List<String> addHeaderFileGuards(@Mandatory List<String> lines, @Mandatory String name) {
+        List<String> wrappedLines = new List<>();
+
+        wrappedLines.addCollectionLast(
+            new List<>(
+                "#ifndef " + name,
+                "#define " + name,
+                ""
+            )
+        );
+
+        wrappedLines.addCollectionLast(lines);
+
+        wrappedLines.addCollectionLast(
+            new List<>(
+                "",
+                "#endif"
+            )
+        );
+
+        return wrappedLines;
     }
 }

@@ -33,12 +33,12 @@ public @Service class CUInt8Generator implements CGenerator {
     }
 
     @Override
-    public @Mandatory List<String> generateNativeC() {
+    public @Mandatory List<String> generateNative() {
         return typeGenerator.generateNative(getName(), "jbyte", "uint8_t");
     }
 
     @Override
-    public @Mandatory List<String> generateNativeH() {
+    public @Mandatory List<String> generateNativeHeader() {
         return new List<>();
     }
 }

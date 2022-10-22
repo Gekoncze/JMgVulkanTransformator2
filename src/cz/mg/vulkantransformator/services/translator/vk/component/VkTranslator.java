@@ -25,4 +25,10 @@ public @Service interface VkTranslator<C extends VkComponent> {
         @Mandatory C component,
         @Mandatory LibraryConfiguration configuration
     );
+
+    @Mandatory List<String> translateNativeHeader(
+        @Mandatory Index index,
+        @Mandatory C component,
+        @Mandatory LibraryConfiguration configuration
+    );
 }

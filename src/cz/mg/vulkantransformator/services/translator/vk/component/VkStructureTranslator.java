@@ -46,7 +46,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonJavaHeader(structure.getName(), configuration)
+            objectCodeGenerator.getCommonJavaHeading(structure.getName(), configuration)
         );
 
         for (VkVariable field : structure.getFields()) {
@@ -73,7 +73,7 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonNativeHeader(structure.getName(), structure.getName(), configuration)
+            objectCodeGenerator.getCommonNativeHeading(structure.getName(), structure.getName(), null, configuration)
         );
 
         for (VkVariable field : structure.getFields()) {
@@ -87,5 +87,14 @@ public @Service class VkStructureTranslator implements VkTranslator<VkStructure>
         );
 
         return lines;
+    }
+
+    @Override
+    public @Mandatory List<String> translateNativeHeader(
+        @Mandatory Index index,
+        @Mandatory VkStructure component,
+        @Mandatory LibraryConfiguration configuration
+    ) {
+        return new List<>();
     }
 }

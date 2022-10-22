@@ -45,7 +45,7 @@ public @Service class EmptyObjectFileGenerator {
         @Mandatory String name,
         @Mandatory LibraryConfiguration configuration
     ) {
-        List<String> lines = objectCodeGenerator.getCommonJavaHeader(name, configuration);
+        List<String> lines = objectCodeGenerator.getCommonJavaHeading(name, configuration);
         lines.addCollectionLast(objectCodeGenerator.getCommonJavaFooter());
         return lines;
     }
@@ -55,7 +55,7 @@ public @Service class EmptyObjectFileGenerator {
         @Mandatory String nativeName,
         @Mandatory LibraryConfiguration configuration
     ) {
-        List<String> lines = objectCodeGenerator.getCommonNativeHeader(name, nativeName, configuration);
+        List<String> lines = objectCodeGenerator.getCommonNativeHeading(name, nativeName, null, configuration);
         lines.addCollectionLast(objectCodeGenerator.getCommonNativeFooter());
         return lines;
     }

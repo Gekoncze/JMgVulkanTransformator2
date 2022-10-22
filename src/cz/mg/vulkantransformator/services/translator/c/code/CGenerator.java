@@ -7,6 +7,6 @@ import cz.mg.collections.list.List;
 public @Service interface CGenerator {
     @Mandatory String getName();
     @Mandatory List<String> generateJava();
-    @Mandatory List<String> generateNativeC();
-    @Mandatory List<String> generateNativeH();
+    @Mandatory List<String> generateNative();
+    @Mandatory List<String> generateNativeHeader();
 }

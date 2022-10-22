@@ -79,7 +79,7 @@ public @Service class CMemoryGenerator implements CGenerator {
     }
 
     @Override
-    public @Mandatory List<String> generateNativeC() {
+    public @Mandatory List<String> generateNative() {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
@@ -157,14 +157,17 @@ public @Service class CMemoryGenerator implements CGenerator {
     }
 
     @Override
-    public @Mandatory List<String> generateNativeH() {
-        return new List<>(
-            "#include <stdlib.h>",
-            "#include <string.h>",
-            "#include <jni.h>",
-            "",
-            "void* l2a(jlong l);",
-            "jlong a2l(void* a);"
+    public @Mandatory List<String> generateNativeHeader() {
+        return codeGenerator.addHeaderFileGuards(
+            new List<>(
+                "#include <stdlib.h>",
+                "#include <string.h>",
+                "#include <jni.h>",
+                "",
+                "void* l2a(jlong l);",
+                "jlong a2l(void* a);"
+            ),
+            "JMGC_MEMORY_H"
         );
     }
 }

@@ -22,11 +22,11 @@ public @Service class ObjectCodeGenerator {
     private ObjectCodeGenerator() {
     }
 
-    public @Mandatory List<String> getCommonJavaHeader(
+    public @Mandatory List<String> getCommonJavaHeading(
         @Mandatory String name,
         @Mandatory LibraryConfiguration configuration
     ) {
-        List<String> lines = codeGenerator.generateJavaHeader(configuration);
+        List<String> lines = codeGenerator.generateJavaHeading(configuration);
 
         lines.addCollectionLast(
             new List<>(
@@ -55,12 +55,13 @@ public @Service class ObjectCodeGenerator {
         return new List<>("}");
     }
 
-    public @Mandatory List<String> getCommonNativeHeader(
+    public @Mandatory List<String> getCommonNativeHeading(
         @Mandatory String name,
         @Mandatory String nativeName,
+        @Optional String additionalDependency,
         @Mandatory LibraryConfiguration configuration
     ) {
-        List<String> lines = codeGenerator.generateNativeHeader(configuration);
+        List<String> lines = codeGenerator.generateNativeHeading(configuration, additionalDependency);
 
         JniFunction sizeFunction = new JniFunction();
         sizeFunction.setOutput("jlong");

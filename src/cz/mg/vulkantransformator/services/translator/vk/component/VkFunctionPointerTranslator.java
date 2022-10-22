@@ -43,7 +43,7 @@ public @Service class VkFunctionPointerTranslator implements VkTranslator<VkFunc
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonJavaHeader(pointer.getName(), configuration)
+            objectCodeGenerator.getCommonJavaHeading(pointer.getName(), configuration)
         );
 
         codeGenerator.removeLastEmptyLine(lines);
@@ -64,7 +64,7 @@ public @Service class VkFunctionPointerTranslator implements VkTranslator<VkFunc
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonNativeHeader(pointer.getName(), pointer.getName(), configuration)
+            objectCodeGenerator.getCommonNativeHeading(pointer.getName(), pointer.getName(), null, configuration)
         );
 
         lines.addCollectionLast(
@@ -72,5 +72,14 @@ public @Service class VkFunctionPointerTranslator implements VkTranslator<VkFunc
         );
 
         return lines;
+    }
+
+    @Override
+    public @Mandatory List<String> translateNativeHeader(
+        @Mandatory Index index,
+        @Mandatory VkFunctionPointer component,
+        @Mandatory LibraryConfiguration configuration
+    ) {
+        return new List<>();
     }
 }

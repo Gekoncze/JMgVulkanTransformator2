@@ -69,14 +69,14 @@ public @Service class CFileGenerator {
             files.addLast(
                 new File(
                     Path.of(configuration.getDirectory(), generator.getName() + ".c"),
-                    generator.generateNativeC()
+                    generator.generateNative()
                 )
             );
 
             files.addLast(
                 new File(
                     Path.of(configuration.getDirectory(), generator.getName() + ".h"),
-                    generator.generateNativeH()
+                    generator.generateNativeHeader()
                 )
             );
         }

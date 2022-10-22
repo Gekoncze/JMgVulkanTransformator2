@@ -47,7 +47,7 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonJavaHeader(enumeration.getName(), configuration)
+            objectCodeGenerator.getCommonJavaHeading(enumeration.getName(), configuration)
         );
 
         lines.addCollectionLast(new List<>(
@@ -89,7 +89,7 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonNativeHeader(enumeration.getName(), enumeration.getName(), configuration)
+            objectCodeGenerator.getCommonNativeHeading(enumeration.getName(), enumeration.getName(), null, configuration)
         );
 
         JniFunction getFunction = new JniFunction();
@@ -141,5 +141,14 @@ public @Service class VkEnumTranslator implements VkTranslator<VkEnum> {
         );
 
         return lines;
+    }
+
+    @Override
+    public @Mandatory List<String> translateNativeHeader(
+        @Mandatory Index index,
+        @Mandatory VkEnum component,
+        @Mandatory LibraryConfiguration configuration
+    ) {
+        return new List<>();
     }
 }

@@ -78,6 +78,13 @@ public @Service class VkComponentFileGenerator {
                         translator.translateNative(index, component, configuration)
                     )
                 );
+
+                files.addLast(
+                    new File(
+                        Path.of(configuration.getDirectory(), translator.getJavaName(component) + ".h"),
+                        translator.translateNativeHeader(index, component, configuration)
+                    )
+                );
             }
         }
 

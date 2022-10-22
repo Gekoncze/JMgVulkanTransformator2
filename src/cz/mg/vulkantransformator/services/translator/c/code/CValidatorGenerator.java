@@ -49,8 +49,8 @@ public class CValidatorGenerator implements CGenerator {
     }
 
     @Override
-    public @Mandatory List<String> generateNativeC() {
-        List<String> lines = codeGenerator.generateNativeHeader(configuration);
+    public @Mandatory List<String> generateNative() {
+        List<String> lines = codeGenerator.generateNativeHeading(configuration, null);
 
         lines.addCollectionLast(
             new List<>(
@@ -85,7 +85,7 @@ public class CValidatorGenerator implements CGenerator {
     }
 
     @Override
-    public @Mandatory List<String> generateNativeH() {
+    public @Mandatory List<String> generateNativeHeader() {
         return new List<>();
     }
 }

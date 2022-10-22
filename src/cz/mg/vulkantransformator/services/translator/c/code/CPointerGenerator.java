@@ -95,7 +95,7 @@ public @Service class CPointerGenerator implements CGenerator {
     }
 
     @Override
-    public @Mandatory List<String> generateNativeC() {
+    public @Mandatory List<String> generateNative() {
         JniFunction sizeFunction = new JniFunction();
         sizeFunction.setOutput("jlong");
         sizeFunction.setClassName(getName());
@@ -157,7 +157,7 @@ public @Service class CPointerGenerator implements CGenerator {
             )
         );
 
-        List<String> lines = codeGenerator.generateNativeHeader(configuration);
+        List<String> lines = codeGenerator.generateNativeHeading(configuration, null);
         lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, sizeFunction));
         lines.addLast("");
         lines.addCollectionLast(codeGenerator.generateJniFunction(configuration, getFunction));
@@ -169,7 +169,7 @@ public @Service class CPointerGenerator implements CGenerator {
     }
 
     @Override
-    public @Mandatory List<String> generateNativeH() {
+    public @Mandatory List<String> generateNativeHeader() {
         return new List<>();
     }
 }

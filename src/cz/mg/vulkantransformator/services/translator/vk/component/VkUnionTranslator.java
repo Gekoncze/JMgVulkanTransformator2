@@ -46,7 +46,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonJavaHeader(union.getName(), configuration)
+            objectCodeGenerator.getCommonJavaHeading(union.getName(), configuration)
         );
 
         for (VkVariable field : union.getFields()) {
@@ -73,7 +73,7 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
         List<String> lines = new List<>();
 
         lines.addCollectionLast(
-            objectCodeGenerator.getCommonNativeHeader(union.getName(), union.getName(), configuration)
+            objectCodeGenerator.getCommonNativeHeading(union.getName(), union.getName(), null, configuration)
         );
 
         for (VkVariable field : union.getFields()) {
@@ -87,5 +87,14 @@ public @Service class VkUnionTranslator implements VkTranslator<VkUnion> {
         );
 
         return lines;
+    }
+
+    @Override
+    public @Mandatory List<String> translateNativeHeader(
+        @Mandatory Index index,
+        @Mandatory VkUnion component,
+        @Mandatory LibraryConfiguration configuration
+    ) {
+        return new List<>();
     }
 }
