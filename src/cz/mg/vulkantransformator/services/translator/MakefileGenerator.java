@@ -4,6 +4,7 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
+import cz.mg.collections.services.StringJoiner;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 
 public @Service class MakefileGenerator {
@@ -12,9 +13,12 @@ public @Service class MakefileGenerator {
     public static @Mandatory MakefileGenerator getInstance() {
         if (instance == null) {
             instance = new MakefileGenerator();
+            instance.stringJoiner = StringJoiner.getInstance();
         }
         return instance;
     }
+
+    private StringJoiner stringJoiner;
 
     private MakefileGenerator() {
     }
@@ -23,7 +27,8 @@ public @Service class MakefileGenerator {
         @Mandatory List<File> files,
         @Mandatory String name,
         @Mandatory List<String> includes,
-        @Mandatory List<String> libs
+        @Mandatory List<String> libs,
+        @Mandatory List<String> linkerFlags
     ) {
         return new List<>(
             "SOURCES = " + getSources(files),
@@ -31,10 +36,11 @@ public @Service class MakefileGenerator {
             "INCLUDES = " + getIncludes(includes),
             "LIBS = " + getLibs(libs),
             "NAME = " + "lib" + name + ".so",
+            "LFLAGS = " + getFlags(linkerFlags),
             "",
             "${NAME}:${OBJ}",
             "\tgcc -c -fpic ${INCLUDES} ${SOURCES}",
-            "\tgcc -o ${NAME} -shared ${LIBS} ${OBJECTS}",
+            "\tgcc -o ${NAME} -shared ${LFLAGS} ${LIBS} ${OBJECTS}",
             "",
             "clean:",
             "\trm -f " + getObjects(files),
@@ -89,5 +95,9 @@ public @Service class MakefileGenerator {
             libs.append(" ");
         }
         return libs.toString();
+    }
+
+    private @Mandatory String getFlags(@Mandatory List<String> flags) {
+        return stringJoiner.join(flags, " ");
     }
 }
