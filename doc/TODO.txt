@@ -1,2 +1,0 @@
-field access still uses offset computed in java, which is not safe
-    rewrite it to use CPointer offset

@@ -5,7 +5,6 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.translator.JniFunction;
-import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
@@ -34,14 +33,11 @@ public @Service class VkFieldTranslator {
         @Mandatory VkVariable field,
         @Mandatory LibraryConfiguration configuration
     ) {
-        String offsetFieldName = getOffsetFieldName(field);
-        String offsetMethodName = getOffsetMethodName(field);
         List<String> lines = new List<>();
-        lines.addLast("    private static final long " + offsetFieldName + " = " + offsetMethodName + "();");
-        lines.addLast("");
         lines.addCollectionLast(translateJavaGetter(componentName, field, configuration));
         lines.addLast("");
-        lines.addLast("    private static native long " + offsetMethodName + "();");
+        lines.addLast("    private static native long " + getFieldAddressMethodName(field) + "(long address);");
+        lines.addLast("");
         return lines;
     }
 
@@ -82,11 +78,11 @@ public @Service class VkFieldTranslator {
         @Mandatory LibraryConfiguration configuration
     ) {
         String type = getTypename(field, configuration);
-        String methodName = getMethodName(field);
-        String offsetFieldName = getOffsetFieldName(field);
+        String name = getFieldMethodName(field);
+        String argument = getFieldAddressArgument(field);
         return new List<>(
-            "    public " + type + " " + methodName + "() {",
-            "        return new " + type + "(address + " + offsetFieldName + ");",
+            "    public " + type + " " + name + "() {",
+            "        return new " + type + "(" + argument + ");",
             "    }"
         );
     }
@@ -114,9 +110,9 @@ public @Service class VkFieldTranslator {
     ) {
         String type = "CPointer<" + getTypename(field, configuration) + ">";
         return new List<>(
-            "    public " + type + " " + getMethodName(field) + "() {",
+            "    public " + type + " " + getFieldMethodName(field) + "() {",
             "        return new CPointer<>(",
-            "             " + getAddressArgument(field) + ",",
+            "             " + getFieldAddressArgument(field) + ",",
             "             " + getTypename(field, configuration) + ".SIZE,",
             "             " + getTypename(field, configuration) + "::new",
             "        );",
@@ -130,9 +126,9 @@ public @Service class VkFieldTranslator {
     ) {
         String type = "CPointer<CPointer<" + getTypename(field, configuration) + ">>";
         return new List<>(
-            "    public " + type + " " + getMethodName(field) + "() {",
+            "    public " + type + " " + getFieldMethodName(field) + "() {",
             "        return new CPointer<>(",
-            "             " + getAddressArgument(field) + ",",
+            "             " + getFieldAddressArgument(field) + ",",
             "             CPointer.SIZE,",
             "             (a) -> new CPointer<>(",
             "                 a,",
@@ -150,9 +146,9 @@ public @Service class VkFieldTranslator {
     ) {
         String type = "CArray<" + getTypename(field, configuration) + ">";
         return new List<>(
-            "    public " + type + " " + getMethodName(field) + "() {",
+            "    public " + type + " " + getFieldMethodName(field) + "() {",
             "        return new CArray<>(",
-                "            " + getAddressArgument(field) + ",",
+                "            " + getFieldAddressArgument(field) + ",",
                 "            " + field.getArray() + ",",
                 "            " + getTypename(field, configuration) + ".SIZE,",
                 "            " + getTypename(field, configuration) + "::new",
@@ -170,13 +166,12 @@ public @Service class VkFieldTranslator {
         function.setStatic(true);
         function.setOutput("jlong");
         function.setClassName(componentName);
-        function.setName(getOffsetMethodName(field));
+        function.setName(getFieldAddressMethodName(field));
+        function.setInput(new List<>("jlong address"));
         function.setLines(
             new List<>(
-                componentName + " component;",
-                "jlong address = a2l(&component);",
-                "jlong fieldAddress = a2l(&(component." + field.getName() + "));",
-                "return fieldAddress - address;"
+                componentName + "* component = l2a(address);",
+                "return a2l(&(component->" + field.getName() + "));"
             )
         );
         return codeGenerator.generateJniFunction(configuration, function);
@@ -190,20 +185,16 @@ public @Service class VkFieldTranslator {
         return componentName + "." + field.getName();
     }
 
-    private @Mandatory String getMethodName(@Mandatory VkVariable field) {
+    private @Mandatory String getFieldMethodName(@Mandatory VkVariable field) {
         return "get" + capitalizeFirst(field.getName());
     }
 
-    private @Mandatory String getOffsetFieldName(@Mandatory VkVariable field) {
-        return field.getName().toUpperCase() + "_OFFSET";
+    private @Mandatory String getFieldAddressMethodName(@Mandatory VkVariable field) {
+        return "_get" + capitalizeFirst(field.getName()) + "Address";
     }
 
-    private @Mandatory String getOffsetMethodName(@Mandatory VkVariable field) {
-        return "_get" + capitalizeFirst(field.getName()) + "Offset";
-    }
-
-    private @Mandatory String getAddressArgument(@Mandatory VkVariable field) {
-        return "address + " + getOffsetFieldName(field);
+    private @Mandatory String getFieldAddressArgument(@Mandatory VkVariable field) {
+        return getFieldAddressMethodName(field) + "(address)";
     }
 
     private @Mandatory String getTypename(@Mandatory VkVariable field, @Mandatory LibraryConfiguration configuration) {
