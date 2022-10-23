@@ -71,6 +71,20 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
             )
         );
 
+        if (isResult(function.getOutput())) {
+            lines.addCollectionLast(
+                new List<>(
+                    "    public void validate() {",
+                    "        int result = getResult().get();",
+                    "        if (result != VkResult.VK_SUCCESS_I) {",
+                    "            throw new VulkanException(result);",
+                    "        }",
+                    "    }",
+                    ""
+                )
+            );
+        }
+
         for (VkVariable field : function.getInput()) {
             lines.addCollectionLast(
                 fieldTranslator.translateJava(getJavaName(function), field, configuration)
@@ -190,7 +204,11 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     }
 
     private boolean isVoid(@Mandatory VkVariable variable) {
-        return variable.getTypename().equals("void");
+        return variable.getTypename().equals("void") && variable.getPointers() == 0 && variable.getArray() == 0;
+    }
+
+    private boolean isResult(@Mandatory VkVariable variable) {
+        return variable.getTypename().equals("VkResult") && variable.getPointers() == 0 && variable.getArray() == 0;
     }
 
     private @Mandatory VkVariable convertOutput(@Mandatory VkVariable output) {

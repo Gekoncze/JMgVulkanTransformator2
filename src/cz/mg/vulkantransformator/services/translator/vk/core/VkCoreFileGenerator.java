@@ -9,6 +9,8 @@ import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.vk.component.VkComponentFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.VkFileGenerator;
 
+import java.nio.file.Path;
+
 public @Service class VkCoreFileGenerator implements VkFileGenerator {
     private static @Optional VkCoreFileGenerator instance;
 
@@ -17,12 +19,14 @@ public @Service class VkCoreFileGenerator implements VkFileGenerator {
             instance = new VkCoreFileGenerator();
             instance.configuration = VkCoreConfiguration.getInstance();
             instance.vkComponentFileGenerator = VkComponentFileGenerator.getInstance();
+            instance.vulkanExceptionGenerator = VulkanExceptionGenerator.getInstance();
         }
         return instance;
     }
 
     private VkCoreConfiguration configuration;
     private VkComponentFileGenerator vkComponentFileGenerator;
+    private VulkanExceptionGenerator vulkanExceptionGenerator;
 
     private VkCoreFileGenerator() {
     }
@@ -34,6 +38,15 @@ public @Service class VkCoreFileGenerator implements VkFileGenerator {
 
     @Override
     public @Mandatory List<File> generateFiles(@Mandatory VkRoot root) {
-        return vkComponentFileGenerator.generateFiles(root, configuration);
+        List<File> files = vkComponentFileGenerator.generateFiles(root, configuration);
+
+        files.addLast(
+            new File(
+                Path.of(configuration.getDirectory(), vulkanExceptionGenerator.getName() + ".java"),
+                vulkanExceptionGenerator.generateJava(configuration)
+            )
+        );
+        
+        return files;
     }
 }

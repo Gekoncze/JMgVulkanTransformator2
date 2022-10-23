@@ -1,2 +1,2 @@
-function generator
-    add call method with second argument to specify if to validate output for functions returning vk result
+field access still uses offset computed in java, which is not safe
+    rewrite it to use CPointer offset
