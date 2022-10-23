@@ -82,6 +82,10 @@ public class CValidatorGenerator implements CGenerator {
             )
         );
 
+        lines.addCollectionLast(
+            codeGenerator.generateJniFunction(configuration, function)
+        );
+
         return lines;
     }
 
