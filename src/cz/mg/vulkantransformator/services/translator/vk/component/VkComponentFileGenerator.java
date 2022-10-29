@@ -119,9 +119,7 @@ public @Service class VkComponentFileGenerator {
                         javaConfiguration.getJavaDirectory(),
                         javaConfiguration.getJavaDirectoryMd()
                     ),
-                    new List<>(
-                        "jmgc"
-                    ),
+                    configuration.getLibraryDependencies(),
                     new List<>(
                         "-Wl,--no-as-needed"
                     )

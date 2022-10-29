@@ -1,2 +1,0 @@
-fix error "undefined symbol: vkCreateInstance"
-    missing linker flag (-lvulkan) in configuration for makefile

@@ -29,6 +29,10 @@ public @Utility interface LibraryConfiguration {
         return new List<>();
     }
 
+    default @Mandatory List<String> getLibraryDependencies() {
+        return new List<>();
+    }
+
     default @Mandatory List<TypenameMap> getTypenameMaps() {
         return new List<>();
     }

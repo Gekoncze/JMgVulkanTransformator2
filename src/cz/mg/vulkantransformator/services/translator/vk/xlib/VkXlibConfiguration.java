@@ -71,6 +71,13 @@ public @Utility class VkXlibConfiguration implements LibraryConfiguration {
     }
 
     @Override
+    public @Mandatory List<String> getLibraryDependencies() {
+        return new List<>(
+            "jmgc", "vulkan"
+        );
+    }
+
+    @Override
     public @Mandatory List<TypenameMap> getTypenameMaps() {
         return new List<>(
             cTypenameMap,
