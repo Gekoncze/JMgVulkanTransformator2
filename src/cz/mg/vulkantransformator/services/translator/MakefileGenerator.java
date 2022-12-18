@@ -6,6 +6,8 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.collections.services.StringJoiner;
 
+import java.util.StringTokenizer;
+
 public @Service class MakefileGenerator {
     private static @Optional MakefileGenerator instance;
 
@@ -27,8 +29,11 @@ public @Service class MakefileGenerator {
         @Mandatory String nativeLibraryName,
         @Mandatory List<String> includes,
         @Mandatory List<String> libs,
-        @Mandatory List<String> linkerFlags
+        @Mandatory List<String> linkerFlags,
+        @Mandatory String javaPackage
     ) {
+        String jd = javaPackageToDirectory(javaPackage) + "/";
+        String cd = javaPackageToChangeDirectory(javaPackage);
         return new List<>(
             "JAR = " + javaLibraryName + ".jar",
             "SO = " + "lib" + nativeLibraryName + ".so",
@@ -41,7 +46,8 @@ public @Service class MakefileGenerator {
             "\n" +
             "java:\n" +
             "\tjavac *.java\n" +
-            "\tjar -cf ${JAR} *.class\n" +
+            "\tcd ../../..;\\\n" +
+            "\tjar -cf " + jd + "${JAR} " + jd + "*.class\n" +
             "\n" +
             "c:\n" +
             "\tgcc -c -fpic ${INCLUDES} *.c\n" +
@@ -77,5 +83,18 @@ public @Service class MakefileGenerator {
 
     private @Mandatory String getFlags(@Mandatory List<String> flags) {
         return stringJoiner.join(flags, " ");
+    }
+
+    private @Mandatory String javaPackageToDirectory(@Mandatory String javaPackage) {
+        return javaPackage.replace('.', '/');
+    }
+
+    private @Mandatory String javaPackageToChangeDirectory(@Mandatory String javaPackage) {
+        int count = new StringTokenizer(javaPackage, ".").countTokens();
+        List<String> parts = new List<>();
+        for (int i = 0; i < count; i++) {
+            parts.addLast("..");
+        }
+        return StringJoiner.getInstance().join(parts, "/");
     }
 }

@@ -122,7 +122,8 @@ public @Service class VkComponentFileGenerator {
                     configuration.getLibraryDependencies(),
                     new List<>(
                         "-Wl,--no-as-needed"
-                    )
+                    ),
+                    configuration.getJavaPackage()
                 )
             )
         );
