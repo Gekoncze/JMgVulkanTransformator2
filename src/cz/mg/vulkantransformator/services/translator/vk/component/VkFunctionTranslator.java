@@ -45,7 +45,7 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
 
     @Override
     public @Mandatory String getJavaName(@Mandatory VkFunction function) {
-        return function.getName().replaceFirst("vk", "Vkf");
+        return function.getName().replaceFirst("vk", "Vk");
     }
 
     @Override

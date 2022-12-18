@@ -4,7 +4,6 @@ import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.collections.list.ListItem;
 import cz.mg.collections.map.Map;
 import cz.mg.vulkantransformator.entities.parser.preprocessor.Definition;
 
@@ -34,16 +33,7 @@ public @Utility class DefinitionManager {
     }
 
     public void undefine(@Mandatory String name) {
-        for (
-            ListItem<Definition> item = list.getFirstItem();
-            item != null;
-            item = item.getNextItem()
-        ) {
-            if (item.get().getName().getText().equals(name)) {
-                list.remove(item);
-            }
-        }
-
+        list.removeIf(definition -> definition.getName().getText().equals(name));
         map.remove(name);
     }
 }

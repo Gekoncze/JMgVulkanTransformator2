@@ -71,37 +71,25 @@ public @Service class VkVariableParser implements VkParser {
     }
 
     private void removeConstTokens(@Mandatory List<Token> tokens) {
-        ListItem<Token> item = tokens.getFirstItem();
-        while (item != null) {
-            ListItem<Token> nextItem = item.getNextItem();
-            if (item.get().getText().equals("const")) {
-                tokens.remove(item);
-            }
-            item = nextItem;
-        }
+        tokens.removeIf(token -> token.getText().equals("const"));
     }
 
     private void removeStructTokens(@Mandatory List<Token> tokens) {
-        ListItem<Token> item = tokens.getFirstItem();
-        while (item != null) {
-            ListItem<Token> nextItem = item.getNextItem();
-            if (item.get().getText().equals("struct")) {
-                tokens.remove(item);
-            }
-            item = nextItem;
-        }
+        tokens.removeIf(token -> token.getText().equals("struct"));
     }
 
     private int removePointerTokens(@Mandatory List<Token> tokens) {
-        ListItem<Token> item = tokens.getFirstItem();
+        int count = countPointerTokens(tokens);
+        tokens.removeIf(token -> token.getText().equals("*"));
+        return count;
+    }
+
+    private int countPointerTokens(@Mandatory List<Token> tokens) {
         int count = 0;
-        while (item != null) {
-            ListItem<Token> nextItem = item.getNextItem();
-            if (item.get().getText().equals("*")) {
-                tokens.remove(item);
+        for (Token token : tokens) {
+            if (token.getText().equals("*")) {
                 count++;
             }
-            item = nextItem;
         }
         return count;
     }
@@ -133,9 +121,9 @@ public @Service class VkVariableParser implements VkParser {
                 throw new ParseException(openingItem.get(), "Illegal array declaration.");
             }
             ListItem<Token> numberItem = openingItem.getNextItem();
-            tokens.remove(openingItem);
-            tokens.remove(numberItem);
-            tokens.remove(closingItem);
+            tokens.removeItem(openingItem);
+            tokens.removeItem(numberItem);
+            tokens.removeItem(closingItem);
             return Integer.parseInt(numberItem.get().getText());
         } else if (openingItem != null) {
             throw new ParseException(openingItem.get(), "Missing right array bracket.");
