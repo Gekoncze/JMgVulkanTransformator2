@@ -33,7 +33,12 @@ public @Utility class VkAndroidConfiguration implements LibraryConfiguration {
     }
 
     @Override
-    public @Mandatory String getLibraryName() {
+    public @Mandatory String getJavaLibraryName() {
+        return "JMgVulkanAndroid";
+    }
+
+    @Override
+    public @Mandatory String getNativeLibraryName() {
         return "jmgvulkanandroid";
     }
 

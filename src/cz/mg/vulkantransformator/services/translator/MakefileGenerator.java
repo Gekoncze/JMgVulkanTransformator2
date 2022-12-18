@@ -5,7 +5,6 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.collections.services.StringJoiner;
-import cz.mg.vulkantransformator.entities.filesystem.File;
 
 public @Service class MakefileGenerator {
     private static @Optional MakefileGenerator instance;
@@ -24,57 +23,36 @@ public @Service class MakefileGenerator {
     }
 
     public @Mandatory List<String> create(
-        @Mandatory List<File> files,
-        @Mandatory String name,
+        @Mandatory String javaLibraryName,
+        @Mandatory String nativeLibraryName,
         @Mandatory List<String> includes,
         @Mandatory List<String> libs,
         @Mandatory List<String> linkerFlags
     ) {
         return new List<>(
-            "SOURCES = " + getSources(files),
-            "OBJECTS = " + getObjects(files),
+            "JAR = " + javaLibraryName + ".jar",
+            "SO = " + "lib" + nativeLibraryName + ".so",
             "INCLUDES = " + getIncludes(includes),
             "LIBS = " + getLibs(libs),
-            "NAME = " + "lib" + name + ".so",
             "LFLAGS = " + getFlags(linkerFlags),
-            "",
-            "${NAME}:${OBJ}",
-            "\tgcc -c -fpic ${INCLUDES} ${SOURCES}",
-            "\tgcc -o ${NAME} -shared ${LFLAGS} ${LIBS} ${OBJECTS}",
-            "",
-            "clean:",
-            "\trm -f " + getObjects(files),
-            "\trm -f " + "lib" + name + ".so"
+            "\n",
+            "help:\n" +
+            "\techo \"Please select target: java, c, clean.\"\n" +
+            "\n" +
+            "java:\n" +
+            "\tjavac *.java\n" +
+            "\tjar -cf ${JAR} *.class\n" +
+            "\n" +
+            "c:\n" +
+            "\tgcc -c -fpic ${INCLUDES} *.c\n" +
+            "\tgcc -o ${SO} -shared ${LFLAGS} ${LIBS} *.o",
+            "\n" +
+            "clean:\n" +
+            "\trm -f *.class\n" +
+            "\trm -f *.o\n" +
+            "\trm -f *.so\n" +
+            "\trm -f *.jar"
         );
-    }
-
-    private @Mandatory String getSources(@Mandatory List<File> files) {
-        StringBuilder sources = new StringBuilder();
-        for (File file : files) {
-            if (file.getPath().toString().endsWith(".c")) {
-                if (!file.getLines().isEmpty()) {
-                    String fileName = file.getPath().getFileName().toString();
-                    sources.append(fileName);
-                    sources.append(" ");
-                }
-            }
-        }
-        return sources.toString();
-    }
-
-
-    private @Mandatory String getObjects(@Mandatory List<File> files) {
-        StringBuilder objects = new StringBuilder();
-        for (File file : files) {
-            if (file.getPath().toString().endsWith(".c")) {
-                if (!file.getLines().isEmpty()) {
-                    String fileName = file.getPath().getFileName().toString().replace(".c", ".o");
-                    objects.append(fileName);
-                    objects.append(" ");
-                }
-            }
-        }
-        return objects.toString();
     }
 
     private @Mandatory String getIncludes(@Mandatory List<String> includeList) {

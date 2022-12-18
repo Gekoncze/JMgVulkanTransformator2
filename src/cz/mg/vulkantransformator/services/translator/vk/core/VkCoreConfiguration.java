@@ -32,8 +32,13 @@ public @Utility class VkCoreConfiguration implements LibraryConfiguration {
     }
 
     @Override
-    public @Mandatory String getLibraryName() {
-        return "jmgvulkan";
+    public @Mandatory String getJavaLibraryName() {
+        return "JMgVulkanCore";
+    }
+
+    @Override
+    public @Mandatory String getNativeLibraryName() {
+        return "jmgvulkancore";
     }
 
     @Override

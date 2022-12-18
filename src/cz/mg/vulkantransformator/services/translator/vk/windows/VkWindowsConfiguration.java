@@ -33,7 +33,12 @@ public @Utility class VkWindowsConfiguration implements LibraryConfiguration {
     }
 
     @Override
-    public @Mandatory String getLibraryName() {
+    public @Mandatory String getJavaLibraryName() {
+        return "JMgVulkanWindows";
+    }
+
+    @Override
+    public @Mandatory String getNativeLibraryName() {
         return "jmgvulkanwindows";
     }
 

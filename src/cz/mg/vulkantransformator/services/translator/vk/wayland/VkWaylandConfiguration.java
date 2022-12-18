@@ -35,7 +35,12 @@ public @Utility class VkWaylandConfiguration implements LibraryConfiguration {
     }
 
     @Override
-    public @Mandatory String getLibraryName() {
+    public @Mandatory String getJavaLibraryName() {
+        return "JMgVulkanWayland";
+    }
+
+    @Override
+    public @Mandatory String getNativeLibraryName() {
         return "jmgvulkanwayland";
     }
 

@@ -29,7 +29,12 @@ public @Utility class CConfiguration implements LibraryConfiguration {
     }
 
     @Override
-    public @Mandatory String getLibraryName() {
+    public @Mandatory String getJavaLibraryName() {
+        return "JMgC";
+    }
+
+    @Override
+    public @Mandatory String getNativeLibraryName() {
         return "jmgc";
     }
 

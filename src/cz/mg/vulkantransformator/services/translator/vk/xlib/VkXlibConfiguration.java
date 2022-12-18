@@ -33,7 +33,12 @@ public @Utility class VkXlibConfiguration implements LibraryConfiguration {
     }
 
     @Override
-    public @Mandatory String getLibraryName() {
+    public @Mandatory String getJavaLibraryName() {
+        return "JMgVulkanXlib";
+    }
+
+    @Override
+    public @Mandatory String getNativeLibraryName() {
         return "jmgvulkanxlib";
     }
 

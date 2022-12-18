@@ -33,7 +33,12 @@ public @Utility class VkMacosConfiguration implements LibraryConfiguration {
     }
 
     @Override
-    public @Mandatory String getLibraryName() {
+    public @Mandatory String getJavaLibraryName() {
+        return "JMgVulkanMacos";
+    }
+
+    @Override
+    public @Mandatory String getNativeLibraryName() {
         return "jmgvulkanmacos";
     }
 

@@ -97,7 +97,7 @@ public @Service class CodeGenerator {
         lines.addCollectionLast(
             new List<>(
                 "public class " + name + " {",
-                "    public static final String NAME = \"" + configuration.getLibraryName() + "\";",
+                "    public static final String NAME = \"" + configuration.getNativeLibraryName() + "\";",
                 "",
                 "    public static void load() {",
                 "        System.loadLibrary(NAME);",

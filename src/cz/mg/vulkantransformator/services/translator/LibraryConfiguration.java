@@ -6,7 +6,8 @@ import cz.mg.collections.list.List;
 
 public @Utility interface LibraryConfiguration {
     @Mandatory String getName();
-    @Mandatory String getLibraryName();
+    @Mandatory String getJavaLibraryName();
+    @Mandatory String getNativeLibraryName();
     @Mandatory String getJavaPackage();
 
     default @Mandatory String getSubModulePrefix() {

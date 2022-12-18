@@ -85,8 +85,8 @@ public @Service class CFileGenerator {
             new File(
                 Path.of(configuration.getDirectory(), "makefile"),
                 makefileGenerator.create(
-                    files,
-                    configuration.getLibraryName(),
+                    configuration.getJavaLibraryName(),
+                    configuration.getNativeLibraryName(),
                     new List<>(
                         javaConfiguration.getJavaDirectory(),
                         javaConfiguration.getJavaDirectoryMd()
