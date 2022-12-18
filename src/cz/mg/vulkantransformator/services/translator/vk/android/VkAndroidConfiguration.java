@@ -66,6 +66,14 @@ public @Utility class VkAndroidConfiguration implements LibraryConfiguration {
     }
 
     @Override
+    public @Mandatory List<String> getJavaLibraryDependencies() {
+        return new List<>(
+            "../../c/JMgC.jar",
+            "../JMgVulkanCore.jar"
+        );
+    }
+
+    @Override
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
             "#define VK_USE_PLATFORM_ANDROID_KHR",
@@ -77,7 +85,7 @@ public @Utility class VkAndroidConfiguration implements LibraryConfiguration {
     }
 
     @Override
-    public @Mandatory List<String> getLibraryDependencies() {
+    public @Mandatory List<String> getNativeLibraryDependencies() {
         return new List<>(
             "jmgc", "vulkan"
         );

@@ -93,7 +93,8 @@ public @Service class CFileGenerator {
                     ),
                     new List<>(),
                     new List<>(),
-                    configuration.getJavaPackage()
+                    configuration.getJavaPackage(),
+                    configuration.getJavaLibraryDependencies()
                 )
             )
         );

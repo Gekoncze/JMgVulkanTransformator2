@@ -65,6 +65,15 @@ public @Utility class VkIosConfiguration implements LibraryConfiguration {
         );
     }
 
+
+    @Override
+    public @Mandatory List<String> getJavaLibraryDependencies() {
+        return new List<>(
+            "../../c/JMgC.jar",
+            "../JMgVulkanCore.jar"
+        );
+    }
+
     @Override
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
@@ -75,7 +84,7 @@ public @Utility class VkIosConfiguration implements LibraryConfiguration {
     }
 
     @Override
-    public @Mandatory List<String> getLibraryDependencies() {
+    public @Mandatory List<String> getNativeLibraryDependencies() {
         return new List<>(
             "jmgc", "vulkan"
         );

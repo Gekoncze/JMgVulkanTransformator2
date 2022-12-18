@@ -26,11 +26,15 @@ public @Utility interface LibraryConfiguration {
         return new List<>();
     }
 
+    default @Mandatory List<String> getJavaLibraryDependencies() {
+        return new List<>();
+    }
+
     default @Mandatory List<String> getNativeDependencies() {
         return new List<>();
     }
 
-    default @Mandatory List<String> getLibraryDependencies() {
+    default @Mandatory List<String> getNativeLibraryDependencies() {
         return new List<>();
     }
 

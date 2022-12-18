@@ -66,6 +66,14 @@ public @Utility class VkWindowsConfiguration implements LibraryConfiguration {
     }
 
     @Override
+    public @Mandatory List<String> getJavaLibraryDependencies() {
+        return new List<>(
+            "../../c/JMgC.jar",
+            "../JMgVulkanCore.jar"
+        );
+    }
+
+    @Override
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
             "VK_USE_PLATFORM_WIN32_KHR",
@@ -75,7 +83,7 @@ public @Utility class VkWindowsConfiguration implements LibraryConfiguration {
     }
 
     @Override
-    public @Mandatory List<String> getLibraryDependencies() {
+    public @Mandatory List<String> getNativeLibraryDependencies() {
         return new List<>(
             "jmgc", "vulkan"
         );

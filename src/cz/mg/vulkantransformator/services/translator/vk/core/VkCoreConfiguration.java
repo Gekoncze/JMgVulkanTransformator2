@@ -59,6 +59,13 @@ public @Utility class VkCoreConfiguration implements LibraryConfiguration {
     }
 
     @Override
+    public @Mandatory List<String> getJavaLibraryDependencies() {
+        return new List<>(
+            "../c/JMgC.jar"
+        );
+    }
+
+    @Override
     public @Mandatory List<String> getNativeDependencies() {
         return new List<>(
             "#include <vulkan/vulkan.h>",
@@ -67,7 +74,7 @@ public @Utility class VkCoreConfiguration implements LibraryConfiguration {
     }
 
     @Override
-    public @Mandatory List<String> getLibraryDependencies() {
+    public @Mandatory List<String> getNativeLibraryDependencies() {
         return new List<>(
             "jmgc", "vulkan"
         );

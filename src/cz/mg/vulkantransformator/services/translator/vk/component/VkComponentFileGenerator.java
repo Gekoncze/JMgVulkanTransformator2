@@ -119,11 +119,12 @@ public @Service class VkComponentFileGenerator {
                         javaConfiguration.getJavaDirectory(),
                         javaConfiguration.getJavaDirectoryMd()
                     ),
-                    configuration.getLibraryDependencies(),
+                    configuration.getNativeLibraryDependencies(),
                     new List<>(
                         "-Wl,--no-as-needed"
                     ),
-                    configuration.getJavaPackage()
+                    configuration.getJavaPackage(),
+                    configuration.getJavaLibraryDependencies()
                 )
             )
         );

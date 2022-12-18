@@ -30,7 +30,8 @@ public @Service class MakefileGenerator {
         @Mandatory List<String> includes,
         @Mandatory List<String> libs,
         @Mandatory List<String> linkerFlags,
-        @Mandatory String javaPackage
+        @Mandatory String javaPackage,
+        @Mandatory List<String> classPaths
     ) {
         String jd = javaPackageToDirectory(javaPackage) + "/";
         String cd = javaPackageToChangeDirectory(javaPackage);
@@ -45,8 +46,8 @@ public @Service class MakefileGenerator {
             "\techo \"Please select target: java, c, clean.\"\n" +
             "\n" +
             "java:\n" +
-            "\tjavac *.java\n" +
-            "\tcd ../../..;\\\n" +
+            "\tjavac -cp \"" + getClassPath(classPaths) + "\" *.java\n" +
+            "\tcd " + cd + ";\\\n" +
             "\tjar -cf " + jd + "${JAR} " + jd + "*.class\n" +
             "\n" +
             "c:\n" +
@@ -95,6 +96,14 @@ public @Service class MakefileGenerator {
         for (int i = 0; i < count; i++) {
             parts.addLast("..");
         }
-        return StringJoiner.getInstance().join(parts, "/");
+        return stringJoiner.join(parts, "/");
+    }
+
+    private @Mandatory String getClassPath(@Mandatory List<String> classPaths) {
+        if (classPaths.isEmpty()) {
+            return ".";
+        } else {
+            return ".:" + stringJoiner.join(classPaths, ":");
+        }
     }
 }
