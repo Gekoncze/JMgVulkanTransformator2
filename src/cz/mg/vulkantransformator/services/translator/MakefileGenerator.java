@@ -51,7 +51,7 @@ public @Service class MakefileGenerator {
             "\tjar -cf " + jd + "${JAR} " + jd + "*.class\n" +
             "\n" +
             "c:\n" +
-            "\tgcc -c -fpic ${INCLUDES} *.c\n" +
+            "\tgcc -w -c -fpic ${INCLUDES} *.c\n" +
             "\tgcc -o ${SO} -shared ${LFLAGS} ${LIBS} *.o",
             "\n" +
             "clean:\n" +
