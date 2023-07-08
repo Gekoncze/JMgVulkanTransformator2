@@ -90,7 +90,7 @@ public @Test class PreprocessorTest {
         TokenParser tokenParser = TokenParser.getInstance();
         Preprocessor preprocessor = Preprocessor.getInstance();
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             preprocessor.preprocess(
                 tokenParser.parse(new List<>(
                     new Line(0, "#ifndef X"),
@@ -99,9 +99,9 @@ public @Test class PreprocessorTest {
                 )),
                 new List<>(createDefinition("foo"))
             );
-        });
+        }).throwsException(ParseException.class);
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             preprocessor.preprocess(
                 tokenParser.parse(new List<>(
                     new Line(0, "#ifndef X"),
@@ -110,9 +110,9 @@ public @Test class PreprocessorTest {
                 )),
                 new List<>(createDefinition("X"))
             );
-        });
+        }).doesNotThrowAnyException();
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             preprocessor.preprocess(
                 tokenParser.parse(new List<>(
                     new Line(0, "#ifdef X"),
@@ -121,9 +121,9 @@ public @Test class PreprocessorTest {
                 )),
                 new List<>(createDefinition("foo"))
             );
-        });
+        }).doesNotThrowAnyException();
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             preprocessor.preprocess(
                 tokenParser.parse(new List<>(
                     new Line(0, "#ifdef X"),
@@ -132,7 +132,7 @@ public @Test class PreprocessorTest {
                 )),
                 new List<>(createDefinition("X"))
             );
-        });
+        }).throwsException(ParseException.class);
     }
 
     private void testRemainingTokens(@Mandatory List<String> expectedTokens, @Mandatory List<Token> actualTokens) {

@@ -21,7 +21,7 @@ public @Test class PatternMatcherTest {
     private void testMatch() {
         PatternMatcher patternMatcher = PatternMatcher.getInstance();
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             patternMatcher.matches(
                 createStatement("typedef", "struct", "test", "{", "}", ";"),
                 false,
@@ -30,7 +30,7 @@ public @Test class PatternMatcherTest {
                 Matchers.any(),
                 Matchers.text("{")
             );
-        });
+        }).doesNotThrowAnyException();
 
         Assert.assertEquals(true, patternMatcher.matches(
             createStatement("typedef", "struct", "test", "{", "}", ";"),
@@ -50,7 +50,7 @@ public @Test class PatternMatcherTest {
             Matchers.text("{")
         ));
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             patternMatcher.matches(
                 createStatement("typedef", "struct"),
                 false,
@@ -59,7 +59,7 @@ public @Test class PatternMatcherTest {
                 Matchers.any(),
                 Matchers.text("{")
             );
-        });
+        }).doesNotThrowAnyException();
 
         Assert.assertEquals(false, patternMatcher.matches(
             createStatement("typedef", "struct"),

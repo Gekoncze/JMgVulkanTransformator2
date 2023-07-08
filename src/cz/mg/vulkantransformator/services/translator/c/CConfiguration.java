@@ -1,13 +1,13 @@
 package cz.mg.vulkantransformator.services.translator.c;
 
-import cz.mg.annotations.classes.Utility;
+import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.TypenameMap;
 
-public @Utility class CConfiguration implements LibraryConfiguration {
+public @Component class CConfiguration implements LibraryConfiguration {
     private static @Optional CConfiguration instance;
 
     public static @Mandatory CConfiguration getInstance() {

@@ -12,17 +12,26 @@ import cz.mg.vulkantransformator.services.parser.splicer.SplicerTest;
 
 public @Test class AllTests {
     public static void main(String[] args) {
-        LineParserTest.main(args);
-        TokenParserTest.main(args);
-        StatementParserTest.main(args);
+        // cz.mg.vulkantransformator.services.matcher
         PatternMatcherTest.main(args);
-        TokenValidatorTest.main(args);
+
+        // cz.mg.vulkantransformator.services.other
         TokenRemoverTest.main(args);
-        PreprocessorTest.main(args);
-        DefinitionManagerTest.main(args);
-        TokenPreprocessorTest.main(args);
-        ErrorParserTest.main(args);
+        TokenValidatorTest.main(args);
+
+        // cz.mg.vulkantransformator.services.preprocessor
         DefineParserTest.main(args);
+        DefinitionManagerTest.main(args);
+        ErrorParserTest.main(args);
+        PreprocessorTest.main(args);
+        TokenPreprocessorTest.main(args);
+
+        // cz.mg.vulkantransformator.services.segmentation
+        LineParserTest.main(args);
+        StatementParserTest.main(args);
+        TokenParserTest.main(args);
+
+        // cz.mg.vulkantransformator.services.splicer
         SplicerTest.main(args);
     }
 }

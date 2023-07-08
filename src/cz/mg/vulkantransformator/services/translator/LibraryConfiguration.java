@@ -1,10 +1,10 @@
 package cz.mg.vulkantransformator.services.translator;
 
-import cz.mg.annotations.classes.Utility;
+import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.collections.list.List;
 
-public @Utility interface LibraryConfiguration {
+public @Component interface LibraryConfiguration {
     @Mandatory String getName();
     @Mandatory String getJavaLibraryName();
     @Mandatory String getNativeLibraryName();

@@ -21,49 +21,49 @@ public @Test class TokenValidatorTest {
     private void testValidateText() {
         TokenValidator validator = TokenValidator.getInstance();
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             validator.validate(createNameToken("FooBar"), "FooBar");
-        });
+        }).doesNotThrowAnyException();
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             validator.validate(createSpecialToken("*"), "*");
-        });
+        }).doesNotThrowAnyException();
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             validator.validate(createNameToken("FooBar"), "Foo");
-        });
+        }).throwsException(ParseException.class);
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             validator.validate(createNameToken("Foo"), "FooBar");
-        });
+        }).throwsException(ParseException.class);
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             validator.validate(createNameToken("FooBar"), "*");
-        });
+        }).throwsException(ParseException.class);
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             validator.validate(createSpecialToken("*"), "FooBar");
-        });
+        }).throwsException(ParseException.class);
     }
 
     private void testValidateType() {
         TokenValidator validator = TokenValidator.getInstance();
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             validator.validate(createNameToken("FooBar"), TokenType.NAME);
-        });
+        }).doesNotThrowAnyException();
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             validator.validate(createSpecialToken("*"), TokenType.SPECIAL);
-        });
+        }).doesNotThrowAnyException();
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             validator.validate(createNameToken("FooBar"), TokenType.SPECIAL);
-        });
+        }).throwsException(ParseException.class);
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             validator.validate(createSpecialToken("*"), TokenType.NAME);
-        });
+        }).throwsException(ParseException.class);
     }
 
     private @Mandatory Token createNameToken(@Mandatory String text) {

@@ -1,6 +1,6 @@
 package cz.mg.vulkantransformator.services.translator.vk.core;
 
-import cz.mg.annotations.classes.Utility;
+import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
@@ -8,7 +8,7 @@ import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.TypenameMap;
 import cz.mg.vulkantransformator.services.translator.c.CTypenameMap;
 
-public @Utility class VkCoreConfiguration implements LibraryConfiguration {
+public @Component class VkCoreConfiguration implements LibraryConfiguration {
     private static @Optional VkCoreConfiguration instance;
 
     public static @Mandatory VkCoreConfiguration getInstance() {

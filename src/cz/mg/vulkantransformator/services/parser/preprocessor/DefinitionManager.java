@@ -1,19 +1,20 @@
 package cz.mg.vulkantransformator.services.parser.preprocessor;
 
-import cz.mg.annotations.classes.Utility;
+import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.collections.components.Capacity;
 import cz.mg.collections.list.List;
 import cz.mg.collections.map.Map;
 import cz.mg.vulkantransformator.entities.parser.preprocessor.Definition;
 
-public @Utility class DefinitionManager {
+public @Component class DefinitionManager {
     private final @Mandatory List<Definition> list;
     private final @Mandatory Map<String, Definition> map;
 
     public DefinitionManager(@Mandatory List<Definition> list) {
         this.list = list;
-        this.map = new Map<>(100);
+        this.map = new Map<>(new Capacity(100));
         for (Definition definition : list) {
             map.set(definition.getName().getText(), definition);
         }

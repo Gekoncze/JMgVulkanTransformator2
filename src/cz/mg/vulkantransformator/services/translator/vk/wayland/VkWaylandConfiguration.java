@@ -1,6 +1,6 @@
 package cz.mg.vulkantransformator.services.translator.vk.wayland;
 
-import cz.mg.annotations.classes.Utility;
+import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
@@ -9,7 +9,7 @@ import cz.mg.vulkantransformator.services.translator.TypenameMap;
 import cz.mg.vulkantransformator.services.translator.c.CTypenameMap;
 import cz.mg.vulkantransformator.services.translator.vk.core.VkCoreTypenameMap;
 
-public @Utility class VkWaylandConfiguration implements LibraryConfiguration {
+public @Component class VkWaylandConfiguration implements LibraryConfiguration {
     private static @Optional VkWaylandConfiguration instance;
 
     public static @Mandatory VkWaylandConfiguration getInstance() {

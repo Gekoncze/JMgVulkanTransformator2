@@ -3,6 +3,7 @@ package cz.mg.vulkantransformator.services.translator.vk.wayland;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.collections.components.Capacity;
 import cz.mg.collections.list.List;
 import cz.mg.collections.map.Map;
 import cz.mg.collections.pair.Pair;
@@ -23,7 +24,7 @@ public @Service class WaylandTypenameMap implements TypenameMap {
         new Pair<>("wl_surface", "WlSurface")
     );
 
-    private static final Map<String, String> MAP = new Map<>(LIST.count() * 2, LIST);
+    private static final Map<String, String> MAP = new Map<>(new Capacity(LIST.count() * 2), LIST);
 
     private WaylandTypenameMap() {
     }

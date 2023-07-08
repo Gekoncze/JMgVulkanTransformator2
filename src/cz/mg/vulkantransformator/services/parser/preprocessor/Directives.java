@@ -1,8 +1,8 @@
 package cz.mg.vulkantransformator.services.parser.preprocessor;
 
-import cz.mg.annotations.classes.Utility;
+import cz.mg.annotations.classes.Component;
 
-public @Utility class Directives {
+public @Component class Directives {
     public static final String INCLUDE = "include";
     public static final String IF = "if";
     public static final String ELIF = "elif";

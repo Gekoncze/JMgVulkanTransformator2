@@ -3,6 +3,7 @@ package cz.mg.vulkantransformator.services.translator.vk.component;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.collections.components.Capacity;
 import cz.mg.collections.list.List;
 import cz.mg.collections.map.Map;
 import cz.mg.vulkantransformator.entities.filesystem.File;
@@ -57,7 +58,7 @@ public @Service class VkComponentFileGenerator {
 
         List<File> files = new List<>();
 
-        Map<Class, VkTranslator> translatorMap = new Map<>(100);
+        Map<Class, VkTranslator> translatorMap = new Map<>(new Capacity(100));
         for (VkTranslator translator : translators) {
             translatorMap.set(translator.targetClass(), translator);
         }

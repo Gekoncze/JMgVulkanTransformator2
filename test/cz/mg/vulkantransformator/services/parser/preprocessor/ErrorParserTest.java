@@ -27,9 +27,9 @@ public @Test class ErrorParserTest {
     }
 
     private void testParse(@Mandatory String line, @Mandatory String errorMessage) {
-        ParseException exception = Assert.assertExceptionThrown(ParseException.class, () -> {
+        ParseException exception = Assert.assertThatCode(() -> {
             ErrorParser.getInstance().parse(parseLine(line));
-        });
+        }).throwsException(ParseException.class);
 
         Assert.assertEquals(true, exception.getMessage().contains(errorMessage));
     }

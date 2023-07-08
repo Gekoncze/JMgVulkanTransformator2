@@ -1,10 +1,10 @@
 package cz.mg.vulkantransformator.services.parser.matcher;
 
-import cz.mg.annotations.classes.Utility;
+import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.vulkantransformator.entities.parser.code.TokenType;
 
-public @Utility class Matchers {
+public @Component class Matchers {
     public static @Mandatory Matcher any() {
         return token -> true;
     }

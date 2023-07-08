@@ -37,51 +37,51 @@ public @Test class TokenRemoverTest {
 
         // typedef struct Test { void * next ; } Test ;
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             Assert.assertEquals("typedef", tokenRemover.removeFirst(tokens, "typedef").getText());
-        });
+        }).doesNotThrowAnyException();
 
         // struct Test { void * next ; } Test ;
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             Assert.assertEquals("struct", tokenRemover.removeFirst(tokens, TokenType.NAME).getText());
-        });
+        }).doesNotThrowAnyException();
 
         // Test { void * next ; } Test ;
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             tokenRemover.removeFirst(tokens, "void");
-        });
+        }).throwsException(ParseException.class);
 
         // { void * next ; } Test ;
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             tokenRemover.removeFirst(tokens, TokenType.NAME);
-        });
+        }).throwsException(ParseException.class);
 
         // void * next ; } Test ;
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             Assert.assertEquals(";", tokenRemover.removeLast(tokens, ";").getText());
-        });
+        }).doesNotThrowAnyException();
 
         // void * next ; } Test
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             tokenRemover.removeLast(tokens, TokenType.SPECIAL);
-        });
+        }).throwsException(ParseException.class);
 
         // void * next ; }
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             Assert.assertEquals("}", tokenRemover.removeLast(tokens, TokenType.SPECIAL).getText());
-        });
+        }).doesNotThrowAnyException();
 
         // void * next ;
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             tokenRemover.removeLast(tokens, "next");
-        });
+        }).throwsException(ParseException.class);
 
         // void * next
 
@@ -90,31 +90,31 @@ public @Test class TokenRemoverTest {
         Assert.assertEquals("*", tokens.get(1).getText());
         Assert.assertEquals("next", tokens.get(2).getText());
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             tokenRemover.verifyNoMoreTokens(tokens);
-        });
+        }).throwsException(ParseException.class);
 
         tokens.clear();
 
-        Assert.assertExceptionNotThrown(() -> {
+        Assert.assertThatCode(() -> {
             tokenRemover.verifyNoMoreTokens(tokens);
-        });
+        }).doesNotThrowAnyException();
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             tokenRemover.removeFirst(tokens, "x");
-        });
+        }).throwsException(ParseException.class);
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             tokenRemover.removeFirst(tokens, TokenType.NAME);
-        });
+        }).throwsException(ParseException.class);
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             tokenRemover.removeLast(tokens, "x");
-        });
+        }).throwsException(ParseException.class);
 
-        Assert.assertExceptionThrown(ParseException.class, () -> {
+        Assert.assertThatCode(() -> {
             tokenRemover.removeLast(tokens, TokenType.NAME);
-        });
+        }).throwsException(ParseException.class);
     }
 
     private @Mandatory Token createNameToken(@Mandatory String text) {
