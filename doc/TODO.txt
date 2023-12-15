@@ -1,8 +1,16 @@
-rewrite constant translation
-    ideally all values should be loaded from c code
-    type recognition will still be in place to find out the correct data type
+### NOW ###
+    ...
 
-fix error during compilation of native code of xlib configuration
-    Display.c:11:50: error: invalid application of ‘sizeof’ to incomplete type ‘Display’ {aka ‘struct _XDisplay’}
+### SOON ###
+    reimplement c file writers
+        create c entities instead and then write them using library
 
-for all services, use proper synchronization in getInstance
+    rewrite constant translation
+        ideally all values should be loaded from c code
+        type recognition will still be in place to find out the correct data type
+
+    for all services, use proper synchronization in getInstance
+
+### LATER ###
+    fix error during compilation of native code of xlib configuration
+        Display.c:11:50: error: invalid application of ‘sizeof’ to incomplete type ‘Display’ {aka ‘struct _XDisplay’}
