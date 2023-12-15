@@ -1,4 +1,4 @@
-package cz.mg.vulkantransformator.services.parser;
+package cz.mg.vulkantransformator.services.converter;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
@@ -8,7 +8,7 @@ import cz.mg.c.preprocessor.processors.macro.entities.Macros;
 import cz.mg.collections.list.List;
 import cz.mg.tokenizer.exceptions.CodeException;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
-import cz.mg.vulkantransformator.services.parser.vk.*;
+import cz.mg.vulkantransformator.services.converter.vk.*;
 
 public @Service class VulkanConverter {
     private static volatile @Service VulkanConverter instance;

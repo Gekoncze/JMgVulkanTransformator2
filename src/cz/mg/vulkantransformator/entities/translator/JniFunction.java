@@ -4,6 +4,10 @@ import cz.mg.annotations.classes.Entity;
 import cz.mg.annotations.requirement.Required;
 import cz.mg.collections.list.List;
 
+/**
+ * @deprecated Should be replaced by a factory creating CFunction.
+ */
+@Deprecated
 public @Entity class JniFunction {
     private Boolean sstatic;
     private String output;

@@ -2,30 +2,33 @@ package cz.mg.vulkantransformator.services.translator.vk.windows;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.entities.filesystem.File;
+import cz.mg.file.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.translator.EmptyObjectFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.VkFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.component.VkComponentFileGenerator;
 
 public @Service class VkWindowsFileGenerator implements VkFileGenerator {
-    private static @Optional VkWindowsFileGenerator instance;
+    private static volatile @Service VkWindowsFileGenerator instance;
 
-    public static @Mandatory VkWindowsFileGenerator getInstance() {
+    public static @Service VkWindowsFileGenerator getInstance() {
         if (instance == null) {
-            instance = new VkWindowsFileGenerator();
-            instance.configuration = VkWindowsConfiguration.getInstance();
-            instance.vkLibraryCodeGenerator = VkComponentFileGenerator.getInstance();
-            instance.emptyObjectFileGenerator = EmptyObjectFileGenerator.getInstance();
+            synchronized (Service.class) {
+                if (instance == null) {
+                    instance = new VkWindowsFileGenerator();
+                    instance.configuration = VkWindowsConfiguration.getInstance();
+                    instance.vkLibraryCodeGenerator = VkComponentFileGenerator.getInstance();
+                    instance.emptyObjectFileGenerator = EmptyObjectFileGenerator.getInstance();
+                }
+            }
         }
         return instance;
     }
 
-    private VkWindowsConfiguration configuration;
-    private VkComponentFileGenerator vkLibraryCodeGenerator;
-    private EmptyObjectFileGenerator emptyObjectFileGenerator;
+    private @Service VkWindowsConfiguration configuration;
+    private @Service VkComponentFileGenerator vkLibraryCodeGenerator;
+    private @Service EmptyObjectFileGenerator emptyObjectFileGenerator;
 
     private VkWindowsFileGenerator() {
     }

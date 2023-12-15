@@ -1,10 +1,11 @@
 package cz.mg.vulkantransformator;
 
+import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.classes.Test;
-import cz.mg.vulkantransformator.entities.filesystem.File;
+import cz.mg.file.File;
+import cz.mg.file.FileReader;
 import cz.mg.vulkantransformator.entities.vulkan.*;
-import cz.mg.vulkantransformator.services.filesystem.FileReaderService;
-import cz.mg.vulkantransformator.services.parser.VulkanParser;
+import cz.mg.vulkantransformator.services.VulkanParser;
 
 import java.nio.file.Path;
 
@@ -20,11 +21,12 @@ public @Test class VulkanParserManualTest {
         System.out.println("OK");
     }
 
+    private final @Service FileReader reader = FileReader.getInstance();
+
     private void testTransformation() {
-        FileReaderService reader = FileReaderService.getInstance();
         VulkanParser parser = VulkanParser.getInstance();
         File file = new File(PATH, null);
-        reader.load(file);
+        reader.read(file);
         VkRoot root = parser.parse(file);
 
         for (VkComponent component : root.getComponents()) {

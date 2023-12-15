@@ -2,50 +2,56 @@ package cz.mg.vulkantransformator.services.translator.vk.component;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.components.Capacity;
 import cz.mg.collections.list.List;
 import cz.mg.collections.map.Map;
-import cz.mg.vulkantransformator.entities.filesystem.File;
+import cz.mg.collections.services.StringJoiner;
+import cz.mg.file.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
-import cz.mg.vulkantransformator.services.translator.JavaConfiguration;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.Index;
+import cz.mg.vulkantransformator.services.translator.JavaConfiguration;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
 import cz.mg.vulkantransformator.services.translator.MakefileGenerator;
+import cz.mg.vulkantransformator.services.translator.vk.Index;
 
 import java.nio.file.Path;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public @Service class VkComponentFileGenerator {
-    private static @Optional VkComponentFileGenerator instance;
+    private static volatile @Service VkComponentFileGenerator instance;
 
     public static @Mandatory VkComponentFileGenerator getInstance() {
         if (instance == null) {
-            instance = new VkComponentFileGenerator();
-            instance.translators = new List<>(
-                VkStructureTranslator.getInstance(),
-                VkUnionTranslator.getInstance(),
-                VkTypeTranslator.getInstance(),
-                VkEnumTranslator.getInstance(),
-                VkFlagsTranslator.getInstance(),
-                VkFunctionTranslator.getInstance(),
-                VkFunctionPointerTranslator.getInstance()
-            );
-            instance.constantTranslator = VkConstantsTranslator.getInstance();
-            instance.makefileGenerator = MakefileGenerator.getInstance();
-            instance.codeGenerator = CodeGenerator.getInstance();
-            instance.javaConfiguration = JavaConfiguration.getInstance();
+            synchronized (Service.class) {
+                if (instance == null) {
+                    instance = new VkComponentFileGenerator();
+                    instance.translators = new List<>(
+                        VkStructureTranslator.getInstance(),
+                        VkUnionTranslator.getInstance(),
+                        VkTypeTranslator.getInstance(),
+                        VkEnumTranslator.getInstance(),
+                        VkFlagsTranslator.getInstance(),
+                        VkFunctionTranslator.getInstance(),
+                        VkFunctionPointerTranslator.getInstance()
+                    );
+                    instance.constantTranslator = VkConstantsTranslator.getInstance();
+                    instance.makefileGenerator = MakefileGenerator.getInstance();
+                    instance.codeGenerator = CodeGenerator.getInstance();
+                    instance.javaConfiguration = JavaConfiguration.getInstance();
+                    instance.joiner = StringJoiner.getInstance();
+                }
+            }
         }
         return instance;
     }
 
-    private List<VkTranslator> translators;
-    private VkConstantsTranslator constantTranslator;
-    private MakefileGenerator makefileGenerator;
-    private CodeGenerator codeGenerator;
-    private JavaConfiguration javaConfiguration;
+    private @Service List<VkTranslator> translators;
+    private @Service VkConstantsTranslator constantTranslator;
+    private @Service MakefileGenerator makefileGenerator;
+    private @Service CodeGenerator codeGenerator;
+    private @Service JavaConfiguration javaConfiguration;
+    private @Service StringJoiner joiner;
 
     private VkComponentFileGenerator() {
     }
@@ -69,21 +75,21 @@ public @Service class VkComponentFileGenerator {
                 files.addLast(
                     new File(
                         Path.of(configuration.getDirectory(), translator.getJavaName(component) + ".java"),
-                        translator.translateJava(index, component, configuration)
+                        join(translator.translateJava(index, component, configuration))
                     )
                 );
 
                 files.addLast(
                     new File(
                         Path.of(configuration.getDirectory(), translator.getJavaName(component) + ".c"),
-                        translator.translateNative(index, component, configuration)
+                        join(translator.translateNative(index, component, configuration))
                     )
                 );
 
                 files.addLast(
                     new File(
                         Path.of(configuration.getDirectory(), translator.getJavaName(component) + ".h"),
-                        translator.translateNativeHeader(index, component, configuration)
+                        join(translator.translateNativeHeader(index, component, configuration))
                     )
                 );
             }
@@ -92,40 +98,42 @@ public @Service class VkComponentFileGenerator {
         files.addLast(
             new File(
                 Path.of(configuration.getDirectory(), constantTranslator.getName(configuration) + ".java"),
-                constantTranslator.translateJava(index, root, configuration)
+                join(constantTranslator.translateJava(index, root, configuration))
             )
         );
 
         files.addLast(
             new File(
                 Path.of(configuration.getDirectory(), constantTranslator.getName(configuration) + ".c"),
-                constantTranslator.translateNative(index, root, configuration)
+                join(constantTranslator.translateNative(index, root, configuration))
             )
         );
 
         files.addLast(
             new File(
                 Path.of(configuration.getDirectory(), getLibraryName(configuration) + ".java"),
-                codeGenerator.generateJavaLibraryClass(configuration, getLibraryName(configuration))
+                join(codeGenerator.generateJavaLibraryClass(configuration, getLibraryName(configuration)))
             )
         );
 
         files.addLast(
             new File(
                 Path.of(configuration.getDirectory(), "makefile"),
-                makefileGenerator.create(
-                    configuration.getJavaLibraryName(),
-                    configuration.getNativeLibraryName(),
-                    new List<>(
-                        javaConfiguration.getJavaDirectory(),
-                        javaConfiguration.getJavaDirectoryMd()
-                    ),
-                    configuration.getNativeLibraryDependencies(),
-                    new List<>(
-                        "-Wl,--no-as-needed"
-                    ),
-                    configuration.getJavaPackage(),
-                    configuration.getJavaLibraryDependencies()
+                join(
+                    makefileGenerator.create(
+                        configuration.getJavaLibraryName(),
+                        configuration.getNativeLibraryName(),
+                        new List<>(
+                            javaConfiguration.getJavaDirectory(),
+                            javaConfiguration.getJavaDirectoryMd()
+                        ),
+                        configuration.getNativeLibraryDependencies(),
+                        new List<>(
+                            "-Wl,--no-as-needed"
+                        ),
+                        configuration.getJavaPackage(),
+                        configuration.getJavaLibraryDependencies()
+                    )
                 )
             )
         );
@@ -135,5 +143,9 @@ public @Service class VkComponentFileGenerator {
 
     public @Mandatory String getLibraryName(@Mandatory LibraryConfiguration configuration) {
         return "Vk" + configuration.getSubModulePrefix() + "Library";
+    }
+
+    private @Mandatory String join(@Mandatory List<String> lines) {
+        return joiner.join(lines, "\n");
     }
 }

@@ -2,24 +2,30 @@ package cz.mg.vulkantransformator.services.translator;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
-import cz.mg.vulkantransformator.entities.filesystem.File;
+import cz.mg.collections.services.StringJoiner;
+import cz.mg.file.File;
 
 import java.nio.file.Path;
 
 public @Service class EmptyObjectFileGenerator {
-    private static @Optional EmptyObjectFileGenerator instance;
+    private static volatile @Service EmptyObjectFileGenerator instance;
 
-    public static @Mandatory EmptyObjectFileGenerator getInstance() {
+    public static @Service EmptyObjectFileGenerator getInstance() {
         if (instance == null) {
-            instance = new EmptyObjectFileGenerator();
-            instance.objectCodeGenerator = ObjectCodeGenerator.getInstance();
+            synchronized (Service.class) {
+                if (instance == null) {
+                    instance = new EmptyObjectFileGenerator();
+                    instance.objectCodeGenerator = ObjectCodeGenerator.getInstance();
+                    instance.joiner = StringJoiner.getInstance();
+                }
+            }
         }
         return instance;
     }
 
-    private ObjectCodeGenerator objectCodeGenerator;
+    private @Service ObjectCodeGenerator objectCodeGenerator;
+    private @Service StringJoiner joiner;
 
     private EmptyObjectFileGenerator() {
     }
@@ -32,11 +38,11 @@ public @Service class EmptyObjectFileGenerator {
         return new List<>(
             new File(
                 Path.of(configuration.getDirectory(), name + ".java"),
-                generateJava(name, configuration)
+                join(generateJava(name, configuration))
             ),
             new File(
                 Path.of(configuration.getDirectory(), name + ".c"),
-                generateNative(name, nativeName, configuration)
+                join(generateNative(name, nativeName, configuration))
             )
         );
     }
@@ -58,5 +64,9 @@ public @Service class EmptyObjectFileGenerator {
         List<String> lines = objectCodeGenerator.getCommonNativeHeading(name, nativeName, null, configuration);
         lines.addCollectionLast(objectCodeGenerator.getCommonNativeFooter());
         return lines;
+    }
+
+    private @Mandatory String join(@Mandatory List<String> lines) {
+        return joiner.join(lines, "\n");
     }
 }

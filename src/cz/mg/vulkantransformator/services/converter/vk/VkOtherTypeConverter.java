@@ -1,39 +1,35 @@
-package cz.mg.vulkantransformator.services.parser.vk;
+package cz.mg.vulkantransformator.services.converter.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.c.parser.entities.CMainEntity;
-import cz.mg.c.parser.entities.CTypedef;
-import cz.mg.c.parser.entities.CTypename;
+import cz.mg.c.parser.entities.CStruct;
 import cz.mg.vulkantransformator.entities.vulkan.VkType;
 
-public @Service class VkTypeConverter implements VkConverter {
-    private static volatile @Service VkTypeConverter instance;
+public @Service class VkOtherTypeConverter implements VkConverter {
+    private static volatile @Service VkOtherTypeConverter instance;
 
-    public static @Service VkTypeConverter getInstance() {
+    public static @Service VkOtherTypeConverter getInstance() {
         if (instance == null) {
             synchronized (Service.class) {
                 if (instance == null) {
-                    instance = new VkTypeConverter();
+                    instance = new VkOtherTypeConverter();
                 }
             }
         }
         return instance;
     }
 
-    private VkTypeConverter() {
+    private VkOtherTypeConverter() {
     }
 
     /**
-     * typedef uint64_t VkQueue
+     * struct ANativeWindow
      */
     @Override
     public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof CTypedef) {
-            CTypedef typedef = (CTypedef) entity;
-            return typedef.getType().getTypename().getClass().equals(CTypename.class);
-        }
-        return false;
+        return entity instanceof CStruct
+            && ((CStruct) entity).getVariables() == null;
     }
 
     @Override

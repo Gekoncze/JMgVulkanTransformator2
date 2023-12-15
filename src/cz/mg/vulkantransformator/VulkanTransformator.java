@@ -1,14 +1,14 @@
-package cz.mg.vulkantransformator.services;
+package cz.mg.vulkantransformator;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.collections.list.List;
+import cz.mg.file.File;
+import cz.mg.file.FileReader;
+import cz.mg.file.FileWriter;
 import cz.mg.tokenizer.exceptions.CodeException;
-import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
-import cz.mg.vulkantransformator.services.filesystem.FileReaderService;
-import cz.mg.vulkantransformator.services.filesystem.FileWriterService;
-import cz.mg.vulkantransformator.services.parser.VulkanParser;
+import cz.mg.vulkantransformator.services.VulkanParser;
 import cz.mg.vulkantransformator.services.translator.c.CFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.VkFileGenerator;
 import cz.mg.vulkantransformator.services.translator.vk.android.VkAndroidFileGenerator;
@@ -30,8 +30,8 @@ public @Service class VulkanTransformator {
             synchronized (Service.class) {
                 if (instance == null) {
                     instance = new VulkanTransformator();
-                    instance.fileReaderService = FileReaderService.getInstance();
-                    instance.fileWriterService = FileWriterService.getInstance();
+                    instance.fileReader = FileReader.getInstance();
+                    instance.fileWriter = FileWriter.getInstance();
                     instance.vulkanParser = VulkanParser.getInstance();
                     instance.cFileGenerator = CFileGenerator.getInstance();
                     instance.vkLibraryFileGenerators = new List<>(
@@ -50,8 +50,8 @@ public @Service class VulkanTransformator {
         return instance;
     }
 
-    private @Service FileReaderService fileReaderService;
-    private @Service FileWriterService fileWriterService;
+    private @Service FileReader fileReader;
+    private @Service FileWriter fileWriter;
     private @Service VulkanParser vulkanParser;
     private @Service CFileGenerator cFileGenerator;
     private @Service List<VkFileGenerator> vkLibraryFileGenerators;
@@ -96,19 +96,19 @@ public @Service class VulkanTransformator {
     private @Mandatory File read(@Mandatory Path inputDirectory, @Mandatory String name) {
         Path path = inputDirectory.resolve(name).toAbsolutePath();
         File file = new File(path, null);
-        fileReaderService.load(file);
+        fileReader.read(file);
         return file;
     }
 
     private void write(@Mandatory Path outputDirectory, @Mandatory File file) {
         Path outputPath = outputDirectory.resolve(file.getPath());
         file.setPath(outputPath);
-        fileWriterService.save(file);
+        fileWriter.write(file);
     }
 
     private void write(@Mandatory Path outputDirectory, @Mandatory List<File> files) {
         for (File file : files) {
-            if (file.getLines().count() > 0) {
+            if (file.getContent().length() > 0) {
                 write(outputDirectory, file);
             }
         }
