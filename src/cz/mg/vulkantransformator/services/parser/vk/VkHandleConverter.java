@@ -3,8 +3,8 @@ package cz.mg.vulkantransformator.services.parser.vk;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.c.parser.entities.CMainEntity;
-import cz.mg.c.parser.entities.Struct;
-import cz.mg.c.parser.entities.Typedef;
+import cz.mg.c.parser.entities.CStruct;
+import cz.mg.c.parser.entities.CTypedef;
 import cz.mg.vulkantransformator.entities.vulkan.VkHandle;
 
 public @Service class VkHandleConverter implements VkConverter {
@@ -29,9 +29,9 @@ public @Service class VkHandleConverter implements VkConverter {
      */
     @Override
     public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof Typedef) {
-            Typedef typedef = (Typedef) entity;
-            boolean isStruct = typedef.getType().getTypename() instanceof Struct;
+        if (entity instanceof CTypedef) {
+            CTypedef typedef = (CTypedef) entity;
+            boolean isStruct = typedef.getType().getTypename() instanceof CStruct;
             boolean isPointer = typedef.getType().getPointers().count() == 1;
             return isStruct && isPointer;
         }

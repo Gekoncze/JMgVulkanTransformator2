@@ -2,7 +2,7 @@ package cz.mg.vulkantransformator.services.parser.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.c.parser.entities.EnumEntry;
+import cz.mg.c.parser.entities.CEnumEntry;
 import cz.mg.tokenizer.entities.Token;
 import cz.mg.vulkantransformator.entities.vulkan.VkEnumEntry;
 
@@ -23,7 +23,7 @@ public @Service class VkEnumEntryConverter {
     private VkEnumEntryConverter() {
     }
 
-    public @Mandatory VkEnumEntry convert(@Mandatory EnumEntry enumEntry) {
+    public @Mandatory VkEnumEntry convert(@Mandatory CEnumEntry enumEntry) {
         VkEnumEntry entry = new VkEnumEntry();
         entry.setName(enumEntry.getName().getText());
         if (enumEntry.getExpression() != null) {

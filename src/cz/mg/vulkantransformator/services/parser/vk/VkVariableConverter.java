@@ -2,9 +2,9 @@ package cz.mg.vulkantransformator.services.parser.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.c.parser.entities.Array;
-import cz.mg.c.parser.entities.Type;
-import cz.mg.c.parser.entities.Variable;
+import cz.mg.c.parser.entities.CArray;
+import cz.mg.c.parser.entities.CType;
+import cz.mg.c.parser.entities.CVariable;
 import cz.mg.collections.list.List;
 import cz.mg.collections.services.StringJoiner;
 import cz.mg.tokenizer.entities.Token;
@@ -30,7 +30,7 @@ public @Service class VkVariableConverter {
     private VkVariableConverter() {
     }
 
-    public @Mandatory VkVariable convert(@Mandatory Variable variable) {
+    public @Mandatory VkVariable convert(@Mandatory CVariable variable) {
         VkVariable vkVariable = new VkVariable();
         vkVariable.setName(variable.getName().getText());
         vkVariable.setTypename(variable.getType().getTypename().getName().getText());
@@ -39,7 +39,7 @@ public @Service class VkVariableConverter {
         return vkVariable;
     }
 
-    public @Mandatory VkVariable convert(@Mandatory Type type) {
+    public @Mandatory VkVariable convert(@Mandatory CType type) {
         VkVariable vkVariable = new VkVariable();
         vkVariable.setName("");
         vkVariable.setTypename(type.getTypename().getName().getText());
@@ -48,11 +48,11 @@ public @Service class VkVariableConverter {
         return vkVariable;
     }
 
-    private int convertArrays(@Mandatory List<Array> arrays) {
+    private int convertArrays(@Mandatory List<CArray> arrays) {
         if (arrays.count() == 0) {
             return 0;
         } else if (arrays.count() == 1) {
-            Array array = arrays.getFirst();
+            CArray array = arrays.getFirst();
             return Integer.parseInt(joiner.join(array.getExpression(), "", Token::getText));
         } else {
             throw new UnsupportedOperationException();

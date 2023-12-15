@@ -2,10 +2,10 @@ package cz.mg.vulkantransformator.services.parser.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
+import cz.mg.c.parser.entities.CEnum;
+import cz.mg.c.parser.entities.CEnumEntry;
 import cz.mg.c.parser.entities.CMainEntity;
-import cz.mg.c.parser.entities.Enum;
-import cz.mg.c.parser.entities.EnumEntry;
-import cz.mg.c.parser.entities.Typedef;
+import cz.mg.c.parser.entities.CTypedef;
 import cz.mg.vulkantransformator.entities.vulkan.VkEnum;
 
 import java.util.Objects;
@@ -41,9 +41,9 @@ public @Service class VkEnumConverter implements VkConverter {
      */
     @Override
     public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof Typedef) {
-            Typedef typedef = (Typedef) entity;
-            return typedef.getType().getTypename() instanceof Enum;
+        if (entity instanceof CTypedef) {
+            CTypedef typedef = (CTypedef) entity;
+            return typedef.getType().getTypename() instanceof CEnum;
         }
         return false;
     }
@@ -52,9 +52,9 @@ public @Service class VkEnumConverter implements VkConverter {
     public @Mandatory VkEnum parse(@Mandatory CMainEntity entity) {
         VkEnum vkEnum = new VkEnum();
         vkEnum.setName(entity.getName().getText());
-        Typedef typedef = (Typedef) entity;
-        Enum enom = (Enum) typedef.getType().getTypename();
-        for (EnumEntry enumEntry : Objects.requireNonNull(enom.getEntries())) {
+        CTypedef typedef = (CTypedef) entity;
+        CEnum enom = (CEnum) typedef.getType().getTypename();
+        for (CEnumEntry enumEntry : Objects.requireNonNull(enom.getEntries())) {
             vkEnum.getEntries().addLast(enumEntryParser.convert(enumEntry));
         }
         return vkEnum;

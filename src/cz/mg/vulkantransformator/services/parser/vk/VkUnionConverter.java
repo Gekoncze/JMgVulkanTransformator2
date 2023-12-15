@@ -3,9 +3,9 @@ package cz.mg.vulkantransformator.services.parser.vk;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.c.parser.entities.CMainEntity;
-import cz.mg.c.parser.entities.Typedef;
-import cz.mg.c.parser.entities.Union;
-import cz.mg.c.parser.entities.Variable;
+import cz.mg.c.parser.entities.CTypedef;
+import cz.mg.c.parser.entities.CUnion;
+import cz.mg.c.parser.entities.CVariable;
 import cz.mg.vulkantransformator.entities.vulkan.VkUnion;
 
 import java.util.Objects;
@@ -39,9 +39,9 @@ public @Service class VkUnionConverter implements VkConverter {
      */
     @Override
     public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof Typedef) {
-            Typedef typedef = (Typedef) entity;
-            return typedef.getType().getTypename() instanceof Union;
+        if (entity instanceof CTypedef) {
+            CTypedef typedef = (CTypedef) entity;
+            return typedef.getType().getTypename() instanceof CUnion;
         }
         return false;
     }
@@ -50,9 +50,9 @@ public @Service class VkUnionConverter implements VkConverter {
     public @Mandatory VkUnion parse(@Mandatory CMainEntity entity) {
         VkUnion vkUnion = new VkUnion();
         vkUnion.setName(entity.getName().getText());
-        Typedef typedef = (Typedef) entity;
-        Union union = (Union) typedef.getType().getTypename();
-        for (Variable variable : Objects.requireNonNull(union.getVariables())) {
+        CTypedef typedef = (CTypedef) entity;
+        CUnion union = (CUnion) typedef.getType().getTypename();
+        for (CVariable variable : Objects.requireNonNull(union.getVariables())) {
             vkUnion.getFields().addLast(variableConverter.convert(variable));
         }
         return vkUnion;
