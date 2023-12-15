@@ -3,6 +3,7 @@ package cz.mg.vulkantransformator.services;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.collections.list.List;
+import cz.mg.tokenizer.exceptions.CodeException;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.filesystem.FileReaderService;
@@ -65,7 +66,15 @@ public @Service class VulkanTransformator {
     public void transform(@Mandatory Path inputDirectory, @Mandatory Path outputDirectory) {
         generateNativeBridge(outputDirectory);
         for (VkFileGenerator generator : vkLibraryFileGenerators) {
-            generateVulkanBridge(inputDirectory, outputDirectory, generator);
+            try {
+                generateVulkanBridge(inputDirectory, outputDirectory, generator);
+            } catch (CodeException e) {
+                throw new CodeException(
+                    e.getPosition(),
+                    "In file " + generator.getSourceFileName() + ": " + e.getMessage(),
+                    e
+                );
+            }
         }
     }
 

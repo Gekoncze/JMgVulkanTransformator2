@@ -48,8 +48,11 @@ public @Service class VulkanParser {
             return converter.convert(cFile, macros);
         } catch (CodeException e) {
             Position position = PositionService.getInstance().find(convert(file).getContent(), e.getPosition());
-            System.out.println("At row " + position.getRow() + " column " + position.getColumn() + ".");
-            throw e;
+            throw new CodeException(
+                e.getPosition(),
+                "At row " + position.getRow() + " column " + position.getColumn() + ": " + e.getMessage(),
+                e
+            );
         }
     }
 
