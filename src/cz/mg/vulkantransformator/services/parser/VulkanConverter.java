@@ -29,6 +29,7 @@ public @Service class VulkanConverter {
                         VkFlagsConverter.getInstance(),
                         VkHandleConverter.getInstance(),
                         VkTypeConverter.getInstance(),
+                        VkOtherTypeConverter.getInstance(),
                         VkFunctionConverter.getInstance(),
                         VkFunctionPointerConverter.getInstance()
                     );
