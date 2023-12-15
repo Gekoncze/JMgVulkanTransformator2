@@ -7,10 +7,7 @@ import cz.mg.c.parser.entities.CMainEntity;
 import cz.mg.c.preprocessor.processors.macro.entities.Macro;
 import cz.mg.c.preprocessor.processors.macro.entities.Macros;
 import cz.mg.collections.list.List;
-import cz.mg.collections.services.StringJoiner;
-import cz.mg.tokenizer.entities.Token;
 import cz.mg.tokenizer.exceptions.CodeException;
-import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.parser.vk.*;
 
@@ -33,7 +30,7 @@ public @Service class VulkanConverter {
                         VkFunctionConverter.getInstance(),
                         VkFunctionPointerConverter.getInstance()
                     );
-                    instance.joiner = StringJoiner.getInstance();
+                    instance.constantConverter = VkConstantConverter.getInstance();
                 }
             }
         }
@@ -41,7 +38,7 @@ public @Service class VulkanConverter {
     }
 
     private @Service List<VkConverter> parsers;
-    private @Service StringJoiner joiner;
+    private @Service VkConstantConverter constantConverter;
 
     private VulkanConverter() {
     }
@@ -55,12 +52,9 @@ public @Service class VulkanConverter {
 
         for (Macro macro : macros.getDefinitions())
         {
-            if (macro.getParameters() == null && !macro.getTokens().isEmpty())
+            if (constantConverter.matches(macro))
             {
-                VkConstant constant = new VkConstant();
-                constant.setName(macro.getName().getText());
-                constant.setValue(joiner.join(macro.getTokens(), "", Token::getText));
-                root.getComponents().addLast(constant);
+                root.getComponents().addLast(constantConverter.convert(macro));
             }
         }
 

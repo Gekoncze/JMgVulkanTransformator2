@@ -2,28 +2,29 @@ package cz.mg.vulkantransformator.services.translator.vk.component;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.translator.JniFunction;
-import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
-import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
-import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
+import cz.mg.vulkantransformator.entities.vulkan.*;
 import cz.mg.vulkantransformator.services.translator.CodeGenerator;
-import cz.mg.vulkantransformator.services.translator.vk.Index;
 import cz.mg.vulkantransformator.services.translator.LibraryConfiguration;
+import cz.mg.vulkantransformator.services.translator.vk.Index;
 
 public @Service class VkConstantsTranslator {
-    private static @Optional VkConstantsTranslator instance;
+    private static volatile @Service VkConstantsTranslator instance;
 
     public static @Mandatory VkConstantsTranslator getInstance() {
         if (instance == null) {
-            instance = new VkConstantsTranslator();
-            instance.codeGenerator = CodeGenerator.getInstance();
+            synchronized (Service.class) {
+                if (instance == null) {
+                    instance = new VkConstantsTranslator();
+                    instance.codeGenerator = CodeGenerator.getInstance();
+                }
+            }
         }
         return instance;
     }
 
-    private CodeGenerator codeGenerator;
+    private @Service CodeGenerator codeGenerator;
 
     private VkConstantsTranslator() {
     }
@@ -52,21 +53,21 @@ public @Service class VkConstantsTranslator {
         for (VkComponent component : root.getComponents()) {
             if (component instanceof VkConstant) {
                 VkConstant constant = (VkConstant) component;
-                if (isInteger(constant)) {
+                 if (constant instanceof VkIntegerConstant) {
                     lines.addCollectionLast(
                         new List<>(
                             "    public static final int " + constant.getName() + " = " + constant.getValue() + ";",
                             ""
                         )
                     );
-                } else if (isFloat(constant)) {
+                } else if (constant instanceof VkFloatConstant) {
                     lines.addCollectionLast(
                         new List<>(
                             "    public static final float " + constant.getName() + " = " + constant.getValue() + ";",
                             ""
                         )
                     );
-                } else if (isString(constant)) {
+                } else if (constant instanceof VkStringConstant) {
                     String type = "CPointer<CChar>";
                     lines.addCollectionLast(
                         new List<>(
@@ -79,6 +80,12 @@ public @Service class VkConstantsTranslator {
                             "    private static native long get_" + constant.getName() + "();",
                             ""
                         )
+                    );
+                } else {
+                    throw new UnsupportedOperationException(
+                        "Unsupported constant " + constant.getName()
+                            + " of type " + configuration.getClass().getSimpleName()
+                            + " with value '" + constant.getValue() + "'."
                     );
                 }
             }
@@ -99,7 +106,7 @@ public @Service class VkConstantsTranslator {
         for (VkComponent component : root.getComponents()) {
             if (component instanceof VkConstant) {
                 VkConstant constant = (VkConstant) component;
-                if (isString(constant)) {
+                if (constant instanceof VkStringConstant) {
                     lines.addLast(generateNativeVariable(constant, configuration));
                     lines.addLast("");
                     lines.addCollectionLast(generateNativeFunction(constant, configuration));
@@ -140,31 +147,5 @@ public @Service class VkConstantsTranslator {
             )
         );
         return function;
-    }
-
-    private boolean isInteger(@Mandatory VkConstant constant)
-    {
-        try {
-            Integer.parseInt(constant.getValue());
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    private boolean isFloat(@Mandatory VkConstant constant)
-    {
-        try {
-            Float.parseFloat(constant.getValue());
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    private boolean isString(@Mandatory VkConstant constant)
-    {
-        String value = constant.getValue().trim();
-        return value.startsWith("\"") || value.endsWith("\"");
     }
 }
