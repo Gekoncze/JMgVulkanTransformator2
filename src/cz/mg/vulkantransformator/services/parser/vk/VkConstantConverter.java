@@ -40,10 +40,8 @@ public @Service class VkConstantConverter {
     public @Mandatory List<VkConstant> convert(@Mandatory Macros macros) {
         MacroManager macroManager = new MacroManager(macros);
         List<VkConstant> constants = new List<>();
-        for (Macro macro : macros.getDefinitions())
-        {
-            if (isConstant(macro))
-            {
+        for (Macro macro : macros.getDefinitions()) {
+            if (isConstant(macro)) {
                 constants.addLast(convert(macro, macroManager));
             }
         }

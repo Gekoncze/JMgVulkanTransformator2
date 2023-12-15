@@ -1,3 +1,7 @@
+rewrite constant translation
+    ideally all values should be loaded from c code
+    type recognition will still be in place to find out the correct data type
+
 fix error during compilation of native code of xlib configuration
     Display.c:11:50: error: invalid application of ‘sizeof’ to incomplete type ‘Display’ {aka ‘struct _XDisplay’}
 
