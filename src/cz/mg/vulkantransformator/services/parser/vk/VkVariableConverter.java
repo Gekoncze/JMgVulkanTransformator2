@@ -32,7 +32,7 @@ public @Service class VkVariableConverter {
 
     public @Mandatory VkVariable convert(@Mandatory Variable variable) {
         VkVariable vkVariable = new VkVariable();
-        vkVariable.setName(variable.getName().toString());
+        vkVariable.setName(variable.getName().getText());
         vkVariable.setTypename(variable.getType().getTypename().getName().getText());
         vkVariable.setPointers(variable.getType().getPointers().count());
         vkVariable.setArray(convertArrays(variable.getType().getArrays()));
