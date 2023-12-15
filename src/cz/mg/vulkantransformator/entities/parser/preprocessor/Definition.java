@@ -7,6 +7,7 @@ import cz.mg.annotations.storage.Value;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.parser.code.Token;
 
+@Deprecated
 public @Entity class Definition {
     private Token name;
     private List<Token> parameters = new List<>();

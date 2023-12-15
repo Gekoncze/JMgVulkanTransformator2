@@ -3,6 +3,7 @@ package cz.mg.vulkantransformator.entities.parser.code;
 import cz.mg.annotations.classes.Entity;
 import cz.mg.annotations.requirement.Required;
 
+@Deprecated
 public @Entity class Line {
     private Integer id;
     private String text;

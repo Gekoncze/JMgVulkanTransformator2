@@ -4,6 +4,7 @@ import cz.mg.annotations.classes.Entity;
 import cz.mg.annotations.requirement.Required;
 import cz.mg.collections.list.List;
 
+@Deprecated
 public @Entity class Statement {
     private List<Token> tokens = new List<>();
 

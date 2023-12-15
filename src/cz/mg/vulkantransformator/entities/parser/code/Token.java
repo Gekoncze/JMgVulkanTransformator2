@@ -3,6 +3,7 @@ package cz.mg.vulkantransformator.entities.parser.code;
 import cz.mg.annotations.classes.Entity;
 import cz.mg.annotations.requirement.Required;
 
+@Deprecated
 public @Entity class Token {
     private Line line;
     private Integer beginId;

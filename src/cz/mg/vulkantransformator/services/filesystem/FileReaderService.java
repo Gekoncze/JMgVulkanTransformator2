@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+@Deprecated
 public @Service class FileReaderService {
     private static FileReaderService instance;
 

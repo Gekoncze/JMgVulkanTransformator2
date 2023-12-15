@@ -8,6 +8,7 @@ import cz.mg.collections.list.List;
 
 import java.nio.file.Path;
 
+@Deprecated
 public @Entity class File {
     private Path path;
     private List<String> lines;
