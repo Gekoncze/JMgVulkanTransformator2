@@ -2,7 +2,6 @@ package cz.mg.vulkantransformator.services;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.annotations.requirement.Optional;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.filesystem.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
@@ -23,34 +22,38 @@ import cz.mg.vulkantransformator.services.translator.vk.xlib.VkXlibFileGenerator
 import java.nio.file.Path;
 
 public @Service class VulkanTransformator {
-    private static @Optional VulkanTransformator instance;
+    private static volatile @Service VulkanTransformator instance;
 
-    public static @Mandatory VulkanTransformator getInstance() {
+    public static @Service VulkanTransformator getInstance() {
         if (instance == null) {
-            instance = new VulkanTransformator();
-            instance.fileReaderService = FileReaderService.getInstance();
-            instance.fileWriterService = FileWriterService.getInstance();
-            instance.vulkanParser = VulkanParser.getInstance();
-            instance.cFileGenerator = CFileGenerator.getInstance();
-            instance.vkLibraryFileGenerators = new List<>(
-                VkCoreFileGenerator.getInstance(),
-                VkXlibFileGenerator.getInstance(),
-                VkXcbFileGenerator.getInstance(),
-                VkWaylandFileGenerator.getInstance(),
-                VkAndroidFileGenerator.getInstance(),
-                VkIosFileGenerator.getInstance(),
-                VkMacosFileGenerator.getInstance(),
-                VkWindowsFileGenerator.getInstance()
-            );
+            synchronized (Service.class) {
+                if (instance == null) {
+                    instance = new VulkanTransformator();
+                    instance.fileReaderService = FileReaderService.getInstance();
+                    instance.fileWriterService = FileWriterService.getInstance();
+                    instance.vulkanParser = VulkanParser.getInstance();
+                    instance.cFileGenerator = CFileGenerator.getInstance();
+                    instance.vkLibraryFileGenerators = new List<>(
+                        VkCoreFileGenerator.getInstance(),
+                        VkXlibFileGenerator.getInstance(),
+                        VkXcbFileGenerator.getInstance(),
+                        VkWaylandFileGenerator.getInstance(),
+                        VkAndroidFileGenerator.getInstance(),
+                        VkIosFileGenerator.getInstance(),
+                        VkMacosFileGenerator.getInstance(),
+                        VkWindowsFileGenerator.getInstance()
+                    );
+                }
+            }
         }
         return instance;
     }
 
-    private FileReaderService fileReaderService;
-    private FileWriterService fileWriterService;
-    private VulkanParser vulkanParser;
-    private CFileGenerator cFileGenerator;
-    private List<VkFileGenerator> vkLibraryFileGenerators;
+    private @Service FileReaderService fileReaderService;
+    private @Service FileWriterService fileWriterService;
+    private @Service VulkanParser vulkanParser;
+    private @Service CFileGenerator cFileGenerator;
+    private @Service List<VkFileGenerator> vkLibraryFileGenerators;
 
     private VulkanTransformator() {
     }

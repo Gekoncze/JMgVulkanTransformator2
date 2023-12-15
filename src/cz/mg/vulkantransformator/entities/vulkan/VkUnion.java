@@ -13,10 +13,6 @@ public @Entity class VkUnion implements VkComponent {
     public VkUnion() {
     }
 
-    public VkUnion(String name) {
-        this.name = name;
-    }
-
     @Override
     @Required @Value
     public String getName() {
