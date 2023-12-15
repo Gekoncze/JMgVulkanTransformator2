@@ -1,7 +1,3 @@
-investigate why VK_MAX_DEVICE_GROUP_SIZE is not expanded by preprocessor at
-    #define VK_MAX_DEVICE_GROUP_SIZE_KHR      VK_MAX_DEVICE_GROUP_SIZE
-    debuggable in VkConstantConverter:56
-
 fix error during compilation of native code of xlib configuration
     Display.c:11:50: error: invalid application of ‘sizeof’ to incomplete type ‘Display’ {aka ‘struct _XDisplay’}
 

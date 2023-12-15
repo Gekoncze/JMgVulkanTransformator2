@@ -4,7 +4,6 @@ import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.c.parser.entities.CFile;
 import cz.mg.c.parser.entities.CMainEntity;
-import cz.mg.c.preprocessor.processors.macro.entities.Macro;
 import cz.mg.c.preprocessor.processors.macro.entities.Macros;
 import cz.mg.collections.list.List;
 import cz.mg.tokenizer.exceptions.CodeException;
@@ -50,13 +49,9 @@ public @Service class VulkanConverter {
             root.getComponents().addLast(findMatchingParser(entity).parse(entity));
         }
 
-        for (Macro macro : macros.getDefinitions())
-        {
-            if (constantConverter.matches(macro))
-            {
-                root.getComponents().addLast(constantConverter.convert(macro));
-            }
-        }
+        root.getComponents().addCollectionLast(
+            constantConverter.convert(macros)
+        );
 
         return root;
     }
