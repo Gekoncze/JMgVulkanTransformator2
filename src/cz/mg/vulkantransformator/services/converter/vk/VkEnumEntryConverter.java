@@ -25,7 +25,7 @@ public @Service class VkEnumEntryConverter {
 
     public @Mandatory VkEnumEntry convert(@Mandatory CEnumEntry enumEntry) {
         VkEnumEntry entry = new VkEnumEntry();
-        entry.setName(enumEntry.getName().getText());
+        entry.setName(enumEntry.getName());
         if (enumEntry.getExpression() != null) {
             for (Token token : enumEntry.getExpression()) {
                 entry.getExpression().addLast(token.getText());

@@ -41,8 +41,7 @@ public @Service class VkEnumConverter implements VkConverter {
      */
     @Override
     public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof CTypedef) {
-            CTypedef typedef = (CTypedef) entity;
+        if (entity instanceof CTypedef typedef) {
             return typedef.getType().getTypename() instanceof CEnum;
         }
         return false;
@@ -51,7 +50,7 @@ public @Service class VkEnumConverter implements VkConverter {
     @Override
     public @Mandatory VkEnum parse(@Mandatory CMainEntity entity) {
         VkEnum vkEnum = new VkEnum();
-        vkEnum.setName(entity.getName().getText());
+        vkEnum.setName(entity.getName());
         CTypedef typedef = (CTypedef) entity;
         CEnum enom = (CEnum) typedef.getType().getTypename();
         for (CEnumEntry enumEntry : Objects.requireNonNull(enom.getEntries())) {

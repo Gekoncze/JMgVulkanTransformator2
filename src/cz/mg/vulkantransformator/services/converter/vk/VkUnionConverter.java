@@ -39,8 +39,7 @@ public @Service class VkUnionConverter implements VkConverter {
      */
     @Override
     public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof CTypedef) {
-            CTypedef typedef = (CTypedef) entity;
+        if (entity instanceof CTypedef typedef) {
             return typedef.getType().getTypename() instanceof CUnion;
         }
         return false;
@@ -49,7 +48,7 @@ public @Service class VkUnionConverter implements VkConverter {
     @Override
     public @Mandatory VkUnion parse(@Mandatory CMainEntity entity) {
         VkUnion vkUnion = new VkUnion();
-        vkUnion.setName(entity.getName().getText());
+        vkUnion.setName(entity.getName());
         CTypedef typedef = (CTypedef) entity;
         CUnion union = (CUnion) typedef.getType().getTypename();
         for (CVariable variable : Objects.requireNonNull(union.getVariables())) {

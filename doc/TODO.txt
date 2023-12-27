@@ -2,6 +2,8 @@
     ...
 
 ### SOON ###
+    find all usages of getName and check for nullability problems
+
     reimplement c file writers
         create c entities instead and then write them using library
 

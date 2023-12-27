@@ -32,8 +32,8 @@ public @Service class VkVariableConverter {
 
     public @Mandatory VkVariable convert(@Mandatory CVariable variable) {
         VkVariable vkVariable = new VkVariable();
-        vkVariable.setName(variable.getName().getText());
-        vkVariable.setTypename(variable.getType().getTypename().getName().getText());
+        vkVariable.setName(variable.getName());
+        vkVariable.setTypename(variable.getType().getTypename().getName());
         vkVariable.setPointers(variable.getType().getPointers().count());
         vkVariable.setArray(convertArrays(variable.getType().getArrays()));
         return vkVariable;
@@ -42,7 +42,7 @@ public @Service class VkVariableConverter {
     public @Mandatory VkVariable convert(@Mandatory CType type) {
         VkVariable vkVariable = new VkVariable();
         vkVariable.setName("");
-        vkVariable.setTypename(type.getTypename().getName().getText());
+        vkVariable.setTypename(type.getTypename().getName());
         vkVariable.setPointers(type.getPointers().count());
         vkVariable.setArray(convertArrays(type.getArrays()));
         return vkVariable;

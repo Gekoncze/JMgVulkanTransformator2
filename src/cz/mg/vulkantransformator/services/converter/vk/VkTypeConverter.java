@@ -29,8 +29,7 @@ public @Service class VkTypeConverter implements VkConverter {
      */
     @Override
     public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof CTypedef) {
-            CTypedef typedef = (CTypedef) entity;
+        if (entity instanceof CTypedef typedef) {
             return typedef.getType().getTypename().getClass().equals(CTypename.class);
         }
         return false;
@@ -39,7 +38,7 @@ public @Service class VkTypeConverter implements VkConverter {
     @Override
     public @Mandatory VkType parse(@Mandatory CMainEntity entity) {
         VkType type = new VkType();
-        type.setName(entity.getName().getText());
+        type.setName(entity.getName());
         return type;
     }
 }

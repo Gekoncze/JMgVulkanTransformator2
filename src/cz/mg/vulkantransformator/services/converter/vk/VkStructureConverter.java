@@ -44,8 +44,7 @@ public @Service class VkStructureConverter implements VkConverter {
      */
     @Override
     public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof CTypedef) {
-            CTypedef typedef = (CTypedef) entity;
+        if (entity instanceof CTypedef typedef) {
             return typedef.getType().getTypename() instanceof CStruct
                 && ((CStruct) typedef.getType().getTypename()).getVariables() != null;
         }
@@ -55,7 +54,7 @@ public @Service class VkStructureConverter implements VkConverter {
     @Override
     public @Mandatory VkStructure parse(@Mandatory CMainEntity entity) {
         VkStructure structure = new VkStructure();
-        structure.setName(entity.getName().getText());
+        structure.setName(entity.getName());
         CTypedef typedef = (CTypedef) entity;
         CStruct struct = (CStruct) typedef.getType().getTypename();
         for (CVariable variable : Objects.requireNonNull(struct.getVariables())) {

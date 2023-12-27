@@ -41,7 +41,7 @@ public @Service class VkFunctionConverter implements VkConverter {
     @Override
     public @Mandatory VkFunction parse(@Mandatory CMainEntity entity) {
         VkFunction vkFunction = new VkFunction();
-        vkFunction.setName(entity.getName().getText());
+        vkFunction.setName(entity.getName());
         CFunction function = (CFunction) entity;
         vkFunction.setOutput(variableConverter.convert(function.getOutput()));
         for (CVariable variable : function.getInput()) {

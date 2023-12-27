@@ -35,7 +35,7 @@ public @Service class VkOtherTypeConverter implements VkConverter {
     @Override
     public @Mandatory VkType parse(@Mandatory CMainEntity entity) {
         VkType type = new VkType();
-        type.setName(entity.getName().getText());
+        type.setName(entity.getName());
         return type;
     }
 }

@@ -6,7 +6,6 @@ import cz.mg.c.parser.entities.CFile;
 import cz.mg.c.parser.entities.CMainEntity;
 import cz.mg.c.preprocessor.processors.macro.entities.Macros;
 import cz.mg.collections.list.List;
-import cz.mg.tokenizer.exceptions.CodeException;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.converter.vk.*;
 
@@ -62,9 +61,8 @@ public @Service class VulkanConverter {
                 return parser;
             }
         }
-        throw new CodeException(
-            entity.getName().getPosition(),
-            "Could not find parser for " + entity.getName().getText()
+        throw new UnsupportedOperationException(
+            "Could not find parser for " + entity.getName()
                 + " of type " + entity.getClass().getSimpleName() + "."
         );
     }

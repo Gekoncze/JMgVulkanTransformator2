@@ -6,6 +6,8 @@ import cz.mg.c.parser.entities.CMainEntity;
 import cz.mg.c.parser.entities.CTypedef;
 import cz.mg.vulkantransformator.entities.vulkan.VkFlags;
 
+import java.util.Objects;
+
 public @Service class VkFlagsConverter implements VkConverter {
     private static volatile @Service VkFlagsConverter instance;
 
@@ -28,9 +30,8 @@ public @Service class VkFlagsConverter implements VkConverter {
      */
     @Override
     public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof CTypedef) {
-            CTypedef typedef = (CTypedef) entity;
-            return typedef.getType().getTypename().getName().getText().equals("VkFlags");
+        if (entity instanceof CTypedef typedef) {
+            return Objects.equals(typedef.getType().getTypename().getName(), "VkFlags");
         }
         return false;
     }
@@ -38,7 +39,7 @@ public @Service class VkFlagsConverter implements VkConverter {
     @Override
     public @Mandatory VkFlags parse(@Mandatory CMainEntity entity) {
         VkFlags flags = new VkFlags();
-        flags.setName(entity.getName().getText());
+        flags.setName(entity.getName());
         return flags;
     }
 }

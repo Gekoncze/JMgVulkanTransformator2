@@ -35,8 +35,7 @@ public @Service class VkFunctionPointerConverter implements VkConverter {
      */
     @Override
     public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof CTypedef) {
-            CTypedef typedef = (CTypedef) entity;
+        if (entity instanceof CTypedef typedef) {
             return typedef.getType().getTypename() instanceof CFunction
                 && typedef.getType().getPointers().count() == 1;
         }
@@ -46,7 +45,7 @@ public @Service class VkFunctionPointerConverter implements VkConverter {
     @Override
     public @Mandatory VkFunctionPointer parse(@Mandatory CMainEntity entity) {
         VkFunctionPointer functionPointer = new VkFunctionPointer();
-        functionPointer.setName(entity.getName().getText());
+        functionPointer.setName(entity.getName());
         CTypedef typedef = (CTypedef) entity;
         CFunction function = (CFunction) typedef.getType().getTypename();
         functionPointer.setOutput(variableConverter.convert(function.getOutput()));

@@ -29,8 +29,7 @@ public @Service class VkHandleConverter implements VkConverter {
      */
     @Override
     public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof CTypedef) {
-            CTypedef typedef = (CTypedef) entity;
+        if (entity instanceof CTypedef typedef) {
             boolean isStruct = typedef.getType().getTypename() instanceof CStruct;
             boolean isPointer = typedef.getType().getPointers().count() == 1;
             return isStruct && isPointer;
@@ -41,7 +40,7 @@ public @Service class VkHandleConverter implements VkConverter {
     @Override
     public @Mandatory VkHandle parse(@Mandatory CMainEntity entity) {
         VkHandle handle = new VkHandle();
-        handle.setName(entity.getName().getText());
+        handle.setName(entity.getName());
         return handle;
     }
 }
