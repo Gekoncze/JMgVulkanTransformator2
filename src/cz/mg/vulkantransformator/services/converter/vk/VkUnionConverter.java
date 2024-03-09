@@ -2,10 +2,10 @@ package cz.mg.vulkantransformator.services.converter.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.c.parser.entities.CMainEntity;
-import cz.mg.c.parser.entities.CTypedef;
-import cz.mg.c.parser.entities.CUnion;
-import cz.mg.c.parser.entities.CVariable;
+import cz.mg.c.entities.CMainEntity;
+import cz.mg.c.entities.CTypedef;
+import cz.mg.c.entities.CUnion;
+import cz.mg.c.entities.CVariable;
 import cz.mg.vulkantransformator.entities.vulkan.VkUnion;
 
 import java.util.Objects;

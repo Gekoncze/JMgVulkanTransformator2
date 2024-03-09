@@ -2,9 +2,9 @@ package cz.mg.vulkantransformator.services.converter;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.c.parser.entities.CFile;
-import cz.mg.c.parser.entities.CMainEntity;
-import cz.mg.c.preprocessor.processors.macro.entities.Macros;
+import cz.mg.c.entities.CFile;
+import cz.mg.c.entities.CMainEntity;
+import cz.mg.c.entities.macro.Macros;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.converter.vk.*;

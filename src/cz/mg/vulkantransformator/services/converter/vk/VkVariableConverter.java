@@ -2,9 +2,9 @@ package cz.mg.vulkantransformator.services.converter.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.c.parser.entities.CArray;
-import cz.mg.c.parser.entities.CType;
-import cz.mg.c.parser.entities.CVariable;
+import cz.mg.c.entities.CArray;
+import cz.mg.c.entities.CType;
+import cz.mg.c.entities.CVariable;
 import cz.mg.collections.list.List;
 import cz.mg.collections.services.StringJoiner;
 import cz.mg.tokenizer.entities.Token;

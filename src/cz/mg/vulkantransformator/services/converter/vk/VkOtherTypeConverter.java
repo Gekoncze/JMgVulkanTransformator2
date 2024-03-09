@@ -2,8 +2,8 @@ package cz.mg.vulkantransformator.services.converter.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.c.parser.entities.CMainEntity;
-import cz.mg.c.parser.entities.CStruct;
+import cz.mg.c.entities.CMainEntity;
+import cz.mg.c.entities.CStruct;
 import cz.mg.vulkantransformator.entities.vulkan.VkType;
 
 public @Service class VkOtherTypeConverter implements VkConverter {
