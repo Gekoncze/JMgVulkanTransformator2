@@ -2,6 +2,8 @@
     ...
 
 ### SOON ###
+    investigate why PreprocessorTest is failing
+
     find all usages of getName and check for nullability problems
 
     reimplement c file writers
@@ -14,5 +16,7 @@
     for all services, use proper synchronization in getInstance
 
 ### LATER ###
+    remove to do in VulkanTransformator when no longer needed
+
     fix error during compilation of native code of xlib configuration
         Display.c:11:50: error: invalid application of ‘sizeof’ to incomplete type ‘Display’ {aka ‘struct _XDisplay’}

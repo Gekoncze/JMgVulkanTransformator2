@@ -103,6 +103,7 @@ public @Service class VulkanTransformator {
     private void write(@Mandatory Path outputDirectory, @Mandatory File file) {
         Path outputPath = outputDirectory.resolve(file.getPath());
         file.setPath(outputPath);
+        file.setContent(file.getContent() + "\n"); // TODO - only for testing, remove when no longer needed
         fileWriter.write(file);
     }
 
