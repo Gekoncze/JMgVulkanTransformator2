@@ -19,6 +19,7 @@ public @Service class VkVariableConverter {
                 if (instance == null) {
                     instance = new VkVariableConverter();
                     instance.joiner = StringJoiner.getInstance();
+                    instance.numberParser = NumberParser.getInstance();
                 }
             }
         }
@@ -26,6 +27,7 @@ public @Service class VkVariableConverter {
     }
 
     private @Service StringJoiner joiner;
+    private @Service NumberParser numberParser;
 
     private VkVariableConverter() {
     }
@@ -53,7 +55,8 @@ public @Service class VkVariableConverter {
             return 0;
         } else if (arrays.count() == 1) {
             CArray array = arrays.getFirst();
-            return Integer.parseInt(joiner.join(array.getExpression(), "", Token::getText));
+            String expression = joiner.join(array.getExpression(), "", Token::getText);
+            return numberParser.parse(expression);
         } else {
             throw new UnsupportedOperationException();
         }
