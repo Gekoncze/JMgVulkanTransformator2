@@ -11,7 +11,7 @@ import cz.mg.collections.services.StringJoiner;
 import cz.mg.tokenizer.entities.Token;
 import cz.mg.tokenizer.entities.tokens.DoubleQuoteToken;
 import cz.mg.tokenizer.entities.tokens.NumberToken;
-import cz.mg.tokenizer.exceptions.CodeException;
+import cz.mg.tokenizer.exceptions.TraceableException;
 import cz.mg.vulkantransformator.entities.vulkan.VkConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkFloatConstant;
 import cz.mg.vulkantransformator.entities.vulkan.VkIntegerConstant;
@@ -86,7 +86,7 @@ public @Service class VkConstantConverter {
         } else if (number) {
             return new VkIntegerConstant();
         } else {
-            throw new CodeException(
+            throw new TraceableException(
                 macro.getName().getPosition(),
                 "Unsupported constant " + macro.getName().getText() + "."
             );

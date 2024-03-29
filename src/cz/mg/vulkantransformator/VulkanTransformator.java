@@ -6,7 +6,7 @@ import cz.mg.collections.list.List;
 import cz.mg.file.File;
 import cz.mg.file.FileReader;
 import cz.mg.file.FileWriter;
-import cz.mg.tokenizer.exceptions.CodeException;
+import cz.mg.tokenizer.exceptions.TraceableException;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.VulkanParser;
 import cz.mg.vulkantransformator.services.translator.c.CFileGenerator;
@@ -68,8 +68,8 @@ public @Service class VulkanTransformator {
         for (VkFileGenerator generator : vkLibraryFileGenerators) {
             try {
                 generateVulkanBridge(inputDirectory, outputDirectory, generator);
-            } catch (CodeException e) {
-                throw new CodeException(
+            } catch (TraceableException e) {
+                throw new TraceableException(
                     e.getPosition(),
                     "In file " + generator.getSourceFileName() + ": " + e.getMessage(),
                     e

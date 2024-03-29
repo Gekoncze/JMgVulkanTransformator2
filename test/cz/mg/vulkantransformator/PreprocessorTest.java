@@ -8,6 +8,8 @@ import cz.mg.file.File;
 import cz.mg.file.FileReader;
 import cz.mg.file.page.Page;
 import cz.mg.file.page.PageReader;
+import cz.mg.tokenizer.exceptions.TraceableException;
+import cz.mg.tokenizer.services.UserExceptionFactory;
 
 import java.nio.file.Path;
 
@@ -24,9 +26,10 @@ public @Test class PreprocessorTest {
     private final @Service PageReader pageReader = PageReader.getInstance();
     private final @Service FileReader fileReader = FileReader.getInstance();
     private final @Service Preprocessor preprocessor = Preprocessor.getInstance();
+    private final @Service UserExceptionFactory userExceptionFactory = UserExceptionFactory.getInstance();
 
     private void testClosingConditions() {
-        Path path = Path.of("test/cz/mg/vulkantransformator/test.h");
+        Path path = Path.of("test/cz/mg/vulkantransformator/vulkan_core.h");
 
         int beginCount = 0;
         int endCount = 0;
@@ -46,6 +49,11 @@ public @Test class PreprocessorTest {
         System.out.print(beginCount + " vs " + endCount + " ");
 
         File file = fileReader.read(path);
-        preprocessor.preprocess(file, new Macros());
+
+        try {
+            preprocessor.preprocess(file, new Macros());
+        } catch (TraceableException e) {
+            throw userExceptionFactory.create(path, file.getContent(), e);
+        }
     }
 }

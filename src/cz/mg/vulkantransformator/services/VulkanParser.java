@@ -9,7 +9,7 @@ import cz.mg.c.entities.macro.Macros;
 import cz.mg.file.File;
 import cz.mg.tokenizer.entities.Position;
 import cz.mg.tokenizer.entities.tokens.WordToken;
-import cz.mg.tokenizer.exceptions.CodeException;
+import cz.mg.tokenizer.exceptions.TraceableException;
 import cz.mg.tokenizer.services.PositionService;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.converter.VulkanConverter;
@@ -44,9 +44,9 @@ public @Service class VulkanParser {
             macros.getDefinitions().addLast(createEmptyMacro("VKAPI_CALL"));
             CFile cFile = parser.parse(file, macros);
             return converter.convert(cFile, macros);
-        } catch (CodeException e) {
+        } catch (TraceableException e) {
             Position position = PositionService.getInstance().find(file.getContent(), e.getPosition());
-            throw new CodeException(
+            throw new TraceableException(
                 e.getPosition(),
                 "At row " + position.getRow() + " column " + position.getColumn() + ": " + e.getMessage(),
                 e
