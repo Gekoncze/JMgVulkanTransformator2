@@ -2,9 +2,8 @@
     ...
 
 ### SOON ###
-    investigate why PreprocessorTest is failing
-
-    find all usages of getName and check for nullability problems
+    fix error:
+        Could not find parser for VK_PIPELINE_STAGE_2_NONE of type CVariable.
 
     reimplement c file writers
         create c entities instead and then write them using library

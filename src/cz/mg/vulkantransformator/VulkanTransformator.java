@@ -109,7 +109,7 @@ public @Service class VulkanTransformator {
 
     private void write(@Mandatory Path outputDirectory, @Mandatory List<File> files) {
         for (File file : files) {
-            if (file.getContent().length() > 0) {
+            if (!file.getContent().isEmpty()) {
                 write(outputDirectory, file);
             }
         }
