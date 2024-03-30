@@ -7,7 +7,7 @@ import cz.mg.c.entities.CType;
 import cz.mg.c.entities.CVariable;
 import cz.mg.collections.list.List;
 import cz.mg.collections.services.StringJoiner;
-import cz.mg.tokenizer.entities.Token;
+import cz.mg.token.Token;
 import cz.mg.vulkantransformator.entities.vulkan.VkVariable;
 
 public @Service class VkVariableConverter {

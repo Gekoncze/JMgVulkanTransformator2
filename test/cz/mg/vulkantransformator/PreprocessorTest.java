@@ -3,7 +3,8 @@ package cz.mg.vulkantransformator;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.classes.Test;
 import cz.mg.c.entities.macro.Macros;
-import cz.mg.c.preprocessor.Preprocessor;
+import cz.mg.c.preprocessor.CPreprocessor;
+import cz.mg.c.tokenizer.CTokenizer;
 import cz.mg.file.File;
 import cz.mg.file.FileReader;
 import cz.mg.file.page.Page;
@@ -25,7 +26,6 @@ public @Test class PreprocessorTest {
 
     private final @Service PageReader pageReader = PageReader.getInstance();
     private final @Service FileReader fileReader = FileReader.getInstance();
-    private final @Service Preprocessor preprocessor = Preprocessor.getInstance();
     private final @Service UserExceptionFactory userExceptionFactory = UserExceptionFactory.getInstance();
 
     private void testClosingConditions() {
@@ -49,9 +49,10 @@ public @Test class PreprocessorTest {
         System.out.print(beginCount + " vs " + endCount + " ");
 
         File file = fileReader.read(path);
+        CPreprocessor preprocessor = new CPreprocessor(new CTokenizer(), new Macros());
 
         try {
-            preprocessor.preprocess(file, new Macros());
+            preprocessor.preprocess(file);
         } catch (TraceableException e) {
             throw userExceptionFactory.create(path, file.getContent(), e);
         }
