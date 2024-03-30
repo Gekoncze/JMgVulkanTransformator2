@@ -1,10 +1,10 @@
 ### NOW ###
-    ...
-
-### SOON ###
     fix error:
         Could not find parser for VK_PIPELINE_STAGE_2_NONE of type CVariable.
+            looks like this is caused by new implementation of flags enums using global constants
+            possible solution might be to pair them by variable type and const modifier + detect typedef of flags
 
+### SOON ###
     reimplement c file writers
         create c entities instead and then write them using library
             how to handle directives ?
@@ -17,9 +17,10 @@
         ideally all values should be loaded from c code
         type recognition will still be in place to find out the correct data type
 
-    for all services, use proper synchronization in getInstance
 
 ### LATER ###
+    for all services, use proper synchronization in getInstance
+
     remove to do in VulkanTransformator when no longer needed
 
     fix error during compilation of native code of xlib configuration
