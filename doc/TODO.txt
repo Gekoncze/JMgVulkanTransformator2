@@ -7,6 +7,11 @@
 
     reimplement c file writers
         create c entities instead and then write them using library
+            how to handle directives ?
+                this might require directives to be c entities and c file to contain c entities
+                    c main entity might be removed then, or replaced by named interface
+            how to handle c function implementation ?
+            how to handle special attributes ?
 
     rewrite constant translation
         ideally all values should be loaded from c code
