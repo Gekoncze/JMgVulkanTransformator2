@@ -38,7 +38,7 @@ public @Service class VkHandleConverter implements VkConverter {
     }
 
     @Override
-    public @Mandatory VkHandle parse(@Mandatory CMainEntity entity) {
+    public @Mandatory VkHandle convert(@Mandatory CMainEntity entity) {
         VkHandle handle = new VkHandle();
         handle.setName(entity.getName());
         return handle;

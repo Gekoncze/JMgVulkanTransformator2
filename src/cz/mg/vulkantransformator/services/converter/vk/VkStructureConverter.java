@@ -52,7 +52,7 @@ public @Service class VkStructureConverter implements VkConverter {
     }
 
     @Override
-    public @Mandatory VkStructure parse(@Mandatory CMainEntity entity) {
+    public @Mandatory VkStructure convert(@Mandatory CMainEntity entity) {
         VkStructure structure = new VkStructure();
         structure.setName(entity.getName());
         CTypedef typedef = (CTypedef) entity;

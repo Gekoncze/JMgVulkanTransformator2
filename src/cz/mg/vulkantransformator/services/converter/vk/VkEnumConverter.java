@@ -48,7 +48,7 @@ public @Service class VkEnumConverter implements VkConverter {
     }
 
     @Override
-    public @Mandatory VkEnum parse(@Mandatory CMainEntity entity) {
+    public @Mandatory VkEnum convert(@Mandatory CMainEntity entity) {
         VkEnum vkEnum = new VkEnum();
         vkEnum.setName(entity.getName());
         CTypedef typedef = (CTypedef) entity;

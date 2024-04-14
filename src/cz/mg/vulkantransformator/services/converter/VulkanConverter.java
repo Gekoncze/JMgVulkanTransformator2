@@ -45,7 +45,7 @@ public @Service class VulkanConverter {
         VkRoot root = new VkRoot();
 
         for (CMainEntity entity : file.getEntities()) {
-            root.getComponents().addLast(findMatchingParser(entity).parse(entity));
+            root.getComponents().addLast(findMatchingParser(entity).convert(entity));
         }
 
         root.getComponents().addCollectionLast(

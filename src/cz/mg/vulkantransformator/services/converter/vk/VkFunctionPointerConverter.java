@@ -43,7 +43,7 @@ public @Service class VkFunctionPointerConverter implements VkConverter {
     }
 
     @Override
-    public @Mandatory VkFunctionPointer parse(@Mandatory CMainEntity entity) {
+    public @Mandatory VkFunctionPointer convert(@Mandatory CMainEntity entity) {
         VkFunctionPointer functionPointer = new VkFunctionPointer();
         functionPointer.setName(entity.getName());
         CTypedef typedef = (CTypedef) entity;

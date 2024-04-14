@@ -46,7 +46,7 @@ public @Service class VkUnionConverter implements VkConverter {
     }
 
     @Override
-    public @Mandatory VkUnion parse(@Mandatory CMainEntity entity) {
+    public @Mandatory VkUnion convert(@Mandatory CMainEntity entity) {
         VkUnion vkUnion = new VkUnion();
         vkUnion.setName(entity.getName());
         CTypedef typedef = (CTypedef) entity;

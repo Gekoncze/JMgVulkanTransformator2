@@ -37,7 +37,7 @@ public @Service class VkFlagsConverter implements VkConverter {
     }
 
     @Override
-    public @Mandatory VkFlags parse(@Mandatory CMainEntity entity) {
+    public @Mandatory VkFlags convert(@Mandatory CMainEntity entity) {
         VkFlags flags = new VkFlags();
         flags.setName(entity.getName());
         return flags;

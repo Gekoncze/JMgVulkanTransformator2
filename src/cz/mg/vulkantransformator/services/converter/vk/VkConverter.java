@@ -7,5 +7,5 @@ import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 
 public @Service interface VkConverter {
     boolean matches(@Mandatory CMainEntity entity);
-    @Mandatory VkComponent parse(@Mandatory CMainEntity entity);
+    @Mandatory VkComponent convert(@Mandatory CMainEntity entity);
 }
