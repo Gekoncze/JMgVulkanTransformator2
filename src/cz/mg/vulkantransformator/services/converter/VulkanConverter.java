@@ -26,7 +26,8 @@ public @Service class VulkanConverter {
                         VkTypeConverter.getInstance(),
                         VkOtherTypeConverter.getInstance(),
                         VkFunctionConverter.getInstance(),
-                        VkFunctionPointerConverter.getInstance()
+                        VkFunctionPointerConverter.getInstance(),
+                        VkVariableConverter.getInstance()
                     );
                     instance.constantConverter = VkConstantConverter.getInstance();
                 }

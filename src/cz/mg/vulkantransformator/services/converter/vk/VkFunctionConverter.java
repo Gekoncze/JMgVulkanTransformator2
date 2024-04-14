@@ -43,9 +43,9 @@ public @Service class VkFunctionConverter implements VkConverter {
         VkFunction vkFunction = new VkFunction();
         vkFunction.setName(entity.getName());
         CFunction function = (CFunction) entity;
-        vkFunction.setOutput(variableConverter.convert(function.getOutput()));
+        vkFunction.setOutput(variableConverter.convertLocal(function.getOutput()));
         for (CVariable variable : function.getInput()) {
-            vkFunction.getInput().addLast(variableConverter.convert(variable));
+            vkFunction.getInput().addLast(variableConverter.convertLocal(variable));
         }
         return vkFunction;
     }

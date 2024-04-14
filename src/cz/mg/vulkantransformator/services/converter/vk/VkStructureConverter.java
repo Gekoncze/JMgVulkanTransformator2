@@ -58,7 +58,7 @@ public @Service class VkStructureConverter implements VkConverter {
         CTypedef typedef = (CTypedef) entity;
         CStruct struct = (CStruct) typedef.getType().getTypename();
         for (CVariable variable : Objects.requireNonNull(struct.getVariables())) {
-            structure.getFields().addLast(variableConverter.convert(variable));
+            structure.getFields().addLast(variableConverter.convertLocal(variable));
         }
         return structure;
     }

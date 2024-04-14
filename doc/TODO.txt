@@ -1,8 +1,6 @@
 ### NOW ###
     fix error:
-        Could not find parser for VK_PIPELINE_STAGE_2_NONE of type CVariable.
-            looks like this is caused by new implementation of flags enums using global constants
-            possible solution might be to pair them by variable type and const modifier + detect typedef of flags
+        Unsupported multi-dimensional array matrix.
 
 ### SOON ###
     reimplement c file writers

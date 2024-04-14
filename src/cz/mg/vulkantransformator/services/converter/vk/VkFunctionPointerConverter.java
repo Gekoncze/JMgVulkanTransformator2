@@ -48,9 +48,9 @@ public @Service class VkFunctionPointerConverter implements VkConverter {
         functionPointer.setName(entity.getName());
         CTypedef typedef = (CTypedef) entity;
         CFunction function = (CFunction) typedef.getType().getTypename();
-        functionPointer.setOutput(variableConverter.convert(function.getOutput()));
+        functionPointer.setOutput(variableConverter.convertLocal(function.getOutput()));
         for (CVariable variable : function.getInput()) {
-            functionPointer.getInput().addLast(variableConverter.convert(variable));
+            functionPointer.getInput().addLast(variableConverter.convertLocal(variable));
         }
         return functionPointer;
     }

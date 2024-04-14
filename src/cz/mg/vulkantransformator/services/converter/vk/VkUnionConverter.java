@@ -52,7 +52,7 @@ public @Service class VkUnionConverter implements VkConverter {
         CTypedef typedef = (CTypedef) entity;
         CUnion union = (CUnion) typedef.getType().getTypename();
         for (CVariable variable : Objects.requireNonNull(union.getVariables())) {
-            vkUnion.getFields().addLast(variableConverter.convert(variable));
+            vkUnion.getFields().addLast(variableConverter.convertLocal(variable));
         }
         return vkUnion;
     }
