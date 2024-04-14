@@ -46,29 +46,29 @@ public @Service class VkFieldTranslator {
         @Mandatory VkVariable field,
         @Mandatory LibraryConfiguration configuration
     ) {
-        if (field.getArray() > 0 && field.getPointers() > 0) {
+        if (!field.getArrays().isEmpty() && !field.getPointers().isEmpty()) {
             throw new UnsupportedOperationException(
                 "Unsupported pointer and array options for '" + getFullName(componentName, field) + "': "
-                    + field.getPointers() + ", " + field.getArray() + "."
+                    + field.getPointers().count() + ", " + field.getArrays().count() + "."
             );
         }
 
-        if (field.getTypename().equals("void") && field.getPointers() < 1) {
+        if (field.getTypename().equals("void") && field.getPointers().count() < 1) {
             throw new IllegalArgumentException(
                 "Invalid void field for '" + getFullName(componentName, field) + "'."
             );
         }
 
-        if (field.getPointers() == 0 && field.getArray() == 0) {
+        if (field.getPointers().isEmpty() && field.getArrays().isEmpty()) {
             return translateJavaGetterValue(field, configuration);
-        } else if (field.getPointers() > 0) {
+        } else if (field.getPointers().count() > 0) {
             return translateJavaGetterPointer(componentName, field, configuration);
-        } else if (field.getArray() > 0) {
+        } else if (field.getArrays().count() > 0) {
             return translateJavaGetterArray(field, configuration);
         } else {
             throw new UnsupportedOperationException(
                 "Unsupported pointer and array options for '" + getFullName(componentName, field) + "': "
-                    + field.getPointers() + ", " + field.getArray() + "."
+                    + field.getPointers().count() + ", " + field.getArrays().count() + "."
             );
         }
     }
@@ -92,9 +92,9 @@ public @Service class VkFieldTranslator {
         @Mandatory VkVariable field,
         @Mandatory LibraryConfiguration configuration
     ) {
-        if (field.getPointers() == 1) {
+        if (field.getPointers().count() == 1) {
             return translateJavaGetterPointer1D(field, configuration);
-        } else if (field.getPointers() == 2) {
+        } else if (field.getPointers().count() == 2) {
             return translateJavaGetterPointer2D(field, configuration);
         } else {
             String target = componentName + "." + field.getName();
@@ -144,17 +144,21 @@ public @Service class VkFieldTranslator {
         @Mandatory VkVariable field,
         @Mandatory LibraryConfiguration configuration
     ) {
-        String type = "CArray<" + getTypename(field, configuration) + ">";
-        return new List<>(
-            "    public " + type + " " + getFieldMethodName(field) + "() {",
-            "        return new CArray<>(",
+        if (field.getArrays().count() == 1) {
+            String type = "CArray<" + getTypename(field, configuration) + ">";
+            return new List<>(
+                "    public " + type + " " + getFieldMethodName(field) + "() {",
+                "        return new CArray<>(",
                 "            " + getFieldAddressArgument(field) + ",",
-                "            " + field.getArray() + ",",
+                "            " + field.getArrays().getFirst().getCount() + ",",
                 "            " + getTypename(field, configuration) + ".SIZE,",
                 "            " + getTypename(field, configuration) + "::new",
-            "        );",
-            "    }"
-        );
+                "        );",
+                "    }"
+            );
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public @Mandatory List<String> translateNative(

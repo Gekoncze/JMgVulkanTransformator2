@@ -204,19 +204,23 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     }
 
     private boolean isVoid(@Mandatory VkVariable variable) {
-        return variable.getTypename().equals("void") && variable.getPointers() == 0 && variable.getArray() == 0;
+        return variable.getTypename().equals("void")
+            && variable.getPointers().isEmpty()
+            && variable.getArrays().isEmpty();
     }
 
     private boolean isResult(@Mandatory VkVariable variable) {
-        return variable.getTypename().equals("VkResult") && variable.getPointers() == 0 && variable.getArray() == 0;
+        return variable.getTypename().equals("VkResult")
+            && variable.getPointers().isEmpty()
+            && variable.getArrays().isEmpty();
     }
 
     private @Mandatory VkVariable convertOutput(@Mandatory VkVariable output) {
         return new VkVariable(
             output.getTypename(),
-            output.getPointers(),
             OUTPUT_NAME,
-            output.getArray()
+            new List<>(output.getPointers()),
+            new List<>(output.getArrays())
         );
     }
 
@@ -232,24 +236,34 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     }
 
     private @Mandatory String getNativeType(@Mandatory VkFunction function, @Mandatory VkVariable variable) {
-        if (variable.getPointers() > 0 && variable.getArray() > 0) {
+        // TODO - implement unsupported cases
+        if (!variable.getPointers().isEmpty() && !variable.getArrays().isEmpty()) {
             throw new UnsupportedOperationException(getErrorArrayPointer(function, variable));
-        } else if (variable.getPointers() > 0) {
-            return variable.getTypename() + "*".repeat(variable.getPointers());
-        } else if (variable.getArray() > 0) {
-            return variable.getTypename();
+        } else if (!variable.getPointers().isEmpty()) {
+            return variable.getTypename() + "*".repeat(variable.getPointers().count());
+        } else if (!variable.getArrays().isEmpty()) {
+            if (variable.getArrays().getFirst().getCount() == 1) {
+                return variable.getTypename();
+            } else {
+                throw new UnsupportedOperationException();
+            }
         } else {
             return variable.getTypename();
         }
     }
 
     private @Mandatory String getNativeTypeArray(@Mandatory VkFunction function, @Mandatory VkVariable variable) {
-        if (variable.getPointers() > 0 && variable.getArray() > 0) {
+        // TODO - implement unsupported cases
+        if (!variable.getPointers().isEmpty() && !variable.getArrays().isEmpty()) {
             throw new UnsupportedOperationException(getErrorArrayPointer(function, variable));
-        } else if (variable.getPointers() > 0) {
+        } else if (!variable.getPointers().isEmpty()) {
             return "";
-        } else if (variable.getArray() > 0) {
-            return "[" + variable.getArray() + "]";
+        } else if (!variable.getArrays().isEmpty()) {
+            if (variable.getArrays().getFirst().getCount() == 1) {
+                return "[" + variable.getArrays().getFirst().getCount() + "]";
+            } else {
+                throw new UnsupportedOperationException();
+            }
         } else {
             return "";
         }
@@ -259,7 +273,7 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
         return "Unsupported combination of function parameter pointer and array count: " +
             "component = " + function.getName() + " " +
             "parameter = " + variable.getName() + " " +
-            "pointers = " + variable.getPointers() + " " +
-            "array = " + variable.getArray();
+            "pointers = " + variable.getPointers().count() + " " +
+            "array = " + variable.getArrays().count();
     }
 }

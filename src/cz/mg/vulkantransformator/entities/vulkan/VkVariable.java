@@ -2,22 +2,24 @@ package cz.mg.vulkantransformator.entities.vulkan;
 
 import cz.mg.annotations.classes.Entity;
 import cz.mg.annotations.requirement.Required;
+import cz.mg.annotations.storage.Part;
 import cz.mg.annotations.storage.Value;
+import cz.mg.collections.list.List;
 
 public @Entity class VkVariable implements VkComponent {
     private String typename;
-    private Integer pointers;
     private String name;
-    private Integer array;
+    private List<VkPointer> pointers;
+    private List<VkArray> arrays;
 
     public VkVariable() {
     }
 
-    public VkVariable(String typename, Integer pointers, String name, Integer array) {
+    public VkVariable(String typename, String name, List<VkPointer> pointers, List<VkArray> arrays) {
         this.typename = typename;
-        this.pointers = pointers;
         this.name = name;
-        this.array = array;
+        this.pointers = pointers;
+        this.arrays = arrays;
     }
 
     @Required @Value
@@ -27,16 +29,6 @@ public @Entity class VkVariable implements VkComponent {
 
     public void setTypename(String typename) {
         this.typename = typename;
-    }
-
-    /** number of pointer dimensions */
-    @Required @Value
-    public Integer getPointers() {
-        return pointers;
-    }
-
-    public void setPointers(Integer pointers) {
-        this.pointers = pointers;
     }
 
     @Override
@@ -49,13 +41,21 @@ public @Entity class VkVariable implements VkComponent {
         this.name = name;
     }
 
-    /** array size */
-    @Required @Value
-    public Integer getArray() {
-        return array;
+    @Required @Part
+    public List<VkPointer> getPointers() {
+        return pointers;
     }
 
-    public void setArray(Integer array) {
-        this.array = array;
+    public void setPointers(List<VkPointer> pointers) {
+        this.pointers = pointers;
+    }
+
+    @Required @Part
+    public List<VkArray> getArrays() {
+        return arrays;
+    }
+
+    public void setArrays(List<VkArray> arrays) {
+        this.arrays = arrays;
     }
 }
