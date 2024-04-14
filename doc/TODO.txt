@@ -15,6 +15,9 @@
         ideally all values should be loaded from c code
         type recognition will still be in place to find out the correct data type
 
+    add after-processing for global constant flag bits
+        merge related typedefs and variables into VkFlags
+
 
 ### LATER ###
     for all services, use proper synchronization in getInstance
