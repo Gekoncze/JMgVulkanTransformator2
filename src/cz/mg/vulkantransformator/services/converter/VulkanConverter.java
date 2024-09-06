@@ -2,6 +2,7 @@ package cz.mg.vulkantransformator.services.converter;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
+import cz.mg.annotations.requirement.Optional;
 import cz.mg.c.entities.CEntity;
 import cz.mg.c.entities.CFile;
 import cz.mg.c.entities.CNamed;
@@ -11,6 +12,10 @@ import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
 import cz.mg.vulkantransformator.services.converter.vk.*;
 
 public @Service class VulkanConverter {
+    private static final @Mandatory List<String> BLACKLIST = new List<>(
+        "VkRemoteAddressNV"
+    );
+
     private static volatile @Service VulkanConverter instance;
 
     public static @Service VulkanConverter getInstance() {
@@ -47,7 +52,10 @@ public @Service class VulkanConverter {
         VkRoot root = new VkRoot();
 
         for (CEntity entity : file.getEntities()) {
-            root.getComponents().addLast(findMatchingParser(entity).convert(entity));
+            VkConverter converter = findMatchingConverter(entity);
+            if (converter != null) {
+                root.getComponents().addLast(converter.convert(entity));
+            }
         }
 
         root.getComponents().addCollectionLast(
@@ -57,7 +65,7 @@ public @Service class VulkanConverter {
         return root;
     }
 
-    private @Mandatory VkConverter findMatchingParser(@Mandatory CEntity entity) {
+    private @Optional VkConverter findMatchingConverter(@Mandatory CEntity entity) {
         for (VkConverter parser : parsers) {
             if (parser.matches(entity)) {
                 return parser;
@@ -68,8 +76,12 @@ public @Service class VulkanConverter {
             ? namedEntity.getName()
             : "<anonymous>";
 
-        throw new UnsupportedOperationException(
-            "Could not find parser for " + name + " of type " + entity.getClass().getSimpleName() + "."
-        );
+        if (!BLACKLIST.contains(name)) {
+            throw new UnsupportedOperationException(
+                "Could not find parser for " + name + " of type " + entity.getClass().getSimpleName() + "."
+            );
+        }
+
+        return null;
     }
 }

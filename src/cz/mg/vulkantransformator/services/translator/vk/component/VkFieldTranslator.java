@@ -157,7 +157,9 @@ public @Service class VkFieldTranslator {
                 "    }"
             );
         } else {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException(
+                "Unsupported variable " + field.getName() + " of type " + field.getTypename() + "."
+            );
         }
     }
 

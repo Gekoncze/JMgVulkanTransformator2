@@ -46,7 +46,9 @@ public @Service class VkFunctionPointerConverter implements VkConverter {
     @Override
     public @Mandatory VkFunctionPointer convert(@Mandatory CEntity entity) {
         CTypedef typedef = (CTypedef) entity;
-        CFunction function = (CFunction) ((CBaseType)typedef.getType()).getTypename();
+        CPointerType pointerType = (CPointerType) typedef.getType();
+        CBaseType baseType = (CBaseType) pointerType.getType();
+        CFunction function = (CFunction) baseType.getTypename();
 
         VkFunctionPointer functionPointer = new VkFunctionPointer();
         functionPointer.setName(typedef.getName());

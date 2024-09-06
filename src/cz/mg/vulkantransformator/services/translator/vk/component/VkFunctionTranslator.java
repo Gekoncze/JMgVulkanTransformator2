@@ -240,10 +240,12 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
         } else if (!variable.getPointers().isEmpty()) {
             return variable.getTypename() + "*".repeat(variable.getPointers().count());
         } else if (!variable.getArrays().isEmpty()) {
-            if (variable.getArrays().getFirst().getCount() == 1) {
+            if (variable.getArrays().count() == 1) {
                 return variable.getTypename();
             } else {
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException(
+                    "Unsupported parameter " + variable.getName() + " in function " + function.getName() + "."
+                );
             }
         } else {
             return variable.getTypename();
@@ -257,7 +259,7 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
         } else if (!variable.getPointers().isEmpty()) {
             return "";
         } else if (!variable.getArrays().isEmpty()) {
-            if (variable.getArrays().getFirst().getCount() == 1) {
+            if (variable.getArrays().count() == 1) {
                 return "[" + variable.getArrays().getFirst().getCount() + "]";
             } else {
                 throw new UnsupportedOperationException();
