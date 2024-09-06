@@ -2,6 +2,9 @@ package cz.mg.vulkantransformator.services.converter.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
+import cz.mg.collections.components.StringJoiner;
+import cz.mg.collections.list.List;
+import cz.mg.token.Token;
 
 public @Service class NumberParser {
     private static volatile @Service NumberParser instance;
@@ -18,6 +21,10 @@ public @Service class NumberParser {
     }
 
     private NumberParser() {
+    }
+
+    public int parse(@Mandatory List<Token> expression) {
+        return parse(new StringJoiner<>(expression).withConverter(Token::getText).join());
     }
 
     public int parse(@Mandatory String s) {

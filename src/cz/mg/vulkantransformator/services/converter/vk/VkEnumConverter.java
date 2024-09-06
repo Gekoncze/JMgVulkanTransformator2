@@ -2,10 +2,11 @@ package cz.mg.vulkantransformator.services.converter.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
+import cz.mg.c.entities.CEntity;
 import cz.mg.c.entities.CEnum;
 import cz.mg.c.entities.CEnumEntry;
-import cz.mg.c.entities.CMainEntity;
 import cz.mg.c.entities.CTypedef;
+import cz.mg.c.entities.types.CBaseType;
 import cz.mg.vulkantransformator.entities.vulkan.VkEnum;
 
 import java.util.Objects;
@@ -40,22 +41,24 @@ public @Service class VkEnumConverter implements VkConverter {
      * } VkStencilFaceFlagBits
      */
     @Override
-    public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof CTypedef typedef) {
-            return typedef.getType().getTypename() instanceof CEnum;
-        }
-        return false;
+    public boolean matches(@Mandatory CEntity entity) {
+        return entity instanceof CTypedef typedef
+            && typedef.getType() instanceof CBaseType baseType
+            && baseType.getTypename() instanceof CEnum;
     }
 
     @Override
-    public @Mandatory VkEnum convert(@Mandatory CMainEntity entity) {
-        VkEnum vkEnum = new VkEnum();
-        vkEnum.setName(entity.getName());
+    public @Mandatory VkEnum convert(@Mandatory CEntity entity) {
         CTypedef typedef = (CTypedef) entity;
-        CEnum enom = (CEnum) typedef.getType().getTypename();
-        for (CEnumEntry enumEntry : Objects.requireNonNull(enom.getEntries())) {
+        CEnum cEnum = (CEnum) ((CBaseType)typedef.getType()).getTypename();
+
+        VkEnum vkEnum = new VkEnum();
+        vkEnum.setName(typedef.getName());
+
+        for (CEnumEntry enumEntry : Objects.requireNonNull(cEnum.getEntries())) {
             vkEnum.getEntries().addLast(enumEntryParser.convert(enumEntry));
         }
+
         return vkEnum;
     }
 }

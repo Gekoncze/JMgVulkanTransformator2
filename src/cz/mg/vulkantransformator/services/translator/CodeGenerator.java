@@ -3,8 +3,8 @@ package cz.mg.vulkantransformator.services.translator;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.collections.components.StringJoiner;
 import cz.mg.collections.list.List;
-import cz.mg.collections.services.StringJoiner;
 import cz.mg.vulkantransformator.entities.translator.JniFunction;
 
 public @Service class CodeGenerator {
@@ -13,12 +13,9 @@ public @Service class CodeGenerator {
     public static @Mandatory CodeGenerator getInstance() {
         if (instance == null) {
             instance = new CodeGenerator();
-            instance.stringJoiner = StringJoiner.getInstance();
         }
         return instance;
     }
-
-    private StringJoiner stringJoiner;
 
     private CodeGenerator() {
     }
@@ -85,7 +82,7 @@ public @Service class CodeGenerator {
         String secondParameter = function.isStatic() ? "jclass clazz" : "jobject object";
         List<String> inputParameters = new List<>("JNIEnv* env", secondParameter);
         inputParameters.addCollectionLast(function.getInput());
-        return stringJoiner.join(inputParameters, ", ");
+        return new StringJoiner<>(inputParameters).withDelimiter(", ").join();
     }
 
     public @Mandatory List<String> generateJavaLibraryClass(

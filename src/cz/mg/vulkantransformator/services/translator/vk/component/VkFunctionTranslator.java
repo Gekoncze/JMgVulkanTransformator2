@@ -3,8 +3,8 @@ package cz.mg.vulkantransformator.services.translator.vk.component;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.collections.components.StringJoiner;
 import cz.mg.collections.list.List;
-import cz.mg.collections.services.StringJoiner;
 import cz.mg.vulkantransformator.entities.translator.JniFunction;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkFunction;
@@ -25,7 +25,6 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
             instance.fieldTranslator = VkFieldTranslator.getInstance();
             instance.objectCodeGenerator = ObjectCodeGenerator.getInstance();
             instance.codeGenerator = CodeGenerator.getInstance();
-            instance.stringJoiner = StringJoiner.getInstance();
         }
         return instance;
     }
@@ -33,7 +32,6 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
     private VkFieldTranslator fieldTranslator;
     private ObjectCodeGenerator objectCodeGenerator;
     private CodeGenerator codeGenerator;
-    private StringJoiner stringJoiner;
 
     private VkFunctionTranslator() {
     }
@@ -168,7 +166,7 @@ public @Service class VkFunctionTranslator implements VkTranslator<VkFunction> {
         for (VkVariable argument : function.getInput()) {
             arguments.addLast("pc->" + argument.getName());
         }
-        return stringJoiner.join(arguments, ", ");
+        return new StringJoiner<>(arguments).withDelimiter(", ").join();
     }
 
     private @Mandatory String generateCallPrefix(@Mandatory VkFunction function) {

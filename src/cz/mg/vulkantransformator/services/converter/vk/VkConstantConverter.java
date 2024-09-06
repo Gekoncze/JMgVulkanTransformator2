@@ -6,8 +6,8 @@ import cz.mg.c.preprocessor.processors.macro.components.MacroExpander;
 import cz.mg.c.preprocessor.processors.macro.components.MacroManager;
 import cz.mg.c.entities.macro.Macro;
 import cz.mg.c.entities.macro.Macros;
+import cz.mg.collections.components.StringJoiner;
 import cz.mg.collections.list.List;
-import cz.mg.collections.services.StringJoiner;
 import cz.mg.token.Token;
 import cz.mg.token.tokens.quote.DoubleQuoteToken;
 import cz.mg.token.tokens.NumberToken;
@@ -25,14 +25,11 @@ public @Service class VkConstantConverter {
             synchronized (Service.class) {
                 if (instance == null) {
                     instance = new VkConstantConverter();
-                    instance.joiner = StringJoiner.getInstance();
                 }
             }
         }
         return instance;
     }
-
-    private @Service StringJoiner joiner;
 
     private VkConstantConverter() {
     }
@@ -55,7 +52,7 @@ public @Service class VkConstantConverter {
     private @Mandatory VkConstant convert(@Mandatory Macro macro, @Mandatory MacroManager macroManager) {
         VkConstant constant = create(macro, macroManager);
         constant.setName(macro.getName().getText());
-        constant.setValue(joiner.join(macro.getTokens(), "", Token::getText));
+        constant.setValue(new StringJoiner<>(macro.getTokens()).withConverter(Token::getText).join());
         return constant;
     }
 

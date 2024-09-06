@@ -2,8 +2,9 @@ package cz.mg.vulkantransformator.services.converter;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
+import cz.mg.c.entities.CEntity;
 import cz.mg.c.entities.CFile;
-import cz.mg.c.entities.CMainEntity;
+import cz.mg.c.entities.CNamed;
 import cz.mg.c.entities.macro.Macros;
 import cz.mg.collections.list.List;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
@@ -45,7 +46,7 @@ public @Service class VulkanConverter {
     public @Mandatory VkRoot convert(@Mandatory CFile file, @Mandatory Macros macros) {
         VkRoot root = new VkRoot();
 
-        for (CMainEntity entity : file.getEntities()) {
+        for (CEntity entity : file.getEntities()) {
             root.getComponents().addLast(findMatchingParser(entity).convert(entity));
         }
 
@@ -56,15 +57,19 @@ public @Service class VulkanConverter {
         return root;
     }
 
-    private @Mandatory VkConverter findMatchingParser(@Mandatory CMainEntity entity) {
+    private @Mandatory VkConverter findMatchingParser(@Mandatory CEntity entity) {
         for (VkConverter parser : parsers) {
             if (parser.matches(entity)) {
                 return parser;
             }
         }
+
+        String name = entity instanceof CNamed namedEntity && namedEntity.getName() != null
+            ? namedEntity.getName()
+            : "<anonymous>";
+
         throw new UnsupportedOperationException(
-            "Could not find parser for " + entity.getName()
-                + " of type " + entity.getClass().getSimpleName() + "."
+            "Could not find parser for " + name + " of type " + entity.getClass().getSimpleName() + "."
         );
     }
 }

@@ -2,7 +2,7 @@ package cz.mg.vulkantransformator.services.converter.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.c.entities.CMainEntity;
+import cz.mg.c.entities.CEntity;
 import cz.mg.c.entities.CStruct;
 import cz.mg.vulkantransformator.entities.vulkan.VkType;
 
@@ -27,15 +27,15 @@ public @Service class VkOtherTypeConverter implements VkConverter {
      * struct ANativeWindow
      */
     @Override
-    public boolean matches(@Mandatory CMainEntity entity) {
-        return entity instanceof CStruct
-            && ((CStruct) entity).getVariables() == null;
+    public boolean matches(@Mandatory CEntity entity) {
+        return entity instanceof CStruct cStruct
+            && cStruct.getVariables() == null;
     }
 
     @Override
-    public @Mandatory VkType convert(@Mandatory CMainEntity entity) {
+    public @Mandatory VkType convert(@Mandatory CEntity entity) {
         VkType type = new VkType();
-        type.setName(entity.getName());
+        type.setName(((CStruct)entity).getName());
         return type;
     }
 }

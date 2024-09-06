@@ -3,7 +3,6 @@ package cz.mg.vulkantransformator.services.translator.c;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
-import cz.mg.collections.components.Capacity;
 import cz.mg.collections.list.List;
 import cz.mg.collections.map.Map;
 import cz.mg.collections.pair.Pair;
@@ -19,7 +18,7 @@ public @Service class CTypenameMap implements TypenameMap {
         return instance;
     }
 
-    private static final List<Pair<String, String>> LIST = new List<>(
+    private static final Map<String, String> MAP = new Map<>(new List<>(
         new Pair<>("void", "CObject"),
         new Pair<>("char", "CChar"),
         new Pair<>("uint8_t", "CUInt8"),
@@ -34,9 +33,7 @@ public @Service class CTypenameMap implements TypenameMap {
         new Pair<>("double", "CDouble"),
         new Pair<>("int", "CInt32"),
         new Pair<>("size_t", "CSize")
-    );
-
-    private static final Map<String, String> MAP = new Map<>(new Capacity(LIST.count() * 2), LIST);
+    ));
 
     private CTypenameMap() {
     }

@@ -2,10 +2,12 @@ package cz.mg.vulkantransformator.services.converter.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
+import cz.mg.c.entities.CEntity;
 import cz.mg.c.entities.CFunction;
-import cz.mg.c.entities.CMainEntity;
 import cz.mg.c.entities.CTypedef;
 import cz.mg.c.entities.CVariable;
+import cz.mg.c.entities.types.CBaseType;
+import cz.mg.c.entities.types.CPointerType;
 import cz.mg.vulkantransformator.entities.vulkan.VkFunctionPointer;
 
 public @Service class VkFunctionPointerConverter implements VkConverter {
@@ -34,20 +36,21 @@ public @Service class VkFunctionPointerConverter implements VkConverter {
      * void*                                       pMemory);
      */
     @Override
-    public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof CTypedef typedef) {
-            return typedef.getType().getTypename() instanceof CFunction
-                && typedef.getType().getPointers().count() == 1;
-        }
-        return false;
+    public boolean matches(@Mandatory CEntity entity) {
+        return entity instanceof CTypedef typedef
+            && typedef.getType() instanceof CPointerType pointerType
+            && pointerType.getType() instanceof CBaseType baseType
+            && baseType.getTypename() instanceof CFunction;
     }
 
     @Override
-    public @Mandatory VkFunctionPointer convert(@Mandatory CMainEntity entity) {
-        VkFunctionPointer functionPointer = new VkFunctionPointer();
-        functionPointer.setName(entity.getName());
+    public @Mandatory VkFunctionPointer convert(@Mandatory CEntity entity) {
         CTypedef typedef = (CTypedef) entity;
-        CFunction function = (CFunction) typedef.getType().getTypename();
+        CFunction function = (CFunction) ((CBaseType)typedef.getType()).getTypename();
+
+        VkFunctionPointer functionPointer = new VkFunctionPointer();
+        functionPointer.setName(typedef.getName());
+
         functionPointer.setOutput(variableConverter.convertLocal(function.getOutput()));
         for (CVariable variable : function.getInput()) {
             functionPointer.getInput().addLast(variableConverter.convertLocal(variable));

@@ -3,8 +3,8 @@ package cz.mg.vulkantransformator.services.translator;
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.collections.components.StringJoiner;
 import cz.mg.collections.list.List;
-import cz.mg.collections.services.StringJoiner;
 
 import java.util.StringTokenizer;
 
@@ -14,12 +14,9 @@ public @Service class MakefileGenerator {
     public static @Mandatory MakefileGenerator getInstance() {
         if (instance == null) {
             instance = new MakefileGenerator();
-            instance.stringJoiner = StringJoiner.getInstance();
         }
         return instance;
     }
-
-    private StringJoiner stringJoiner;
 
     private MakefileGenerator() {
     }
@@ -83,7 +80,7 @@ public @Service class MakefileGenerator {
     }
 
     private @Mandatory String getFlags(@Mandatory List<String> flags) {
-        return stringJoiner.join(flags, " ");
+        return new StringJoiner<>(flags).withDelimiter(" ").join();
     }
 
     private @Mandatory String javaPackageToDirectory(@Mandatory String javaPackage) {
@@ -96,14 +93,14 @@ public @Service class MakefileGenerator {
         for (int i = 0; i < count; i++) {
             parts.addLast("..");
         }
-        return stringJoiner.join(parts, "/");
+        return new StringJoiner<>(parts).withDelimiter("/").join();
     }
 
     private @Mandatory String getClassPath(@Mandatory List<String> classPaths) {
         if (classPaths.isEmpty()) {
             return ".";
         } else {
-            return ".:" + stringJoiner.join(classPaths, ":");
+            return ".:" + new StringJoiner<>(classPaths).withDelimiter(":").join();
         }
     }
 }

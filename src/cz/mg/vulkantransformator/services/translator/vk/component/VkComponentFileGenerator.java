@@ -2,10 +2,9 @@ package cz.mg.vulkantransformator.services.translator.vk.component;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.collections.components.Capacity;
+import cz.mg.collections.components.StringJoiner;
 import cz.mg.collections.list.List;
 import cz.mg.collections.map.Map;
-import cz.mg.collections.services.StringJoiner;
 import cz.mg.file.File;
 import cz.mg.vulkantransformator.entities.vulkan.VkComponent;
 import cz.mg.vulkantransformator.entities.vulkan.VkRoot;
@@ -39,7 +38,6 @@ public @Service class VkComponentFileGenerator {
                     instance.makefileGenerator = MakefileGenerator.getInstance();
                     instance.codeGenerator = CodeGenerator.getInstance();
                     instance.javaConfiguration = JavaConfiguration.getInstance();
-                    instance.joiner = StringJoiner.getInstance();
                 }
             }
         }
@@ -51,7 +49,6 @@ public @Service class VkComponentFileGenerator {
     private @Service MakefileGenerator makefileGenerator;
     private @Service CodeGenerator codeGenerator;
     private @Service JavaConfiguration javaConfiguration;
-    private @Service StringJoiner joiner;
 
     private VkComponentFileGenerator() {
     }
@@ -64,7 +61,7 @@ public @Service class VkComponentFileGenerator {
 
         List<File> files = new List<>();
 
-        Map<Class, VkTranslator> translatorMap = new Map<>(new Capacity(100));
+        Map<Class, VkTranslator> translatorMap = new Map<>();
         for (VkTranslator translator : translators) {
             translatorMap.set(translator.targetClass(), translator);
         }
@@ -146,6 +143,6 @@ public @Service class VkComponentFileGenerator {
     }
 
     private @Mandatory String join(@Mandatory List<String> lines) {
-        return joiner.join(lines, "\n");
+        return new StringJoiner<>(lines).withDelimiter("\n").join();
     }
 }

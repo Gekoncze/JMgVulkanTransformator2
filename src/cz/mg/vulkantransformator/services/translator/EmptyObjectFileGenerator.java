@@ -2,8 +2,8 @@ package cz.mg.vulkantransformator.services.translator;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
+import cz.mg.collections.components.StringJoiner;
 import cz.mg.collections.list.List;
-import cz.mg.collections.services.StringJoiner;
 import cz.mg.file.File;
 
 import java.nio.file.Path;
@@ -17,7 +17,6 @@ public @Service class EmptyObjectFileGenerator {
                 if (instance == null) {
                     instance = new EmptyObjectFileGenerator();
                     instance.objectCodeGenerator = ObjectCodeGenerator.getInstance();
-                    instance.joiner = StringJoiner.getInstance();
                 }
             }
         }
@@ -25,7 +24,6 @@ public @Service class EmptyObjectFileGenerator {
     }
 
     private @Service ObjectCodeGenerator objectCodeGenerator;
-    private @Service StringJoiner joiner;
 
     private EmptyObjectFileGenerator() {
     }
@@ -67,6 +65,6 @@ public @Service class EmptyObjectFileGenerator {
     }
 
     private @Mandatory String join(@Mandatory List<String> lines) {
-        return joiner.join(lines, "\n");
+        return new StringJoiner<>(lines).withDelimiter("\n").join();
     }
 }

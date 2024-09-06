@@ -2,8 +2,8 @@ package cz.mg.vulkantransformator.services.translator.c;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
+import cz.mg.collections.components.StringJoiner;
 import cz.mg.collections.list.List;
-import cz.mg.collections.services.StringJoiner;
 import cz.mg.file.File;
 import cz.mg.vulkantransformator.services.translator.JavaConfiguration;
 import cz.mg.vulkantransformator.services.translator.MakefileGenerator;
@@ -45,7 +45,6 @@ public @Service class CFileGenerator {
                     );
                     instance.makefileGenerator = MakefileGenerator.getInstance();
                     instance.javaConfiguration = JavaConfiguration.getInstance();
-                    instance.joiner = StringJoiner.getInstance();
                 }
             }
         }
@@ -56,7 +55,6 @@ public @Service class CFileGenerator {
     private @Service List<CGenerator> generators;
     private @Service MakefileGenerator makefileGenerator;
     private @Service JavaConfiguration javaConfiguration;
-    private @Service StringJoiner joiner;
 
     private CFileGenerator() {
     }
@@ -111,6 +109,6 @@ public @Service class CFileGenerator {
     }
 
     private @Mandatory String join(@Mandatory List<String> lines) {
-        return joiner.join(lines, "\n");
+        return new StringJoiner<>(lines).withDelimiter("\n").join();
     }
 }

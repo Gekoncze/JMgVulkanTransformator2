@@ -2,8 +2,8 @@ package cz.mg.vulkantransformator.services.converter.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
+import cz.mg.c.entities.CEntity;
 import cz.mg.c.entities.CFunction;
-import cz.mg.c.entities.CMainEntity;
 import cz.mg.c.entities.CVariable;
 import cz.mg.vulkantransformator.entities.vulkan.VkFunction;
 
@@ -34,19 +34,22 @@ public @Service class VkFunctionConverter implements VkConverter {
      * VkInstance*                                 pInstance)
      */
     @Override
-    public boolean matches(@Mandatory CMainEntity entity) {
+    public boolean matches(@Mandatory CEntity entity) {
         return entity instanceof CFunction;
     }
 
     @Override
-    public @Mandatory VkFunction convert(@Mandatory CMainEntity entity) {
-        VkFunction vkFunction = new VkFunction();
-        vkFunction.setName(entity.getName());
+    public @Mandatory VkFunction convert(@Mandatory CEntity entity) {
         CFunction function = (CFunction) entity;
+
+        VkFunction vkFunction = new VkFunction();
+        vkFunction.setName(function.getName());
         vkFunction.setOutput(variableConverter.convertLocal(function.getOutput()));
+
         for (CVariable variable : function.getInput()) {
             vkFunction.getInput().addLast(variableConverter.convertLocal(variable));
         }
+
         return vkFunction;
     }
 }

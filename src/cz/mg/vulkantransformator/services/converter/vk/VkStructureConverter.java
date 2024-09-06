@@ -2,10 +2,11 @@ package cz.mg.vulkantransformator.services.converter.vk;
 
 import cz.mg.annotations.classes.Service;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.c.entities.CMainEntity;
+import cz.mg.c.entities.CEntity;
 import cz.mg.c.entities.CStruct;
 import cz.mg.c.entities.CTypedef;
 import cz.mg.c.entities.CVariable;
+import cz.mg.c.entities.types.CBaseType;
 import cz.mg.vulkantransformator.entities.vulkan.VkStructure;
 
 import java.util.Objects;
@@ -43,20 +44,21 @@ public @Service class VkStructureConverter implements VkConverter {
      * } VkPipelineColorBlendStateCreateInfo
      */
     @Override
-    public boolean matches(@Mandatory CMainEntity entity) {
-        if (entity instanceof CTypedef typedef) {
-            return typedef.getType().getTypename() instanceof CStruct
-                && ((CStruct) typedef.getType().getTypename()).getVariables() != null;
-        }
-        return false;
+    public boolean matches(@Mandatory CEntity entity) {
+        return entity instanceof CTypedef typedef
+            && typedef.getType() instanceof CBaseType baseType
+            && baseType.getTypename() instanceof CStruct struct
+            && struct.getVariables() != null;
     }
 
     @Override
-    public @Mandatory VkStructure convert(@Mandatory CMainEntity entity) {
-        VkStructure structure = new VkStructure();
-        structure.setName(entity.getName());
+    public @Mandatory VkStructure convert(@Mandatory CEntity entity) {
         CTypedef typedef = (CTypedef) entity;
-        CStruct struct = (CStruct) typedef.getType().getTypename();
+        CStruct struct = (CStruct) ((CBaseType)typedef.getType()).getTypename();
+
+        VkStructure structure = new VkStructure();
+        structure.setName(typedef.getName());
+
         for (CVariable variable : Objects.requireNonNull(struct.getVariables())) {
             structure.getFields().addLast(variableConverter.convertLocal(variable));
         }
