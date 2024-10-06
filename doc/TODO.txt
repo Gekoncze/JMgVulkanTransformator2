@@ -5,7 +5,6 @@
     reimplement c file writers
         create c entities instead and then write them using library
             how to handle directives ?
-                this might require directives to be c entities and c file to contain c entities
             how to handle c function implementation ?
             how to handle special attributes ?
 
